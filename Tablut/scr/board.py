@@ -38,7 +38,21 @@ def get_figures_Moves(State,White,Pos):
     moves = []
     start_line,start_row = Pos 
      
-    row, col = Pos
+    moves.extend(all_moves_up_to_Figure(State,Pos))
+    
+    moves.extend(all_moves_down_to_Figure(State,Pos))
+            
+    moves.extend(all_moves_left_to_Figure(State,Pos))
+    
+    moves.extend(all_moves_right_to_Figure(State,Pos))
+    
+    return moves
+
+def all_moves_up_to_Figure(State, StartPos):
+    moves = []
+    (start_line,start_row) = StartPos
+
+    row, col = StartPos
     row -= 1
 
     while row >= 0:
@@ -50,7 +64,14 @@ def get_figures_Moves(State,White,Pos):
             moves.append(((start_line,start_row),(row+1, col)))
             break
             
-    row, col = Pos
+    
+    return moves
+
+def all_moves_down_to_Figure(State, StartPos):
+    moves = []
+    (start_line,start_row) = StartPos
+    
+    row, col = StartPos
     row += 1
 
     while row <= (len(State)-1):
@@ -63,8 +84,14 @@ def get_figures_Moves(State,White,Pos):
             moves.append(((start_line,start_row),(row-1, col)))
             print(moves)
             break
-        
-    row, col = Pos
+    return moves
+    
+
+def all_moves_left_to_Figure(State, StartPos):
+    moves = []
+    (start_line,start_row) = StartPos
+    
+    row, col = StartPos
     col -= 1
     while col >= 0:
         
@@ -75,7 +102,16 @@ def get_figures_Moves(State,White,Pos):
             moves.append(((start_line,start_row),(row, col+1)))
             break
     
-    row, col = Pos
+    
+    
+    return moves
+
+def all_moves_right_to_Figure(State, StartPos):
+    
+    moves = []
+    (start_line,start_row) = StartPos
+    
+    row, col = StartPos
     col += 1
 
     while col <= (len(State[0])-1):
@@ -85,8 +121,10 @@ def get_figures_Moves(State,White,Pos):
         else: 
             moves.append(((start_line,start_row),(row,col-1)))
             break
+    
+    
     return moves
-
+    
 #Prüft ob die jeweilige Position auf dem Feld leer ist
 def isEmptyField(State,Pos): 
     row, col = Pos
@@ -135,19 +173,19 @@ def print_board(board):
 
 
 TestBoard = [
-    ["W","E","W","E","E","E","E","E","E"],
+    ["W","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","W","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
+    ["B","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["W","E","E","E","E","E","E","E","W"],
+    ["E","E","E","E","E","E","E","E","W"],
 ]
 
+print_board(TestBoard)
 
-
-x = Zuggenerator(TestBoard,False)
-print(x)
+#x = Zuggenerator(TestBoard,True)
+#print(x)
 
