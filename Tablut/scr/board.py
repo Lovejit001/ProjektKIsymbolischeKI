@@ -32,46 +32,37 @@ def Zuggenerator(State,White):
         all_moves.extend(get_figures_Moves(State,White,(row,col)))
     
     return all_moves    
-    
+
+# Gibt alle möglichen Zug der jeweiligen Figur (Position) an    
 def get_figures_Moves(State,White,Pos): 
     moves = []
     start_line,start_row = Pos 
      
     row, col = Pos
     row -= 1
-    print(f"ZEILE: {row} ")
+
     while row >= 0:
-        print("BIN DRIN")    
             
         if isEmptyField(State,(row,col)):
-            print(f"FIELD IS FREE {row} {col}")
             row -=1
             if row == 0 and isEmptyField(State,(row,col)) : moves.append(((start_line,start_row),(row, col)))
         else: 
             moves.append(((start_line,start_row),(row+1, col)))
             break
             
-    
     row, col = Pos
     row += 1
-    print(f"JETZT alles unter mir {row} {col}" )            
+
     while row <= (len(State)-1):
 
         if isEmptyField(State,(row,col)):
-            print(f"FIELD IS FREE {row} {col}")
             row += 1
-            print(f"TO TEST FIELD {row} {col}")
             if row == 8 and isEmptyField(State,(row,col)) : 
-                print("WIR SIND AM ENDE")
                 moves.append(((start_line,start_row),(row, col)))
         else: 
-            print(f"KANNST HÖCHSTENS BIS {row-1} {col}")
             moves.append(((start_line,start_row),(row-1, col)))
             print(moves)
             break
-        print(f"TO TEST FIELD {row} {col}")
-        print(f"{row} <= ? {(len(State)-1)}")
-    
         
     row, col = Pos
     col -= 1
@@ -96,11 +87,10 @@ def get_figures_Moves(State,White,Pos):
             break
     return moves
 
-
+#Prüft ob die jeweilige Position auf dem Feld leer ist
 def isEmptyField(State,Pos): 
     row, col = Pos
     return State[row][col] == "E"
-
 
 
 
@@ -153,7 +143,7 @@ TestBoard = [
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
-    ["B","E","E","E","E","E","E","E","W"],
+    ["W","E","E","E","E","E","E","E","W"],
 ]
 
 
