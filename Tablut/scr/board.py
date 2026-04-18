@@ -9,8 +9,6 @@ def get_all_positions(State,White):
         for j, element in enumerate(line):
             Figure = State[i][j]
             if check_valid_figure(White,Figure):
-                #print(f"FIGURE IS WHITE TEAM  {Figure} on POSITIONS {i} {j}" ) 
-                #all_moves.extend(get_figures_Moves(State, White, (i,j)))
                 all_positions.append((i,j))                
                 
     return all_positions
@@ -58,13 +56,11 @@ def all_moves_up_to_Figure(State, StartPos):
     while row >= 0:
             
         if isEmptyField(State,(row,col)):
+            moves.append(((start_line,start_row),(row, col)))
             row -=1
-            if row == 0 and isEmptyField(State,(row,col)) : moves.append(((start_line,start_row),(row, col)))
         else: 
-            moves.append(((start_line,start_row),(row+1, col)))
             break
             
-    
     return moves
 
 def all_moves_down_to_Figure(State, StartPos):
@@ -77,13 +73,12 @@ def all_moves_down_to_Figure(State, StartPos):
     while row <= (len(State)-1):
 
         if isEmptyField(State,(row,col)):
+            moves.append(((start_line,start_row),(row, col)))
             row += 1
-            if row == 8 and isEmptyField(State,(row,col)) : 
-                moves.append(((start_line,start_row),(row, col)))
         else: 
-            moves.append(((start_line,start_row),(row-1, col)))
-            print(moves)
+
             break
+    
     return moves
     
 
@@ -96,13 +91,10 @@ def all_moves_left_to_Figure(State, StartPos):
     while col >= 0:
         
         if isEmptyField(State,(row,col)):
-            col -= 1
-            if col == 0 and isEmptyField(State,(row,col)): moves.append(((start_line,start_row),(row, col)))
+            moves.append(((start_line,start_row),(row, col)))
+            col -= 1                
         else: 
-            moves.append(((start_line,start_row),(row, col+1)))
             break
-    
-    
     
     return moves
 
@@ -116,10 +108,9 @@ def all_moves_right_to_Figure(State, StartPos):
 
     while col <= (len(State[0])-1):
         if isEmptyField(State,(row,col)):
+            moves.append(((start_line,start_row),(row, col)))
             col += 1
-            if col == 8 and isEmptyField(State,(row,col)) : moves.append(((start_line,start_row),(row, col)))
         else: 
-            moves.append(((start_line,start_row),(row,col-1)))
             break
     
     
@@ -172,20 +163,39 @@ def print_board(board):
     print(col_numbers)
 
 
+def print_possible_Moves(list_Moves): 
+    gruppen = {}
+    
+    #Erstellt eine dicitonary { (start ) : [alle möglichen Züge aus dieser Position] ... }
+    for ((start),(goal)) in list_Moves:
+        if start in gruppen:
+            gruppen[start].append(goal)
+        else:
+            gruppen[start]=[goal]
+            
+    for key, value in gruppen.items():
+        print(f"{key} -> {value}")
+            
+    
+        
+            
+
 TestBoard = [
-    ["W","E","E","E","E","E","E","E","E"],
+    ["W","E","B","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["B","E","E","E","B","E","E","E","E"],
+    ["E","E","E","E","K","B","E","E","E"],
+    ["E","E","E","E","B","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
     ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","W","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["B","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","W"],
 ]
 
-print_board(TestBoard)
+#print_board(TestBoard)
 
-#x = Zuggenerator(TestBoard,True)
-#print(x)
+x = Zuggenerator(TestBoard,True)
+print(x)
 
+print("NUN SCHÖNERE VERSION:")
+print_possible_Moves(x)
