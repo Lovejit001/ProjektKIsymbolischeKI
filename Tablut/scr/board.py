@@ -197,8 +197,27 @@ def print_possible_Moves(list_Moves):
     for key, value in gruppen.items():
         print(f"{key} -> {value}")
             
+    
+        
+            
+
+def print_possible_Moves(list_Moves): 
+    gruppen = {}
+    
+    #Erstellt eine dicitonary { (start ) : [alle möglichen Züge aus dieser Position] ... }
+    for ((start),(goal)) in list_Moves:
+        if start in gruppen:
+            gruppen[start].append(goal)
+        else:
+            gruppen[start]=[goal]
+            
+    for key, value in gruppen.items():
+        print(f"{key} -> {value}")
+            
 
 def print_dic(dict):
     for key, value in dict.items():
         print(f"{key}: {value},")
 
+print("NUN SCHÖNERE VERSION:")
+print_possible_Moves(x)
