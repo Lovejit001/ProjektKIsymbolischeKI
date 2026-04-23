@@ -1,0 +1,83 @@
+## Hier werden die Variablen definiert, die von den Unit Tests verwendet werden
+## und die Boards die in den Tests verwendet werden
+
+## Folgende Variablen werden definiert (Vorlesung vom 20.04.2026 | Folie 9):
+## 0 - Leeres Feld
+## 1 - schwarze Figur (Verteidigende)
+## -1 - weiße Figur (Angreifende)
+## -2 - König (Angreifende)
+## White - ist der angreifende Spieler
+## Black - ist der verteidigende Spieler
+## Hierbei ist die Koordinate des Throns (4, 4) und die Koordinaten der Zielfelder (0, 0), (0, 8), (8, 8) und (8, 0)
+
+## Variablen:
+
+White = 'White'
+Black = 'Black'
+
+
+## Wir gehen davon aus das uns von dem Game Server ein BOARD übergeben wird
+## also eine 2D Liste mit den entsprechenden Variablen
+## Hierbei hat die obere linke Ecke die Koordinaten (0, 0) und die untere rechte Ecke die Korrdinaten (8, 8)
+
+## Boards:
+
+simple_pawns = [
+    [0, 0, 1, 0, 1, 0, -1, 0, 0],
+    [0, 0, 0, 0, 0, 0, -1, 0, 0],
+    [0, 0, 1, 0, 0, 0, -1, 0, 0],
+    [0, 0, 0, -1, 0, 0, 0, 0, 0],
+    [0, 0, 0, -1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 1, 0, -1, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+white_pawns = [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+]
+
+black_pawns = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1]
+]
+
+simple_board = [
+    [0, 0, 1, 0, 1, 0, -1, 0, 0],
+    [0, 0, 0, 0, 0, 0, -1, 0, 0],
+    [0, 0, 1, 0, 0, 0, -1, 0, 0],
+    [0, 0, 0, -1, 0, 0, 0, 0, 0],
+    [0, 0, 0, -1, -2, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 1, 1],
+    [0, 0, 1, 0, 1, 0, -1, 0, 0],
+    [0, 0, 0, 1, 1, 1, -1, -1, -1],
+    [0, 0, 0, 1, 1 ,1 ,1 ,1 ,1]
+]
+
+starting_board = [
+    [0, 0, 0, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, -1, 0, 0, 0, 0],
+    [1, 0, 0, 0, -1, 0, 0, 0, 1],
+    [1, 1, -1, -1, -2, -1, -1, 1, 1],
+    [1, 0, 0, 0, -1, 0, 0, 0, 1],
+    [0, 0, 0, 0, -1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 1, 0, 0, 0]
+]
