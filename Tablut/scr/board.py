@@ -1,51 +1,50 @@
-
+import random
 ## die Funktion get_all_positions(State, White) erwartet eine 2D Liste "board" und 
 ## den Spieler (White oder Black) dessen alle Positionen auf dem Spielfeld übergeben werden soll 
 
-def get_all_positions(State,White):
+def get_all_positions(board, player):
     all_positions = []
     
-    for i, line in enumerate(State):
-        for j, element in enumerate(line):
-            Figure = State[i][j]
-            if check_valid_figure(White,Figure):
-                all_positions.append((i,j))                
-                
+    for i in range(9):
+        for j in range(9):
+            if check_valid_figure(player, board[i][j]):
+                all_positions.append((i, j))
+            
     return all_positions
                  
-            
 # Prüft ob die Figur den nächsten zuspielende Figur gehört             
-def check_valid_figure(White,figure): 
-    if White == True:
-        return figure in ["W","K"]
+def check_valid_figure(player, figure): 
+    if player == "White":
+        return figure in [-1, -2]
     else:
-        return figure in ["B"]                 
+        return figure in [1]                 
+
+
+
 
 #Haupt-Funktion die dafür da ist alle Möglichen Spielzüge des jeweiligen Spielers zu bestimmen 
-def Zuggenerator(State,White):
-    all_player_positions = get_all_positions(State,White)
+def total_moves(Board,White):
+    all_player_positions = get_all_positions(Board,White)
     all_moves = {}
     
     for  (row,col) in all_player_positions:
-        all_moves = merge_moves(all_moves,(get_figures_Moves(State,White,(row,col))))
+        all_moves = merge_moves(all_moves,(get_figures_Moves(Board,White,(row,col))))
     
     return all_moves    
 
 # Gibt alle möglichen Zug der jeweiligen Figur (Position) an    
-def get_figures_Moves(State,White,Pos): 
+def get_figures_Moves(Board,White,Pos): 
     moves = {}
     
     start_line,start_row = Pos 
      
-    moves = merge_moves(moves,(all_moves_up_to_Figure(State,Pos)))
+    moves = merge_moves(moves,(all_moves_up_to_Figure(Board,Pos)))
+    
+    moves= merge_moves(moves,(all_moves_right_to_Figure(Board,Pos)))
+    
+    moves= merge_moves(moves,(all_moves_down_to_Figure(Board,Pos)))
 
-    moves= merge_moves(moves,(all_moves_down_to_Figure(State,Pos)))
-    
-    moves= merge_moves(moves,(all_moves_left_to_Figure(State,Pos)))
-    
-    moves= merge_moves(moves,(all_moves_right_to_Figure(State,Pos)))
-            
-    
+    moves= merge_moves(moves,(all_moves_left_to_Figure(Board,Pos)))
     
     return moves
 
@@ -138,9 +137,9 @@ def all_moves_right_to_Figure(board, StartPos):
     return moves
     
 #Prüft ob die jeweilige Position auf dem Feld leer ist
-def isEmptyField(State,Pos): 
+def isEmptyField(Board,Pos): 
     row, col = Pos
-    return State[row][col] == "E"
+    return Board[row][col] == 0
 
 #Funktion prüft, ob die die Zielposition ein valider Zug ist, ein Zug is INVALIDE wenn gilt:
 #Position Thronfeld ist
@@ -156,7 +155,7 @@ def validMove(board,Pos,StartPos):
         
     #Bauer versucht Eckfeld/Zielfeld zu betreten, illegaler Move
     if ((row,col) == (0,0) or (row,col) == ( 0,(len(board[0])-1) ) or (row,col) == (len(board)-1,0) or (row,col) == (len(board)-1,(len(board[8])-1)) ):
-        return (board[start_row][start_col] == "K")
+        return (board[start_row][start_col] == -2)
     
 
     return True
@@ -202,6 +201,41 @@ def print_board(board):
     print(col_numbers)
 
 
+#Das Spiel ist beendet wenn einer der folgenden Ereignisse eintretet:
+#   -Schwarz gewinnt, wenn König wurde geschlagen                       Output: -1
+#   -Weiß gewinnt, wenn König erreicht einer der vier Eckfelder         Output:  1
+#   -Unentschieden, wenn:
+#                   sich eine Stellung, 
+#                   wenn ein Spieler keinen Zug mehr machen kann, 
+#                   50 Züge keine figur geschlagen wurde                Output:  0
+#    -Spiel läuft weiter                                                output: 10
+def isGameOver():...
+
+#
+
+
+#Diese Funktion führt die Schritt aus und aktualisiert Board
+def makeMove(board,all_possible_moves):
+
+    random_move= random.choice(list(all_possible_moves.items()))
+
+    start_Pos, goal_Pos = random_move
+    
+    start_row, start_col = start_Pos
+    
+    goal_row, goal_col = goal_Pos
+    
+
+    #Figuer merken die auf der Startposition ist: 
+    figure = board[start_row][start_col]
+
+    #Board an der Startposition, leeren:
+    board[start_row][start_col] = "E"
+    
+    #Board an der Startposition, aktualisieren:
+    board[goal_row][goal_col] = figure
+    
+
 def print_possible_Moves(list_Moves): 
     gruppen = {}
     
@@ -215,6 +249,30 @@ def print_possible_Moves(list_Moves):
     for key, value in gruppen.items():
         print(f"{key} -> {value}")
             
+    
+        
+            
+
+def print_possible_Moves(list_Moves): 
+    gruppen = {}
+    
+    #Erstellt eine dicitonary { (start ) : [alle möglichen Züge aus dieser Position] ... }
+    for ((start),(goal)) in list_Moves:
+        if start in gruppen:
+            gruppen[start].append(goal)
+        else:
+            gruppen[start]=[goal]
+            
+    for key, value in gruppen.items():
+        print(f"{key} -> {value}")
+            
+
+def print_dic(dict):
+    for key, value in dict.items():
+        print(f"{key}: {value},")
+
+print("NUN SCHÖNERE VERSION:")
+print_possible_Moves(x)
 
 TestBoard = [
     ["E","E","E","E","E","E","E","E","E"],
