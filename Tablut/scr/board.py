@@ -1,5 +1,5 @@
-
-## die Funktion get_all_positions(Board, White) erwartet eine 2D Liste "board" und 
+import random
+## die Funktion get_all_positions(State, White) erwartet eine 2D Liste "board" und 
 ## den Spieler (White oder Black) dessen alle Positionen auf dem Spielfeld übergeben werden soll 
 
 def get_all_positions(board, player):
@@ -183,6 +183,41 @@ def print_board(board):
     col_numbers = "   " + " ".join(f"{i:>2}" for i in range(size))
     print(col_numbers)
 
+
+#Das Spiel ist beendet wenn einer der folgenden Ereignisse eintretet:
+#   -Schwarz gewinnt, wenn König wurde geschlagen                       Output: -1
+#   -Weiß gewinnt, wenn König erreicht einer der vier Eckfelder         Output:  1
+#   -Unentschieden, wenn:
+#                   sich eine Stellung, 
+#                   wenn ein Spieler keinen Zug mehr machen kann, 
+#                   50 Züge keine figur geschlagen wurde                Output:  0
+#    -Spiel läuft weiter                                                output: 10
+def isGameOver():...
+
+#
+
+
+#Diese Funktion führt die Schritt aus und aktualisiert Board
+def makeMove(board,all_possible_moves):
+
+    random_move= random.choice(list(all_possible_moves.items()))
+
+    start_Pos, goal_Pos = random_move
+    
+    start_row, start_col = start_Pos
+    
+    goal_row, goal_col = goal_Pos
+    
+
+    #Figuer merken die auf der Startposition ist: 
+    figure = board[start_row][start_col]
+
+    #Board an der Startposition, leeren:
+    board[start_row][start_col] = "E"
+    
+    #Board an der Startposition, aktualisieren:
+    board[goal_row][goal_col] = figure
+    
 
 def print_possible_Moves(list_Moves): 
     gruppen = {}
