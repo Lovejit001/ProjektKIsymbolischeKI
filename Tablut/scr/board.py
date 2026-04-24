@@ -160,6 +160,23 @@ def validMove(board,Pos,StartPos):
 
     return True
 
+
+
+Start = [
+    
+    ["E","E","E","B","B","B","E","E","E"],
+    ["E","E","E","E","B","E","E","E","E"],
+    ["E","E","E","E","W","E","E","E","E"],
+    ["B","E","E","E","W","E","E","E","B"],
+    ["B","B","W","W","K","W","W","B","B"],
+    ["B","E","E","E","W","E","E","E","B"],
+    ["E","E","E","E","W","E","E","E","E"],
+    ["E","E","E","E","B","E","E","E","E"],
+    ["E","E","E","B","B","B","E","E","E"],
+
+]
+
+
 # Konvertertiert Zeilen Bezeichnung des Brettes in Zahl um:
 # z.B a -> 0
 
@@ -256,3 +273,28 @@ def print_dic(dict):
 
 print("NUN SCHÖNERE VERSION:")
 print_possible_Moves(x)
+
+TestBoard = [
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["B","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+    ["E","E","E","E","E","E","E","E","E"],
+]
+
+#print_board(TestBoard)
+
+def print_dic(dict):
+    for key, value in dict.items():
+        print(f"{key} --> {value}")
+
+x = Zuggenerator(TestBoard,False)
+print_dic(x)
+
+
+#print("NUN Output, wenn man Dictionary als eine große Liste Nutzt:")
+#print_possible_Moves(x)
