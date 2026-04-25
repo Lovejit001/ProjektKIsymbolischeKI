@@ -217,41 +217,173 @@ def isGameOver():...
 #Diese Funktion führt die Schritt aus und aktualisiert Board
 def makeMove(board,all_possible_moves):
 
-    random_move= random.choice(list(all_possible_moves.items()))
-
-    start_Pos, goal_Pos = random_move
+    random_StartPos = random.choice(list(all_possible_moves.keys()))
+    random_GoalPos = random.choice(list(all_possible_moves[random_StartPos])) 
     
-    start_row, start_col = start_Pos
+    start_row, start_col = random_StartPos
     
-    goal_row, goal_col = goal_Pos
+    goal_row, goal_col = random_GoalPos
     
-
     #Figuer merken die auf der Startposition ist: 
     figure = board[start_row][start_col]
 
     #Board an der Startposition, leeren:
-    board[start_row][start_col] = "E"
+    board[start_row][start_col] = 0
     
     #Board an der Startposition, aktualisieren:
     board[goal_row][goal_col] = figure
     
 
-def print_possible_Moves(list_Moves): 
-    gruppen = {}
+    board = attack(board,random_GoalPos)
+
+    return board
+
+#Funktion prüft üb nachdem erledigten Schachzug eine Figur geschlagen wird oder nicht ? 
+#Dieser FALL wurde noch nicht behandelt 
+#Befindet sich der König auf dem Thron und ist er auf drei Seiten von Angreifern und auf der vierten Seite von einem Verteidiger umzingelt, kann der Verteidiger geschlagen werden, indem man ihn zwischen einem Angreifer und dem König einkesselt (18)
+def attack(board,Pos):
     
-    #Erstellt eine dicitonary { (start ) : [alle möglichen Züge aus dieser Position] ... }
-    for ((start),(goal)) in list_Moves:
-        if start in gruppen:
-            gruppen[start].append(goal)
-        else:
-            gruppen[start]=[goal]
-            
-    for key, value in gruppen.items():
-        print(f"{key} -> {value}")
-            
-    
+    row, col = Pos
+
+    print(board[row][col])
+    print(board[row][col] == (-1, -2))
+    #Spieler Schwarz mit Move und Angriff dran
+    if board[row][col] == 1:
+        print("BLaCK")
+        #Spieler drüber wird ggf. geschlagen
+        if row > 0 and (board[row-1][col] in (-1, -2)) :
+            print("A")
+            #Wenn das gilt ist Gegner Figur am Rand des Boards
+            if (row-1,col) in ((4,4),(3,4),(4,5), (5,4)): 
+                print("DAAA")  
+                if isKingSurrounded(board,(row-1,col)) or isKingNextToThron(board,(row-1,col)):
+                    board[row-1][col] = 0
+                print("CCCCCCCCC")
+            elif isAtCorner((row-2,col)):
+                print("ABBBBBB")
+                board[row-1][col] = 0
+            elif board[row-2][col] == 1 :
+                print("AHHHHH")
+            #Wenn das gilt ist Gegner Figur eingeschlossen von aktuellen Spieler    
+                board[row-1][col] = 0
         
-            
+        #Spieler drunter wird ggf. geschlagen
+        if row < 8 and (board[row+1][col] in (-1, -2)) :
+            if (row+1,col) in ((4,4),(3,4),(4,5), (5,4)): 
+                if isKingSurrounded(board,(row+1,col)) or isKingNextToThron(board,(row+1,col)):
+                    print("D")
+                    board[row+1][col] = 0
+            elif isAtCorner((row+2,col)):
+                print("D")
+                board[row+1][col] = 0
+            elif board[row+2][col] == 1:
+                print("E")
+                board[row+1][col] = 0
+        
+        #Spieler links wird ggf. geschlagen
+        if col > 0 and (board[row][col-1] in (-1, -2)):
+            print("C")
+            if (row,col-1) in ((4,4),(3,4),(4,5), (5,4)): 
+                if isKingSurrounded(board,(row,col-1)) or isKingNextToThron(board,(row,col-1)):
+                    print("F")
+                    board[row][col-1] = 0
+            elif isAtCorner((row,col-2)):
+                print("G")
+                board[row][col-1] = 0
+            elif board[row][col-2] == 1 :
+                print("H")
+                board[row][col-1] = 0
+
+        #Spieler rechts wird ggf. geschlagen
+        if col < 8 and (board[row][col+1] in (-1, -2)) :
+            if (row,col+1) in ((4,4),(3,4),(4,5), (5,4)): 
+                if isKingSurrounded(board,(row,col+1)) or isKingNextToThron(board,(row,col+1)):
+                    print("I")
+                    board[row][col+1] = 0
+            elif isAtCorner((row,col+2)):
+                print("J")
+                board[row][col+1] = 0
+            elif board[row][col+2] == 1:
+                print("K")
+                board[row][col+1] = 0
+    
+    #Spieler Weiß mit Move und Angriff dran      
+    elif board[row][col] in (-1, -2) : 
+        #Spieler drüber wird ggf. geschlagen
+        if row > 0 and (board[row-1][col] == 1) :
+            if isAtCorner((row-2,col)):
+                board[row-1][col] = 0
+            elif board[row-2][col] in (-1, -2) :
+                board[row-1][col] = 0
+        
+        #Spieler drunter wird ggf. geschlagen
+        if row < 8 and (board[row+1][col] == 1) :
+            if isAtCorner((row+2,col)):
+                board[row+1][col] = 0
+            elif board[row+2][col] in (-1, -2):
+                board[row+1][col] = 0
+        
+        #Spieler links wird ggf. geschlagen
+        if col > 0 and (board[row][col-1] == 1):
+            if isAtCorner((row,col-2)):
+                board[row][col-1] = 0
+            elif board[row][col-2] in (-1, -2) :
+                board[row][col-1] = 0
+
+        #Spieler rechts wird ggf. geschlagen
+        if col < 8 and (board[row][col+1] == 1) :
+            if isAtCorner((row,col+2)):
+                board[row][col+1] = 0
+            elif board[row][col+2] in (-1, -2):
+                board[row][col+1] = 0
+    return board
+
+# Funktion prüft ob könig im Thron, umzingelt ist
+def isKingSurrounded(board,Pos):
+    
+    row, col = Pos
+    
+    return (board[4][4] == -2) and (Pos == (4,4)) and (board[row-1][col] == 1) and (board[row+1][col] == 1) and (board[row][col-1] == 1) and (board[row][col+1] == 1)
+
+def isKingNextToThron(board,Pos):
+
+    row, col = Pos
+    #
+    if board[row][col] == -2:
+        #befindet sich über den Thron
+        if Pos == (3,4):
+            return (board[row][col-1] == 1) and (board[row-1][col] == 1) and (board[row][col+1] == 1)
+        #befindet sich unter den Thron
+        elif Pos == (5,4):
+            return (board[row][col-1] == 1) and (board[row+1][col] == 1) and (board[row][col+1] == 1)
+        #befinder sich links vom Thron
+        elif Pos == (4,3):
+            return (board[row-1][col] == 1) and (board[row][col-1] == 1) and (board[row][col+1] == 1)
+        elif Pos == (4,5):
+            return (board[row-1][col] == 1) and (board[row][col+1] == 1) and (board[row+1][col] == 1)
+    
+
+    return False
+
+
+
+def isAtCorner(Pos):
+    row , col= Pos
+    #Ist Eckfeld
+    flag1 = (row == 0 and col == 0 )
+    flag2 = (row == 0 and col == 8 )
+    flag3 = (row == 8 and col == 0 )
+    flag4 = (row == 8 and col == 8 )
+    flag5 = (col == -1)
+    flag6 = (row == -1)
+    flag7 = (col ==  9)
+    flag8 = (row ==  9)
+    #Ist Thron
+    flag9 = (row == 4 and col == 4) 
+
+    return flag1 or flag2 or flag3 or flag4 or flag5 or flag6 or flag7 or flag8
+
+
 
 def print_possible_Moves(list_Moves): 
     gruppen = {}
@@ -271,30 +403,23 @@ def print_dic(dict):
     for key, value in dict.items():
         print(f"{key}: {value},")
 
-print("NUN SCHÖNERE VERSION:")
-print_possible_Moves(x)
 
-TestBoard = [
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["B","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
-    ["E","E","E","E","E","E","E","E","E"],
+TestBoard= [
+    [0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, -1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, -2, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
 ]
 
-#print_board(TestBoard)
+x = attack(TestBoard,(4,3))
 
-def print_dic(dict):
-    for key, value in dict.items():
-        print(f"{key} --> {value}")
-
-x = Zuggenerator(TestBoard,False)
-print_dic(x)
+print_board(x)
 
 
-#print("NUN Output, wenn man Dictionary als eine große Liste Nutzt:")
-#print_possible_Moves(x)
+
+
