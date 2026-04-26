@@ -1,7 +1,7 @@
 import unittest
 
 from scr.board import attack, print_board
-from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23
+from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23,attackBoard24
 
 
 class TestAttack(unittest.TestCase):
@@ -395,6 +395,91 @@ class TestAttack(unittest.TestCase):
         self.assertEqual(attack(attackBoard23,(4,2)),expected3 )      
 
         print(f"✓ White greift an: test passed")
+    
+    def test_corner(self):
+        expected1 = [
+            [0, -1, 0, 0, 0, 0, 0, -1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, -1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [-1, 1, 0, 0, 0, 0, 0, -1, 1],
+            [0, -1, 0, 0, 0, 0, -1, 1, 0] 
+        ]
+        expected2 = [
+            [0, 0, 0, 0, 0, 0, 0, -1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, -1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [-1, 1, 0, 0, 0, 0, 0, -1, 1],
+            [0, -1, 0, 0, 0, 0, -1, 1, 0] 
+        ]
+
+        expected3 = [
+            [0, 0, 0, 0, 0, 0, 0, -1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, -1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [0, 1, 0, 0, 0, 0, 0, -1, 1],
+            [0, 0, 0, 0, 0, 0, -1, 1, 0] 
+        ]
+
+        expected4 = [
+            [0, 0, 0, 0, 0, 0, 0, -1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, -1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [0, 1, 0, 0, 0, 0, 0, -1, 0],
+            [0, 0, 0, 0, 0, 0, -1, 1, 0] 
+        ]
+        expected5 = [
+            [0, 0, 0, 0, 0, 0, 0, -1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, -1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [0, 1, 0, 0, 0, 0, 0, -1, 0],
+            [0, 0, 0, 0, 0, 0, -1, 0, 0] 
+        ]
+        
+        expected6 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, -1],
+            [0, 1, 0, 0, 0, 0, 0, -1, 0],
+            [0, 0, 0, 0, 0, 0, -1, 0, 0] 
+        ]
+
+        self.assertEqual(attack(attackBoard24,(2,0)),expected1) 
+        self.assertEqual(attack(attackBoard24,(1,1)),expected2)
+        self.assertEqual(attack(attackBoard24,(7,1)),expected3)
+        self.assertEqual(attack(attackBoard24,(6,8)),expected4)
+        self.assertEqual(attack(attackBoard24,(8,6)),expected5)
+        self.assertEqual(attack(attackBoard24,(1,7)),expected6)
+
+        print(f"✓ Corner Attacks: test passed")
+
+
+
+
+
 
 
 if __name__ == '__main__':
