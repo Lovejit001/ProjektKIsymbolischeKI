@@ -1,7 +1,14 @@
-import board
+from board import * 
+
+
 
 def main():
-    print("Game Starts")
+    
+    
+
+    while not isGameOver():
+
+        print("Game Starts")
     
     
 if __name__ == "__main__" :

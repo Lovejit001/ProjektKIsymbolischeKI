@@ -249,62 +249,64 @@ def attack(board,Pos):
     print(board[row][col] == (-1, -2))
     #Spieler Schwarz mit Move und Angriff dran
     if board[row][col] == 1:
-        print("BLaCK")
+
         #Spieler drüber wird ggf. geschlagen
         if row > 0 and (board[row-1][col] in (-1, -2)) :
-            print("A")
+
             #Wenn das gilt ist Gegner Figur am Rand des Boards
-            if (row-1,col) in ((4,4),(3,4),(4,5), (5,4)): 
-                print("DAAA")  
+            if (row-1,col) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
+
                 if isKingSurrounded(board,(row-1,col)) or isKingNextToThron(board,(row-1,col)):
                     board[row-1][col] = 0
-                print("CCCCCCCCC")
+
             elif isAtCorner((row-2,col)):
-                print("ABBBBBB")
+
                 board[row-1][col] = 0
             elif board[row-2][col] == 1 :
-                print("AHHHHH")
+
             #Wenn das gilt ist Gegner Figur eingeschlossen von aktuellen Spieler    
                 board[row-1][col] = 0
         
         #Spieler drunter wird ggf. geschlagen
         if row < 8 and (board[row+1][col] in (-1, -2)) :
-            if (row+1,col) in ((4,4),(3,4),(4,5), (5,4)): 
+            print("A")
+            if (row+1,col) in ((4,4),(4,3),(3,4),(4,5),(5,4)): 
+                print("B")
                 if isKingSurrounded(board,(row+1,col)) or isKingNextToThron(board,(row+1,col)):
-                    print("D")
+                    print("C")
                     board[row+1][col] = 0
             elif isAtCorner((row+2,col)):
-                print("D")
+
                 board[row+1][col] = 0
             elif board[row+2][col] == 1:
-                print("E")
+
                 board[row+1][col] = 0
         
         #Spieler links wird ggf. geschlagen
         if col > 0 and (board[row][col-1] in (-1, -2)):
-            print("C")
-            if (row,col-1) in ((4,4),(3,4),(4,5), (5,4)): 
+
+            if (row,col-1) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
                 if isKingSurrounded(board,(row,col-1)) or isKingNextToThron(board,(row,col-1)):
-                    print("F")
+
                     board[row][col-1] = 0
             elif isAtCorner((row,col-2)):
-                print("G")
+
                 board[row][col-1] = 0
             elif board[row][col-2] == 1 :
-                print("H")
+
                 board[row][col-1] = 0
 
         #Spieler rechts wird ggf. geschlagen
         if col < 8 and (board[row][col+1] in (-1, -2)) :
-            if (row,col+1) in ((4,4),(3,4),(4,5), (5,4)): 
+
+            if (row,col+1) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
                 if isKingSurrounded(board,(row,col+1)) or isKingNextToThron(board,(row,col+1)):
-                    print("I")
                     board[row][col+1] = 0
             elif isAtCorner((row,col+2)):
-                print("J")
+
                 board[row][col+1] = 0
             elif board[row][col+2] == 1:
-                print("K")
+
                 board[row][col+1] = 0
     
     #Spieler Weiß mit Move und Angriff dran      
@@ -348,7 +350,7 @@ def isKingSurrounded(board,Pos):
 def isKingNextToThron(board,Pos):
 
     row, col = Pos
-    #
+    #prüft ob König neben Thron ist
     if board[row][col] == -2:
         #befindet sich über den Thron
         if Pos == (3,4):
@@ -356,13 +358,14 @@ def isKingNextToThron(board,Pos):
         #befindet sich unter den Thron
         elif Pos == (5,4):
             return (board[row][col-1] == 1) and (board[row+1][col] == 1) and (board[row][col+1] == 1)
-        #befinder sich links vom Thron
+        #befindet sich links vom Thron
         elif Pos == (4,3):
-            return (board[row-1][col] == 1) and (board[row][col-1] == 1) and (board[row][col+1] == 1)
+            print("HIERR")
+            return (board[row-1][col] == 1) and (board[row][col-1] == 1) and (board[row+1][col] == 1)
+        #befindet sich rechts vom Thron
         elif Pos == (4,5):
             return (board[row-1][col] == 1) and (board[row][col+1] == 1) and (board[row+1][col] == 1)
     
-
     return False
 
 
@@ -416,10 +419,10 @@ TestBoard= [
     [0, 0, 0, 0, 0, 0, 0, 0, 0] 
 ]
 
-x = attack(TestBoard,(4,3))
+def isGameOver(): ...
 
-print_board(x)
+#x=attack(attackBoard24,(7,1))
 
-
+#print_board(x)
 
 
