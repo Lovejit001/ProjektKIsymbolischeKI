@@ -1,6 +1,6 @@
 import unittest
 
-from scr.board import attack, print_board
+from scr.makeMove import attack 
 from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23,attackBoard24
 
 
