@@ -312,6 +312,28 @@ def print_dic(dict):
         print(f"{key}: {value},")
 
 
+def print_board_colorful(board, old_board):
+    RED = "\033[91m"
+    RESET = "\033[0m"
+
+    print("   ", end="")
+    for i in range(len(board)):
+        print(f"{i:2}", end=" ")
+    print()
+
+    for i in range(len(board)):
+        print(f"{i:2} ", end="")
+        for j in range(len(board[i])):
+            
+            val = board[i][j]
+
+            # Wenn altes Board existiert → vergleichen
+            if old_board and val != old_board[i][j]:
+                print(f"{RED}{val:2}{RESET}", end=" ")
+            else:
+                print(f"{val:2}", end=" ")
+        print()
+
 
 
 

@@ -52,9 +52,6 @@ def attack(board,Pos):
     """
 
     row, col = Pos
-
-    print(board[row][col])
-    print(board[row][col] == (-1, -2))
     
     # Spieler Schwarz hat gezogen und greift Weiß an
     if board[row][col] == 1:
@@ -77,11 +74,8 @@ def attack(board,Pos):
         
         # nach unten
         if row < 8 and (board[row+1][col] in (-1, -2)) :
-            print("A")
             if (board[row+1][col] == -2) and (row+1,col) in ((4,4),(4,3),(3,4),(4,5),(5,4)): 
-                print("B")
                 if isKingSurrounded(board,(row+1,col)) or isKingNextToThron(board,(row+1,col)):
-                    print("C")
                     board[row+1][col] = 0
             elif isAtCorner((row+2,col)):
                 board[row+1][col] = 0
