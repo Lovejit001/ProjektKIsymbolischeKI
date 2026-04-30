@@ -1,7 +1,7 @@
 import unittest
 
-from scr.board import total_moves, print_dic
-from tests.definitions import White, Black, simple_pawns, white_pawns, black_pawns, simple_board, starting_board
+from scr.debug import total_moves, print_dic
+from scr.tests.definitions import White, Black, simple_pawns, white_pawns, black_pawns, simple_board, starting_board
 
 ## Hier werden die Unit Tests für die Funktion moves() definiert
 ## Es wird getestet ob die Funktion moves() die richtigen Züge der Figuren zurückgibt

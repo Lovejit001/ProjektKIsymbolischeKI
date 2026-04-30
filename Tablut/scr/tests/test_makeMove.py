@@ -1,32 +1,34 @@
 import unittest
 
-from scr.board import makeMove, total_moves, print_board
-from tests.definitions import movingBoard1,movingBoard2,movingBoard3, movingBoard4
+from scr.debug import makeMove, total_moves, print_board
+from tests.definitions import movingBoardB,movingBoard2,movingBoard3, movingBoard4, B, W, K
 
 class TestMakeMoves(unittest.TestCase):
     
     def test_down_move(self):
         expected = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, B, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [B, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
-        possible_moves = {(0,0):[(7,0)]}
+        possible_moves = {
+            (0, 0):[(7,0)],
+        }
 
-        self.assertEqual(makeMove(movingBoard1,possible_moves), expected)
+        self.assertEqual(makeMove(movingBoardB, possible_moves), expected)
         print(f"✓ test_down_move test passed")
 
     def test_up_move(self):
 
         expected = [
-        [0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, B, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -48,7 +50,7 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, B, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -71,7 +73,7 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [B, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]   
