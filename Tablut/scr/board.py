@@ -3,6 +3,21 @@ import random
 ## den Spieler (White oder Black) dessen alle Positionen auf dem Spielfeld übergeben werden soll 
 
 def get_all_positions(board, player):
+    """
+    Sucht auf dem gesamten Spielfeld nach allen Figuren eines Spielers.
+
+    Die Funktion durchläuft das 9x9-Board und sammelt alle Positionen,
+    auf denen eine Figur des angegebenen Spielers steht.
+
+    Args:
+        board: 2D-Liste, die das Spielfeld repräsentiert.
+        player: Spielername, z.B. "White" oder "Black".
+
+    Returns:
+        Eine Liste von Tupeln der Form (row, col) mit allen Positionen
+        der Figuren dieses Spielers.
+    """
+
     all_positions = []
     
     for i in range(9):
@@ -14,6 +29,22 @@ def get_all_positions(board, player):
                  
 # Prüft ob die Figur den nächsten zuspielende Figur gehört             
 def check_valid_figure(player, figure): 
+
+    """
+    Prüft, ob eine Figur zu dem Spieler gehört, der gerade am Zug ist.
+
+    In dieser Implementierung gehören zu:
+    - "White": die Figuren W und K
+    - sonst: die Figur B
+
+    Args:
+        player: Spielername, z.B. "White" oder "Black".
+        figure: Wert auf einem Feld des Boards.
+
+    Returns:
+        True, wenn die Figur dem Spieler gehört, sonst False.
+    """
+
     if player == "White":
         return figure in [-1, -2]
     else:
@@ -24,6 +55,22 @@ def check_valid_figure(player, figure):
 
 #Haupt-Funktion die dafür da ist alle Möglichen Spielzüge des jeweiligen Spielers zu bestimmen 
 def total_moves(Board,White):
+    """
+    Bestimmt alle möglichen Züge für den aktuellen Spieler.
+
+    Die Funktion sammelt zuerst alle Positionen der Figuren des Spielers
+    und berechnet dann für jede Figur alle legalen Zielpositionen.
+    Am Ende werden alle Züge in einem Dictionary zusammengeführt.
+
+    Args:
+        Board: 2D-Liste des aktuellen Spielfelds.
+        White: Spielerkennung, z.B. "White" oder "Black".
+
+    Returns:
+        Ein Dictionary der Form:
+        {(start_row, start_col): [(ziel1_row, ziel1_col), ...]}
+    """
+
     all_player_positions = get_all_positions(Board,White)
     all_moves = {}
     
@@ -34,21 +81,56 @@ def total_moves(Board,White):
 
 # Gibt alle möglichen Zug der jeweiligen Figur (Position) an    
 def get_figures_Moves(Board,White,Pos): 
+
+    """
+    Berechnet alle möglichen Züge einer einzelnen Figur.
+
+    Für die gegebene Startposition werden alle legalen Züge
+    in vier Richtungen geprüft: oben, rechts, unten und links.
+
+    Args:
+        Board: 2D-Liste des Spielfelds.
+        White: Spielerkennung, wird aktuell nicht direkt verwendet.
+        Pos: Startposition der Figur als Tupel (row, col).
+
+    Returns:
+        Ein Dictionary mit genau einem Startfeld als Schlüssel und
+        einer Liste aller möglichen Zielpositionen als Wert.
+    """
+
     moves = {}
     
     start_line,start_row = Pos 
-     
+    
+    #Berechnet alle möglichen Züge einer Figur nach oben        
     moves = merge_moves(moves,(all_moves_up_to_Figure(Board,Pos)))
     
+    #Berechnet alle möglichen Züge einer Figur nach unten        
     moves= merge_moves(moves,(all_moves_right_to_Figure(Board,Pos)))
     
+    #Berechnet alle möglichen Züge einer Figur nach rechts        
     moves= merge_moves(moves,(all_moves_down_to_Figure(Board,Pos)))
 
+    #Berechnet alle möglichen Züge einer Figur nach links        
     moves= merge_moves(moves,(all_moves_left_to_Figure(Board,Pos)))
     
     return moves
 
 def merge_moves(oldMoves :dict ,newMoves: dict):
+    """
+    Führt zwei Zug-Dictionaries zusammen.
+
+    Falls ein Startfeld bereits im alten Dictionary existiert,
+    werden die neuen Zielpositionen an die bestehende Liste angehängt.
+    Andernfalls wird der Eintrag neu angelegt.
+
+    Args:
+        oldMoves: Bereits bekannte Züge.
+        newMoves: Neu berechnete Züge.
+
+    Returns:
+        Das zusammengeführte Dictionary aller Züge.
+    """
     
     for key, values in newMoves.items():
         if key in oldMoves:
@@ -141,10 +223,24 @@ def isEmptyField(Board,Pos):
     row, col = Pos
     return Board[row][col] == 0
 
-#Funktion prüft, ob die die Zielposition ein valider Zug ist, ein Zug is INVALIDE wenn gilt:
-#Position Thronfeld ist
-#Ein Bauer (Schwarz oder Weiß) versucht eins der Eckfelder/Zielfelder betreten versucht
 def validMove(board,Pos,StartPos):
+    """
+    Prüft, ob eine Zielposition ein legaler Zug ist.
+
+    Ein Zug ist ungültig, wenn:
+    - die Figur auf das Thronfeld (4,4) ziehen möchte
+    - eine normale Figur eines der Eckfelder betreten möchte
+
+    Nur der König (-2) darf auf ein Eckfeld ziehen.
+
+    Args:
+        board: 2D-Liste des Spielfelds.
+        Pos: Zielposition als Tupel (row, col).
+        StartPos: Startposition der ziehenden Figur.
+
+    Returns:
+        True, wenn der Zug erlaubt ist, sonst False.
+    """
     
     start_row, start_col = StartPos
     row,col = Pos
@@ -153,11 +249,15 @@ def validMove(board,Pos,StartPos):
     if (row,col) == (4,4):
         return False
         
-    #Bauer versucht Eckfeld/Zielfeld zu betreten, illegaler Move
-    if ((row,col) == (0,0) or (row,col) == ( 0,(len(board[0])-1) ) or (row,col) == (len(board)-1,0) or (row,col) == (len(board)-1,(len(board[8])-1)) ):
-        return (board[start_row][start_col] == -2)
+    # Nur der König darf Eckfelder/Zielfelder betreten
+    if (
+        (row, col)    == (0, 0)
+        or (row, col) == (0, 8)
+        or (row, col) == (8, 0)
+        or (row, col) == (8, 8)
+    ):
+        return board[start_row][start_col] == -2
     
-
     return True
 
 
@@ -176,15 +276,7 @@ Start = [
 
 ]
 
-
-# Konvertertiert Zeilen Bezeichnung des Brettes in Zahl um:
-# z.B a -> 0
-
-def convert_row(spelling):
-    return ord(spelling.lower()) - ord('a')
-
-
-#Funktion da damit man das Board einmal sich ausgeben kann:
+###ADITIONAL: Printet nur Board, etc schöner im Terminal aus nicht wirklich der der Lögik
 
 def print_board(board):
     size = len(board)
@@ -199,193 +291,6 @@ def print_board(board):
     # Spaltennummern unten
     col_numbers = "   " + " ".join(f"{i:>2}" for i in range(size))
     print(col_numbers)
-
-
-#Das Spiel ist beendet wenn einer der folgenden Ereignisse eintretet:
-#   -Schwarz gewinnt, wenn König wurde geschlagen                       Output: -1
-#   -Weiß gewinnt, wenn König erreicht einer der vier Eckfelder         Output:  1
-#   -Unentschieden, wenn:
-#                   sich eine Stellung, 
-#                   wenn ein Spieler keinen Zug mehr machen kann, 
-#                   50 Züge keine figur geschlagen wurde                Output:  0
-#    -Spiel läuft weiter                                                output: 10
-def isGameOver():...
-
-#
-
-
-#Diese Funktion führt die Schritt aus und aktualisiert Board
-def makeMove(board,all_possible_moves):
-
-    random_StartPos = random.choice(list(all_possible_moves.keys()))
-    random_GoalPos = random.choice(list(all_possible_moves[random_StartPos])) 
-    
-    start_row, start_col = random_StartPos
-    
-    goal_row, goal_col = random_GoalPos
-    
-    #Figuer merken die auf der Startposition ist: 
-    figure = board[start_row][start_col]
-
-    #Board an der Startposition, leeren:
-    board[start_row][start_col] = 0
-    
-    #Board an der Startposition, aktualisieren:
-    board[goal_row][goal_col] = figure
-    
-
-    board = attack(board,random_GoalPos)
-
-    return board
-
-#Funktion prüft üb nachdem erledigten Schachzug eine Figur geschlagen wird oder nicht ? 
-#Dieser FALL wurde noch nicht behandelt 
-#Befindet sich der König auf dem Thron und ist er auf drei Seiten von Angreifern und auf der vierten Seite von einem Verteidiger umzingelt, kann der Verteidiger geschlagen werden, indem man ihn zwischen einem Angreifer und dem König einkesselt (18)
-def attack(board,Pos):
-    
-    row, col = Pos
-
-    print(board[row][col])
-    print(board[row][col] == (-1, -2))
-    #Spieler Schwarz mit Move und Angriff dran
-    if board[row][col] == 1:
-
-        #Spieler drüber wird ggf. geschlagen
-        if row > 0 and (board[row-1][col] in (-1, -2)) :
-
-            #Wenn das gilt ist Gegner Figur am Rand des Boards
-            if (row-1,col) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
-
-                if isKingSurrounded(board,(row-1,col)) or isKingNextToThron(board,(row-1,col)):
-                    board[row-1][col] = 0
-
-            elif isAtCorner((row-2,col)):
-
-                board[row-1][col] = 0
-            elif board[row-2][col] == 1 :
-
-            #Wenn das gilt ist Gegner Figur eingeschlossen von aktuellen Spieler    
-                board[row-1][col] = 0
-        
-        #Spieler drunter wird ggf. geschlagen
-        if row < 8 and (board[row+1][col] in (-1, -2)) :
-            print("A")
-            if (row+1,col) in ((4,4),(4,3),(3,4),(4,5),(5,4)): 
-                print("B")
-                if isKingSurrounded(board,(row+1,col)) or isKingNextToThron(board,(row+1,col)):
-                    print("C")
-                    board[row+1][col] = 0
-            elif isAtCorner((row+2,col)):
-
-                board[row+1][col] = 0
-            elif board[row+2][col] == 1:
-
-                board[row+1][col] = 0
-        
-        #Spieler links wird ggf. geschlagen
-        if col > 0 and (board[row][col-1] in (-1, -2)):
-
-            if (row,col-1) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
-                if isKingSurrounded(board,(row,col-1)) or isKingNextToThron(board,(row,col-1)):
-
-                    board[row][col-1] = 0
-            elif isAtCorner((row,col-2)):
-
-                board[row][col-1] = 0
-            elif board[row][col-2] == 1 :
-
-                board[row][col-1] = 0
-
-        #Spieler rechts wird ggf. geschlagen
-        if col < 8 and (board[row][col+1] in (-1, -2)) :
-
-            if (row,col+1) in ((4,4),(4,3),(3,4),(4,5), (5,4)): 
-                if isKingSurrounded(board,(row,col+1)) or isKingNextToThron(board,(row,col+1)):
-                    board[row][col+1] = 0
-            elif isAtCorner((row,col+2)):
-
-                board[row][col+1] = 0
-            elif board[row][col+2] == 1:
-
-                board[row][col+1] = 0
-    
-    #Spieler Weiß mit Move und Angriff dran      
-    elif board[row][col] in (-1, -2) : 
-        #Spieler drüber wird ggf. geschlagen
-        if row > 0 and (board[row-1][col] == 1) :
-            if isAtCorner((row-2,col)):
-                board[row-1][col] = 0
-            elif board[row-2][col] in (-1, -2) :
-                board[row-1][col] = 0
-        
-        #Spieler drunter wird ggf. geschlagen
-        if row < 8 and (board[row+1][col] == 1) :
-            if isAtCorner((row+2,col)):
-                board[row+1][col] = 0
-            elif board[row+2][col] in (-1, -2):
-                board[row+1][col] = 0
-        
-        #Spieler links wird ggf. geschlagen
-        if col > 0 and (board[row][col-1] == 1):
-            if isAtCorner((row,col-2)):
-                board[row][col-1] = 0
-            elif board[row][col-2] in (-1, -2) :
-                board[row][col-1] = 0
-
-        #Spieler rechts wird ggf. geschlagen
-        if col < 8 and (board[row][col+1] == 1) :
-            if isAtCorner((row,col+2)):
-                board[row][col+1] = 0
-            elif board[row][col+2] in (-1, -2):
-                board[row][col+1] = 0
-    return board
-
-# Funktion prüft ob könig im Thron, umzingelt ist
-def isKingSurrounded(board,Pos):
-    
-    row, col = Pos
-    
-    return (board[4][4] == -2) and (Pos == (4,4)) and (board[row-1][col] == 1) and (board[row+1][col] == 1) and (board[row][col-1] == 1) and (board[row][col+1] == 1)
-
-def isKingNextToThron(board,Pos):
-
-    row, col = Pos
-    #prüft ob König neben Thron ist
-    if board[row][col] == -2:
-        #befindet sich über den Thron
-        if Pos == (3,4):
-            return (board[row][col-1] == 1) and (board[row-1][col] == 1) and (board[row][col+1] == 1)
-        #befindet sich unter den Thron
-        elif Pos == (5,4):
-            return (board[row][col-1] == 1) and (board[row+1][col] == 1) and (board[row][col+1] == 1)
-        #befindet sich links vom Thron
-        elif Pos == (4,3):
-            print("HIERR")
-            return (board[row-1][col] == 1) and (board[row][col-1] == 1) and (board[row+1][col] == 1)
-        #befindet sich rechts vom Thron
-        elif Pos == (4,5):
-            return (board[row-1][col] == 1) and (board[row][col+1] == 1) and (board[row+1][col] == 1)
-    
-    return False
-
-
-
-def isAtCorner(Pos):
-    row , col= Pos
-    #Ist Eckfeld
-    flag1 = (row == 0 and col == 0 )
-    flag2 = (row == 0 and col == 8 )
-    flag3 = (row == 8 and col == 0 )
-    flag4 = (row == 8 and col == 8 )
-    flag5 = (col == -1)
-    flag6 = (row == -1)
-    flag7 = (col ==  9)
-    flag8 = (row ==  9)
-    #Ist Thron
-    flag9 = (row == 4 and col == 4) 
-
-    return flag1 or flag2 or flag3 or flag4 or flag5 or flag6 or flag7 or flag8
-
 
 
 def print_possible_Moves(list_Moves): 
@@ -407,22 +312,29 @@ def print_dic(dict):
         print(f"{key}: {value},")
 
 
-TestBoard= [
-    [0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, -1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 1, -2, 1, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
-]
+def print_board_colorful(board, old_board):
+    RED = "\033[91m"
+    RESET = "\033[0m"
 
-def isGameOver(): ...
+    print("   ", end="")
+    for i in range(len(board)):
+        print(f"{i:2}", end=" ")
+    print()
 
-#x=attack(attackBoard24,(7,1))
+    for i in range(len(board)):
+        print(f"{i:2} ", end="")
+        for j in range(len(board[i])):
+            
+            val = board[i][j]
 
-#print_board(x)
+            # Wenn altes Board existiert → vergleichen
+            if old_board and val != old_board[i][j]:
+                print(f"{RED}{val:2}{RESET}", end=" ")
+            else:
+                print(f"{val:2}", end=" ")
+        print()
+
+
+
 
 

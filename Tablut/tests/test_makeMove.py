@@ -1,6 +1,7 @@
 import unittest
 
-from scr.board import makeMove, total_moves, print_board
+from scr.board import print_board
+from scr.makeMove import makeMove
 from tests.definitions import movingBoard1,movingBoard2,movingBoard3, movingBoard4
 
 class TestMakeMoves(unittest.TestCase):
