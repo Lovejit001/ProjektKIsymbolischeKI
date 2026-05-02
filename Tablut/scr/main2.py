@@ -1,5 +1,5 @@
 import time
-from board import * 
+
 from makeMove import makeMove
 
 def isGameOver(x):
@@ -33,13 +33,13 @@ def main():
         # 🟢 ALTES BOARD SPEICHERN
         old_board = [row[:] for row in board]
 
-        allMoves = total_moves(board,player)
-        board =makeMove(board,allMoves)
+        #allMoves = total_moves(board,player)
+        #board =makeMove(board,allMoves)
 
         time.sleep(5) # pausiert 5 Sekunden 
 
         # 🔥 NEUES BOARD MIT MARKIERUNG
-        print_board_colorful(board, old_board)
+        #print_board_colorful(board, old_board)
             
         if player == "White":
             player = "Black"

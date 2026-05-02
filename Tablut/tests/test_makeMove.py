@@ -1,21 +1,20 @@
 import unittest
 
-from scr.board import print_board
 from scr.makeMove import makeMove
-from tests.definitions import movingBoard1,movingBoard2,movingBoard3, movingBoard4
+from tests.definitions import movingBoard1, movingBoard2, movingBoard3, movingBoard4,B
 
 class TestMakeMoves(unittest.TestCase):
     
     def test_down_move(self):
         expected = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, B, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [B, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
@@ -27,7 +26,7 @@ class TestMakeMoves(unittest.TestCase):
     def test_up_move(self):
 
         expected = [
-        [0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, B, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -49,7 +48,7 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, B, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -72,7 +71,7 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [B, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]   
