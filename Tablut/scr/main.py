@@ -1,7 +1,8 @@
-import config
-from checkBoard import *  ## die Logik muss noch implementiert werden
-from makeMove import *
-from debug import print_board
+from scr import config
+from scr import checkBoard 
+from scr import makeMove 
+from scr import attack
+
 
 def main():
 
@@ -61,21 +62,21 @@ def main():
         [W, W, W, W, W, W, W, W, W],
         [W, W, W, W, W, W, W, W, W],
         [W, W, W, W, 0, W, W, W, W],
-        [W, W, W, W, W, W, W,  K, W],
+        [W, W, W, W, W, W, W, K, W],
         [W, W, W, W, W, W, W, W, W],
         [W, W, W, W, W, W, W, W, W],
         [0, W, W, W, W, W, W, W, 0]
     ]
 
-    #print_board(test_noBlack)
+    #debug.print_board(test_noBlack)
     #print_board(test2)
     #print_board(test3)
     #print_board(remis50zug)
     #print_board(remis3Stellung)
     print("Game Starts!")
 
-    #onTurn = "White"
-    onTurn = "Black"
+    #config.onTurn = "White"
+    config.onTurn = "Black"
     #result = "Remis"
 
     #board = test_noBlack
@@ -101,23 +102,25 @@ def main():
         print(f"ERROR! Es ist kein König auf dem Spielfeld vorhanden")
         return
 
-    while checkBoard(board):
+    while checkBoard.checkBoard2(board):
         oldBoard = [row[:] for row in board]
-        board = makeMove(board, onTurn)
+        
+        all_moves = makeMove.total_moves(board, config.onTurn)
+        board = makeMove.makeMove(board,all_moves)
 
         print(f"Weiße Figuren auf dem Brett: {config.W_pieces}, Schwarze Figuren auf dem Brett: {config.B_pieces}")
         print(f"Insgesamt Züge: {config.zugCounter}, 50-Züge-Regel: {config.zugRegel}")
 
-        if onTurn == "White":
-            onTurn = "Black"
+        if config.onTurn == "White":
+            config.onTurn = "Black"
         else:
-            onTurn = "White"
+            config.onTurn = "White"
         
         if oldBoard == board:
             print(f"ERROR! Es wurde kein Zug getätigt.")
             break
         
-        print("Am Zug:" + onTurn)
+        print("Am Zug:" + config.onTurn)
 
     return
         

@@ -1,4 +1,4 @@
-import config
+from scr import config
 
 ## Hier wird überprüft ob der König sich nicht mehr auf dem Board befindet => Der König wurde geschlagen
 ## + ob der König sich auf den Eckfeldern befindet => Weiß gewinnt
@@ -6,7 +6,7 @@ import config
 ## - ob nach 50 Züge keine Spielfigur geschlagen wird => Remis
 ## - ob eine 3-fache Stellungswiederholung auftritt => Remis
 
-def checkBoard(board):
+def checkBoard2(board):
 
     # Prüfung ob es noch Spielfiguren auf dem Spielfeld vorhanden sind
     if config.B_pieces == 0 and config.W_pieces == 0:
