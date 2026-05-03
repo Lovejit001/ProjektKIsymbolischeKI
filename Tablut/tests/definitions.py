@@ -11,7 +11,7 @@
 ## Hierbei ist die Koordinate des Throns (4, 4) und die Koordinaten der Zielfelder (0, 0), (0, 8), (8, 8) und (8, 0)
 
 ## Variablen:
-
+#NICHT ZU config.B etc. umändern ?
 B = 'B'
 W = 'W'
 K = 'K'
