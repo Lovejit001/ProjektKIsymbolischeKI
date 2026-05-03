@@ -8,6 +8,7 @@ from scr.debug import print_board
 from scr import config
 
 
+
 def total_moves(board,onTurn):
     """
     Bestimmt alle möglichen Züge für den aktuellen Spieler.
@@ -26,16 +27,19 @@ def total_moves(board,onTurn):
     """
 
     all_positions = get_all_pos(board,onTurn)
-    
+    #print("ALLE MEINER POSITONEN:")
+    #print(all_positions)
+
     if not all_positions: 
         return board
     
     all_moves = {}
     
     for  position in all_positions:
+        #print(get_figures_Moves(board,position))
         all_moves = merge_moves(all_moves,(get_figures_Moves(board,position)))
 
-    print(f"Alle mögliche Züge: {all_moves}")    
+    #print(f"Alle mögliche Züge: {all_moves}")    
     
     return all_moves
 
@@ -283,5 +287,20 @@ Start = [
 ]
 
 
+board = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, "B", 0, 0, 0, 0, 0],
+    [0, "K", 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+#all_Moves1 = total_moves(board,"Black")
+#print(type(all_Moves1))
+#print(all_Moves1)
 
 

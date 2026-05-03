@@ -57,7 +57,7 @@ def print_board_colorful(board, old_board):
         print()
 
 
-def parse_fen_tail(fen: str):
+def FenToBoard(fen: str):
     parts = fen.split()
 
     if len(parts) < 4:
@@ -89,26 +89,21 @@ def fen_to_array(fen: str):
         current_row = []
         for char in row:
             if char.isdigit():
-                current_row.extend(["0"] * int(char))   # Leerfelder
+                current_row.extend([0] * int(char))   # Leerfelder
             else:
                 if char == 'r':    
                     current_row.append('B')
                 elif char == 'R':
                     current_row.append('W')
-                else:
-                    current_row.append(char)                    # Figur
+                elif char == 'K':
+                    current_row.append('K')                    
         board.append(current_row)
-     
+
     return board
 
-fen = "3rrr3/4r4/4R4/r3R3r/rrRRKRRrr/r3R3r/4R4/4r4/3rrr3 s 0 1"
-
-print_board(parse_fen_tail(fen))
-
-
-print(config.onTurn)
-
-print(config.zugRegel)
-
-print(config.zugCounter)
-
+def countMoves(moves :dict):
+    counter = 0
+    for startPos,list_moves in moves.items():
+        counter += len(list_moves)
+    return counter
+ 
