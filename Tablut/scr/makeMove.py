@@ -27,8 +27,6 @@ def total_moves(board,onTurn):
     """
 
     all_positions = get_all_pos(board,onTurn)
-    #print("ALLE MEINER POSITONEN:")
-    #print(all_positions)
 
     if not all_positions: 
         return board
@@ -36,14 +34,9 @@ def total_moves(board,onTurn):
     all_moves = {}
     
     for  position in all_positions:
-        #print(get_figures_Moves(board,position))
         all_moves = merge_moves(all_moves,(get_figures_Moves(board,position)))
 
-    #print(f"Alle mögliche Züge: {all_moves}")    
-    
     return all_moves
-
-    #return makeMove(board,all_moves)    
 
 def makeMove(board,all_possible_moves):
     """
@@ -71,7 +64,7 @@ def makeMove(board,all_possible_moves):
     
     goal_row, goal_col = random_GoalPos
 
-    print(f"Zufälliger Zug: {random_GoalPos}")
+    #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
 
     # Figur auf der Startposition merken
     figure = board[start_row][start_col]
@@ -85,8 +78,8 @@ def makeMove(board,all_possible_moves):
     config.zugCounter += 1
     config.zugRegel += 1
 
-    print("Neuer Board nach dem Zug:")
-    print_board(board)
+    #print("Neuer Board nach dem Zug:")
+    #print_board(board)
 
     # vor oder nach dem Angriff? Das muss geklärt werden.
     newBoardHash = getHash(board)
@@ -269,38 +262,3 @@ def validMove(board,Pos,StartPos):
         return board[start_row][start_col] == config.K
     
     return True
-
-
-
-Start = [
-    
-    ["E","E","E","B","B","B","E","E","E"],
-    ["E","E","E","E","B","E","E","E","E"],
-    ["E","E","E","E","W","E","E","E","E"],
-    ["B","E","E","E","W","E","E","E","B"],
-    ["B","B","W","W","K","W","W","B","B"],
-    ["B","E","E","E","W","E","E","E","B"],
-    ["E","E","E","E","W","E","E","E","E"],
-    ["E","E","E","E","B","E","E","E","E"],
-    ["E","E","E","B","B","B","E","E","E"],
-
-]
-
-
-board = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, "B", 0, 0, 0, 0, 0],
-    [0, "K", 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
-
-#all_Moves1 = total_moves(board,"Black")
-#print(type(all_Moves1))
-#print(all_Moves1)
-
-
