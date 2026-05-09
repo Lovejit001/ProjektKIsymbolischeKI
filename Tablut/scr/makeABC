@@ -1,7 +1,6 @@
 #Diese Funktion führt die Schritt aus und aktualisiert Board
 import random
-import math
-from scr import alphaBeta
+
 from scr.attack import *
 from scr.positions import get_all_pos
 from scr.checkBoard import getHash
@@ -56,24 +55,14 @@ def makeMove(board,all_possible_moves):
     if all_possible_moves == {}:
         return board
 
-    alphaBeta.alphaBetaMax(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
-
+    # Zufälligen Startpunkt auswählen
+    random_StartPos = random.choice(list(all_possible_moves.keys()))
+    # Zufälligen Zielpunkt aus allen Zielen vom Startpunkt wählen
+    random_GoalPos = random.choice(list(all_possible_moves[random_StartPos])) 
     
-    #aktualisiert Board und prüft ob eine Figur geschlagen wurde 
-    board = updateBoard(board,config.bestMove)
-    # Prüfen, ob nach dem Zug Figuren geschlagen werden
-    # config.bestMove[1] gibt die Position an wohin eine Figur bewegt wurde
-
-
-    return board
-
-def updateBoard(board,bestMove):     
-
-    (startPos, goalPos) = bestMove
-
-    start_row, start_col = startPos
+    start_row, start_col = random_StartPos
     
-    goal_row, goal_col = goalPos
+    goal_row, goal_col = random_GoalPos
 
     #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
 
@@ -98,8 +87,9 @@ def updateBoard(board,bestMove):
 
     if len(config.boardHash) > 20:
         config.boardHash.pop(0)
-
-    board = attack(board,goalPos)
+    
+    # Prüfen, ob nach dem Zug Figuren geschlagen werden
+    board = attack(board,random_GoalPos)
 
     return board
 
