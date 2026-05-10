@@ -3,11 +3,11 @@ from scr import config
 def eval(board):
 
     score = 0
+    if config.onTurn == "White":
+        pos = findKing(board)
 
-    pos = findKing(board)
+        score += pts_eval(pos)
 
-    score += pts_eval(pos)
-        
     return score
 
 
@@ -27,13 +27,13 @@ def eval(board):
 #]
 
 def pts_eval(KingPostion):
-    if KingPostion == config.Throne:
+    if KingPostion in config.Throne:
         return 2
-    elif KingPostion == config.surroundingThrone:
+    elif KingPostion in config.surroundingThrone:
         return 1
-    elif KingPostion == config.Goal:
+    elif KingPostion in config.Goal:
         return 99
-    elif KingPostion == config.Edge:
+    elif KingPostion in config.Edge:
         return 3
     else:
         return -1

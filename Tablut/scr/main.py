@@ -86,13 +86,13 @@ def main():
 
     alphaBetaBoard= [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    ['K', 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 'B', 0, 0, 0, 0],
+    ['K', 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 5, 0, 0, 0, 0, 0, 0, 0],
+    [5, 5, 0, 0, 0, 0, 0, 0, 0],
+    [0, 5, 5, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]
 
@@ -138,11 +138,11 @@ def main():
     onTurn = 'White'
     print("ALPHA BETA BEGINNT")
     #makeMove.total_moves(board,onTurn)
-    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=2,all_Moves=makeMove.total_moves(board,"White"),onTurn=onTurn,root=True)
+    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=100,all_Moves=makeMove.total_moves(board,"White"),onTurn=onTurn,root=True)
     print("ALPHA BETA ZUENDE")
     print(config.bestMove)
         
-    board = makeMove.makeMove(board,config.bestMove)
+    board = makeMove.updateBoard(board,config.bestMove)
         
     debug.print_board(board)
 
