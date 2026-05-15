@@ -55,8 +55,12 @@ def makeMove(board,all_possible_moves):
     # Wenn keine Züge gemacht werden können
     if all_possible_moves == {}:
         return board
-
+    
+    #if config.onTurn == "White":
     alphaBeta.alphaBetaMax(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
+    #else:
+    #    alphaBeta.alphaBetaMin(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
+    
 
     
     #aktualisiert Board und prüft ob eine Figur geschlagen wurde 
