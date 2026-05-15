@@ -8,7 +8,7 @@ import math, copy
 def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
         
     maxVal = -math.inf
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+    if depth == 0 or (not checkBoard.checkBoard2(board)):
         return evaluateFunction.eval_func(board, onTurn)
 
     i = 1
@@ -17,32 +17,35 @@ def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
         return evaluateFunction.eval_func(board, onTurn)
     
     for startPos,allMoves in all_Moves.items(): 
-        print(f"all possible Moves: {allMoves}")
+        #print(f"all possible Moves: {allMoves}")
         for goalPos in allMoves:
+            if config.start_time >= config.end_time:
+                return
 
             #Macht den Zug
-            print(f"{i}-te Iteration !")
-            print(f"START- ZielPosition: {startPos} -> {goalPos}")
+            #print(f"{i}-te Iteration !")
+            #print(f"START- ZielPosition: {startPos} -> {goalPos}")
             
             saved_state = save_global_state()
             copyboard = copy.deepcopy(board)
             newBoard = makeMove.updateBoard(copyboard,(startPos,goalPos))
-            debug.print_board(newBoard)
+            #debug.print_board(newBoard)
 
             score = alphaBetaMin(newBoard,alpha,beta,depth-1, makeMove.total_moves(newBoard,switch(onTurn)),(switch(onTurn)),False)
             
             #undoMoveWithState(board,startPos,goalPos,saved_state)
             restore_global_state(saved_state)
             
-            print(f"{i}-te Iteration ! Der Score: {score}")
+            #print(f"{i}-te Iteration ! Der Score: {score}")
             
             i += 1
             if score > maxVal: 
-                print(root)
-                if root == True : 
+                #print(root)
+                if root: 
                     config.bestMove = (startPos,goalPos)
+                    #print(f"BEST MOVE FÜR WEIß: {config.bestMove}")
                 maxVal = score
-                print(f"BEST MOVE: {config.bestMove}")
+
             if score > alpha:
                 alpha = score
             if score >= beta:
@@ -52,45 +55,48 @@ def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
 
 
 def alphaBetaMin(board, alpha,beta,depth,all_Moves,onTurn,root):
-    print("MIN IST DRANNN")
+    #print("MIN IST DRANNN")
     minVal = math.inf
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
-        print("EVAL WIRD AUSGERUFEN !!!")
+    if depth == 0 or (not checkBoard.checkBoard2(board)):
+        #print("EVAL WIRD AUSGERUFEN !!!")
         return evaluateFunction.eval_func(board, onTurn)
     
     if not all_Moves:
-        print("EVAL WIRD AUSGERUFEN ABER KEINE MOVES VORHANDEN!")
+        #print("EVAL WIRD AUSGERUFEN ABER KEINE MOVES VORHANDEN!")
         return evaluateFunction.eval_func(board, onTurn)
     
     i = 1
     
     for startPos,allMoves in all_Moves.items():
-        print(f"all possible Moves: {allMoves}") 
+        #print(f"all possible Moves: {allMoves}") 
         for goalPos in allMoves:
+            if config.start_time >= config.end_time:
+                return
 
-            print(f"START- ZielPosition: {startPos} -> {goalPos}")  
+            #print(f"START- ZielPosition: {startPos} -> {goalPos}")  
 
             saved_state = save_global_state()
             copyboard = copy.deepcopy(board)
             newBoard= makeMove.updateBoard(copyboard,(startPos,goalPos))                                        
             score = alphaBetaMax(newBoard,alpha,beta,depth-1, makeMove.total_moves(newBoard,switch(onTurn)),switch(onTurn),False)
             
-            #undoMoveWithState(board,startPos,goalPos,saved_state)
+            
             restore_global_state(saved_state)
 
-            print(f"{i}-te Iteration ! Der Score: {score}")
+            #print(f"{i}-te Iteration ! Der Score: {score}")
 
             i += 1
 
             if score < minVal:
-                if root : 
+                if root: 
                     config.bestMove = (startPos,goalPos)
                 minVal = score
             if score < beta:
                 beta = score
             if score <= alpha:
                 return score
+            
     
     return minVal
 

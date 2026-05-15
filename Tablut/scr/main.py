@@ -5,10 +5,12 @@ from scr import attack
 from scr import debug
 from scr import alphaBeta
 
-import math, copy
+import math, copy, time
 
 
 def main():
+
+    config.start_time = time.time()
 
     W = config.W
     B = config.B
@@ -88,9 +90,9 @@ def main():
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [K, 0, 0, B, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, B, 0, 0, 0, 0, 0],
+    [0, 0, K, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, B, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0] 
@@ -108,10 +110,11 @@ def main():
     #result = "Remis"
 
     #board = test_noBlack
-    board = alphaBetaBoard
+    #board = alphaBetaBoard
     #board = test2
     #board = remis50zug
     #board = remis3Stellung
+    board = starting_board
 
     depth = 5
 
@@ -132,12 +135,12 @@ def main():
         print(f"ERROR! Es ist kein König auf dem Spielfeld vorhanden")
         return
 
-    #while checkBoard.checkBoard2(board):
-    i = 0
-    while i < 1:
-        print(f"Der Beste Zug: {config.bestMove}. (Sollte None zum Anfang)")
+    while checkBoard.checkBoard2(board) and config.start_time < config.end_time:
+    #i = 0
+    #while i < 2:
+        #print(f"Der Beste Zug: {config.bestMove}. (Sollte None zum Anfang)")
         
-        debug.print_board(board)
+        #debug.print_board(board)
 
         oldBoard = copy.deepcopy(board)
         

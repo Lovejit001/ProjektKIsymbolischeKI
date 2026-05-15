@@ -25,13 +25,30 @@ def eval_func(board, onTurn):
         white_score += pts_eval(king_pos)
     else:
         white_score = -1000 # wenn kein König auf dem Feld vorhanden ist dann hat Schwarz gewonnen
+
+    # für die Weißen Figuren die Bewertung
+    # Piece-Square Tables für Positionsbewertung
+    white_pst = get_white_pst()
+    black_pst = get_black_pst()
+    
+    for i in range(9):
+        for j in range(9):
+            piece = board[i][j]
+            
+            if piece == config.W:
+                white_score += white_pst[i][j]
+                
+            elif piece == config.B:
+                black_score += black_pst[i][j]
+
     
     total_score = white_score - black_score
 
-    if onTurn == "White":
-        return total_score
-    else:
-        return -total_score
+    #if onTurn == "White":
+    #    return total_score
+    #else:
+    #    return -total_score
+    return total_score
 
     
 def pts_eval(KingPostion):   ## warum überall KingPosition == config.Throne??? warum nicht prüfen ob es IN einer vorhanden ist
@@ -53,6 +70,50 @@ def findKing(board):
                 return (i,j)
     return None
 
+def findWhitePieces(board):
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] == config.W:
+                return (i,j)
+    return None
+
+def findBlackPieces(board):
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] == config.B:
+                return (i,j)
+    return None
+
+
+def get_white_pst():
+    """Piece-Square Table für weiße Figuren (Zentrum ist gut, Ränder sind schlecht)"""
+    pst = [
+        [-0.5, -0.4, -0.3, -0.2, -0.2, -0.2, -0.3, -0.4, -0.5],
+        [-0.4, -0.2,  0.0,  0.1,  0.1,  0.1,  0.0, -0.2, -0.4],
+        [-0.3,  0.0,  0.2,  0.3,  0.3,  0.3,  0.2,  0.0, -0.3],
+        [-0.2,  0.1,  0.3,  0.4,  0.4,  0.4,  0.3,  0.1, -0.2],
+        [-0.2,  0.1,  0.3,  0.4,  0.5,  0.4,  0.3,  0.1, -0.2],
+        [-0.2,  0.1,  0.3,  0.4,  0.4,  0.4,  0.3,  0.1, -0.2],
+        [-0.3,  0.0,  0.2,  0.3,  0.3,  0.3,  0.2,  0.0, -0.3],
+        [-0.4, -0.2,  0.0,  0.1,  0.1,  0.1,  0.0, -0.2, -0.4],
+        [-0.5, -0.4, -0.3, -0.2, -0.2, -0.2, -0.3, -0.4, -0.5]
+    ]
+    return pst
+
+def get_black_pst():
+    """Piece-Square Table für schwarze Figuren (aggressiver um den Thron)"""
+    pst = [
+        [-0.3, -0.2, -0.1,  0.1,  0.2,  0.1, -0.1, -0.2, -0.3],
+        [-0.2,  0.0,  0.2,  0.3,  0.4,  0.3,  0.2,  0.0, -0.2],
+        [-0.1,  0.2,  0.3,  0.4,  0.5,  0.4,  0.3,  0.2, -0.1],
+        [ 0.1,  0.3,  0.4,  0.5,  0.6,  0.5,  0.4,  0.3,  0.1],
+        [ 0.2,  0.4,  0.5,  0.6,  0.7,  0.6,  0.5,  0.4,  0.2],
+        [ 0.1,  0.3,  0.4,  0.5,  0.6,  0.5,  0.4,  0.3,  0.1],
+        [-0.1,  0.2,  0.3,  0.4,  0.5,  0.4,  0.3,  0.2, -0.1],
+        [-0.2,  0.0,  0.2,  0.3,  0.4,  0.3,  0.2,  0.0, -0.2],
+        [-0.3, -0.2, -0.1,  0.1,  0.2,  0.1, -0.1, -0.2, -0.3]
+    ]
+    return pst
 
 
 #
