@@ -3,6 +3,7 @@ W_pieces = 0
 K_pieces = 0
 zugRegel = 0
 zugCounter = 0
+eval_counter = 0
 boardHash = []
 onTurn = "Black"
 bestMove: tuple[tuple[int, int], tuple[int, int]] | None = None # Output ((startRow, startCol),(goalRow, goaldCol))
@@ -28,11 +29,27 @@ Edge = [
 #HIER VIELLEICHT AUCH EIN VARIABLE CORNER DIE GUCKT OB MAN AN SEITENRAND IST !
 
 def reset_pieces():
-    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove
+    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, eval_counter 
     B_pieces = 0
     W_pieces = 0
     K_pieces = 0
+    eval_counter = 0
     zugRegel = 0
     zugCounter = 0
     onTurn = "Black"
     bestMove = None
+
+def init_pieces(board):
+    global B_pieces, W_pieces, K_pieces
+    B_pieces = 0
+    W_pieces = 0
+    K_pieces = 0
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] == B:
+                B_pieces += 1
+            elif board[i][j] == K:
+                K_pieces += 1
+                W_pieces += 1
+            elif board[i][j] == W:
+                W_pieces += 1

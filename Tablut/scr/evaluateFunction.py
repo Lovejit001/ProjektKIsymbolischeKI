@@ -1,3 +1,4 @@
+from scr import config
 """
 Tablut Bewertungsfunktion
 =========================
@@ -8,6 +9,10 @@ Brett-Koordinaten: board[row][col], 0-indiziert, 9x9
 Figuren: 'K' = König, 'W' = weißer Stein, 'B' = schwarzer Stein, 0 = leer
 Thron:   (4, 4)
 Ecken:   (0,0), (0,8), (8,0), (8,8)
+
+WICHTIG: depth wird übergeben damit sofortige Gewinne höher bewertet werden
+als verzögerte Gewinne. Je höher depth beim Terminieren, desto früher
+im Spielbaum → desto besser.
 """
 
 import math
@@ -16,34 +21,33 @@ import math
 # Konstanten
 # ──────────────────────────────────────────────────
 
-THRONE         = (4, 4)
-CORNERS        = [(0, 0), (0, 8), (8, 0), (8, 8)]
+THRONE           = (4, 4)
+CORNERS          = [(0, 0), (0, 8), (8, 0), (8, 8)]
 THRONE_NEIGHBORS = [(3, 4), (5, 4), (4, 3), (4, 5)]
 
 # ──────────────────────────────────────────────────
 # Gewichte  (positiv = gut für Weiß)
 # ──────────────────────────────────────────────────
 
-W_WIN               =  100_000
-B_WIN               = -100_000
+W_WIN                  =  100_000   # Basiswert Weiß gewinnt
+B_WIN                  = -100_000   # Basiswert Schwarz gewinnt
 
-W_PIECE_VALUE       =    150
-B_PIECE_VALUE       =   -120
+W_PIECE_VALUE          =    150     # pro weißem Stein (ohne König)
+B_PIECE_VALUE          =   -120     # pro schwarzem Stein
 
-W_KING_CORNER_DIST  =    -80   # pro Manhattan-Distanz zur nächsten Ecke
-W_KING_OPEN_PATHS   =    300   # freie orthogonale Wege zur Ecke
-B_SURROUND_KING     =   -500   # schwarze Steine direkt neben König
-W_PROTECT_KING      =    100   # weiße Steine direkt neben König
+W_KING_CORNER_DIST     =    -80     # pro Manhattan-Distanz zur nächsten Ecke
+W_KING_OPEN_PATHS      =    300     # freie orthogonale Wege zur Ecke
+B_SURROUND_KING        =   -500     # schwarze Steine direkt neben König
+W_PROTECT_KING         =    100     # weiße Steine direkt neben König
 
-# Rand-Gefahr: König am Rand mit schwarzem Nachbar ist leicht einzuschließen
-B_KING_ON_EDGE_THREAT = -350   # extra Strafe pro schwarzem Nachbar wenn König am Rand
+# Rand-Gefahr: König am Rand + schwarzer Nachbar = leicht einzuschließen
+B_KING_ON_EDGE_THREAT  =   -350     # extra Strafe pro schwarzem Nachbar wenn König am Rand
 
-# Ecken-Blockade durch Schwarz
-B_CORNER_BLOCK      =    -70   # pro schwarzem Stein nahe Eckzugang
+B_CORNER_BLOCK         =    -70     # pro schwarzem Stein nahe Eckzugang
 
-W_KING_ON_THRONE    =     40
-W_CENTER_CONTROL    =     25
-B_CENTER_CONTROL    =    -35
+W_KING_ON_THRONE       =     40
+W_CENTER_CONTROL       =     25
+B_CENTER_CONTROL       =    -35
 
 
 # ──────────────────────────────────────────────────
@@ -87,11 +91,9 @@ def king_open_paths_to_corners(board, king_pos):
 
     for dr, dc in directions:
         r, c = kr + dr, kc + dc
-        blocked = False
         while 0 <= r < 9 and 0 <= c < 9:
             cell = board[r][c]
             if cell != 0 and (r, c) != king_pos:
-                blocked = True
                 break
             if (r, c) in CORNERS:
                 open_paths += 1
@@ -143,13 +145,13 @@ def king_is_captured(board, king_pos):
     if king_pos == THRONE:
         return all(
             board[kr + dr][kc + dc] == 'B'
-            for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]
         )
 
     if king_pos in THRONE_NEIGHBORS:
         hostile_count = sum(
             is_hostile((kr + dr, kc + dc))
-            for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]
         )
         return hostile_count >= 3
 
@@ -169,6 +171,8 @@ def king_on_corner(king_pos):
 
 def king_on_edge(king_pos):
     """König am Rand (aber nicht Ecke) — leichter einzuschließen."""
+    if king_pos is None:
+        return False
     r, c = king_pos
     return (r == 0 or r == 8 or c == 0 or c == 8) and king_pos not in CORNERS
 
@@ -193,7 +197,7 @@ def count_corner_blocks(board):
     """
     blocks = 0
     for cr, cc in CORNERS:
-        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nr, nc = cr + dr, cc + dc
             if 0 <= nr < 9 and 0 <= nc < 9:
                 if board[nr][nc] == 'B':
@@ -205,23 +209,35 @@ def count_corner_blocks(board):
 # Haupt-Bewertungsfunktion
 # ──────────────────────────────────────────────────
 
-def eval(board):
+def eval(board, depth=0):
     """
     Gibt einen skalaren Score zurück.
     Positiv = Vorteil für Weiß, Negativ = Vorteil für Schwarz.
+
+    depth: verbleibende Suchtiefe beim Aufruf.
+           Höheres depth = früher im Baum = sofortiger Gewinn/Verlust.
+           Sofortige Gewinne werden dadurch höher bewertet als verzögerte.
     """
+
+    config.eval_counter += 1
     score = 0
     king_pos = find_king(board)
 
     # ── Terminalbedingungen ──────────────────────────
+    # depth wird addiert/subtrahiert damit sofortige Gewinne
+    # einen höheren Score bekommen als verzögerte:
+    # Sofortiger Sieg (depth=2): 100_000 + 2 = 100_002
+    # Verzögerter Sieg (depth=0): 100_000 + 0 = 100_000
+    # → Alpha-Beta wählt immer den schnellsten Gewinn!
+
     if king_on_corner(king_pos):
-        return W_WIN
+        return W_WIN + depth  # ← sofortiger Gewinn bevorzugt
 
     if king_is_captured(board, king_pos):
-        return B_WIN
+        return B_WIN - depth  # ← sofortiger Verlust für Schwarz bevorzugt
 
     if king_pos is None:
-        return B_WIN
+        return B_WIN - depth
 
     # ── Figurenanzahl ────────────────────────────────
     w_pieces = sum(board[r][c] in ('W', 'K') for r in range(9) for c in range(9))
@@ -250,8 +266,6 @@ def eval(board):
     score += white_adj * W_PROTECT_KING
 
     # ── Rand-Gefahr ──────────────────────────────────
-    # König am Rand + schwarzer Nachbar = akute Einschließungsgefahr
-    # weil Rand als Einschluss zählt (nur 1 weiterer Feind nötig)
     if king_on_edge(king_pos):
         score += black_adj * B_KING_ON_EDGE_THREAT
 

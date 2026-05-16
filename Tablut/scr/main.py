@@ -88,10 +88,10 @@ def main():
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     ['B', 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ['K', 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ['K', 0, 2, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ['B', 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]
@@ -138,7 +138,7 @@ def main():
     onTurn = 'White'
     print("ALPHA BETA BEGINNT")
     #makeMove.total_moves(board,onTurn)
-    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=3,all_Moves=makeMove.total_moves(board,onTurn),onTurn=onTurn,root=True,i=0)
+    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=3,all_Moves=makeMove.total_moves(board,onTurn),onTurn=onTurn,root=True)
     print("ALPHA BETA ZUENDE")
     print(config.bestMove)
     

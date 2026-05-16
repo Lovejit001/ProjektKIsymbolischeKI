@@ -7,100 +7,83 @@ import math
 import copy
 
 
-def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root, i):
+def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
-        score = evaluateFunction.eval(board)
-        print(f"WHITE reached child Note {i}-te Iteration: onTrun = {onTurn} depth={ depth} isGameOver= {not checkBoard.checkBoard2(board)} Moves ={all_Moves} score ={score}" )
-        return evaluateFunction.eval(board)
+        score = evaluateFunction.eval(board,depth)
+
+        return evaluateFunction.eval(board,depth)
 
     maxVal = -math.inf
 
     for startPos, allMoves in all_Moves.items():
-        print(f"{all_Moves}")
+        #print(f"{all_Moves}")
         for goalPos in allMoves:
             
-            i += 1 
-            print(f"{i}-Iteration MAX $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-
 
             boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
-            #print(f"Nach updateBoard: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
+
             score = alphaBetaMin(
                 newBoard, alpha, beta, depth - 1,
                 makeMove.total_moves(newBoard, switch(onTurn)),
-                switch(onTurn), False, i
+                switch(onTurn), False
             )
-            if startPos == (4, 0) and goalPos == (8, 0):
-                print(f"GEWINNZUG gefunden! score={score}, maxVal={maxVal}, alpha={alpha}, beta={beta}, root={root}")
 
             restore_global_state(saved_state)
-            #print(f"Nach restore: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
 
             if score > maxVal:
                 maxVal = score
-                #if root:
-                #    config.bestMove = (startPos, goalPos)
+                if root:
+                    config.bestMove = (startPos, goalPos)
 
             if score > alpha:
                 alpha = score
-                config.bestMove = (startPos, goalPos)
 
             if score >= beta:
-                print("BETA CUT OFF")
                 return maxVal  # Beta-Cutoff
-            print(f"{startPos} ---> {goalPos} aktuelle Werte: maxVal={maxVal} alpha={alpha} beta= {beta}")
+        
 
     return maxVal  # ← NACH der Schleife
 
 
-def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root,i):
+def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
-        score = evaluateFunction.eval(board)
-        print(f"reached child Note {i}-te Iteration: onTurn = {onTurn} depth={ depth} isGameOver= {not checkBoard.checkBoard2(board)} Moves ={all_Moves} score={score} " )
-        return evaluateFunction.eval(board)
+        score = evaluateFunction.eval(board,depth)
+
+        return evaluateFunction.eval(board,depth)
 
     minVal = math.inf
 
     for startPos, allMoves in all_Moves.items():
-        print(f"{all_Moves}")
+
         for goalPos in allMoves:
-            i += 1 
-            print(f"{i}-Iteration MIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             
 
             boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
-            #print(f"Nach updateBoard: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
+
             score = alphaBetaMax(
                 newBoard, alpha, beta, depth - 1,
                 makeMove.total_moves(newBoard, switch(onTurn)),
-                switch(onTurn), False, i
+                switch(onTurn), False
             )
 
-
             restore_global_state(saved_state)
-            #print(f"Nach restore: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
             if score < minVal:
                 minVal = score
-                #if root:
-                #    config.bestMove = (startPos, goalPos)
-                #    print(f"NEUER BESTER MOVE: {config.bestMove}")
+                if root:
+                    config.bestMove = (startPos, goalPos)
 
             if score < beta:
                 beta = score
-                config.bestMove = (startPos, goalPos)
 
             if score <= alpha:
                 return minVal  # Alpha-Cutoff
             
-            print(f"{startPos} ---> {goalPos} aktuelle Werte: minVal={minVal} alpha={alpha} beta= {beta}")
-            
-
 
     return minVal  # ← NACH der Schleife
 
