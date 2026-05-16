@@ -9,8 +9,12 @@ boardHash = []
 onTurn = "Black"
 bestMove = None # Output ((startRow, startCol),(goalRow, goaldCol))
 
-start_time = 0
-end_time = 1
+game_start_time = 0
+game_max_duration = 30
+timeout = False
+
+move_start_time = 0
+move_end_time = 1
 
 W = 'W'
 K = 'K'
@@ -33,11 +37,13 @@ Edge = [
 #HIER VIELLEICHT AUCH EIN VARIABLE CORNER DIE GUCKT OB MAN AN SEITENRAND IST !
 
 def reset_pieces():
-    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, start_time, end_time
+    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, game_start_time, timeout
     B_pieces = 0
     W_pieces = 0
     K_pieces = 0
     zugRegel = 0
     zugCounter = 0
+    game_start_time = 0
+    timeout = False
     onTurn = "Black"
     bestMove = None

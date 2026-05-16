@@ -3,12 +3,36 @@ from scr import evaluateFunction
 from scr import makeMove
 from scr import config
 from scr import debug
-import math, copy
+import math, copy, time
+
+def alphaBetaTime(board, depth, onTurn):
+
+    if config.timeout:
+        return None
+    
+    all_moves = makeMove.total_moves(board, onTurn)
+
+    config.move_start_time = time.time()
+    remaining_game_time = config.game_max_duration - (time.time() - config.game_start_time)
+    #move_time_limit = min(0.5, max(0.1, remaining_game_time)) # Maximale Zeit für einen Zug (kann auch weggelassen werden)
+    move_time_limit = remaining_game_time
+    config.move_end_time = config.move_start_time + move_time_limit
+    
+    print(f"  -> Zug-Zeitlimit: {move_time_limit:.2f}s (Verbleibende Spielzeit: {remaining_game_time:.1f}s)")
+
+    if config.onTurn == "White":
+        alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=depth,all_Moves=all_moves,onTurn=config.onTurn,root=True)
+    else:
+        alphaBetaMin(board=board,alpha=-math.inf,beta=math.inf,depth=depth,all_Moves=all_moves,onTurn=config.onTurn,root=True)
+    
+    return config.bestMove
+        
 
 def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
         
     maxVal = -math.inf
-    if depth == 0 or (not checkBoard.checkBoard2(board)):
+
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or config.timeout:
         return evaluateFunction.eval_func(board, onTurn)
 
     i = 1
@@ -19,8 +43,14 @@ def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
     for startPos,allMoves in all_Moves.items(): 
         #print(f"all possible Moves: {allMoves}")
         for goalPos in allMoves:
-            if config.start_time >= config.end_time:
-                return
+
+            if time.time() >= config.move_end_time:
+                config.timeout = True
+                print(f"  -> Timeout in alphaBetaMax bei Tiefe {depth}")
+                if maxVal != -math.inf:
+                    return maxVal
+                else:
+                    evaluateFunction.eval_func(board, onTurn)
 
             #Macht den Zug
             #print(f"{i}-te Iteration !")
@@ -58,7 +88,7 @@ def alphaBetaMin(board, alpha,beta,depth,all_Moves,onTurn,root):
     #print("MIN IST DRANNN")
     minVal = math.inf
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)):
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or config.timeout:
         #print("EVAL WIRD AUSGERUFEN !!!")
         return evaluateFunction.eval_func(board, onTurn)
     
@@ -71,8 +101,14 @@ def alphaBetaMin(board, alpha,beta,depth,all_Moves,onTurn,root):
     for startPos,allMoves in all_Moves.items():
         #print(f"all possible Moves: {allMoves}") 
         for goalPos in allMoves:
-            if config.start_time >= config.end_time:
-                return
+            
+            if time.time() >= config.move_end_time:
+                config.timeout = True
+                print(f"  -> Timeout in alphaBetaMin bei Tiefe {depth}")
+                if minVal != math.inf:
+                    return minVal
+                else:
+                    evaluateFunction.eval_func(board, onTurn)
 
             #print(f"START- ZielPosition: {startPos} -> {goalPos}")  
 

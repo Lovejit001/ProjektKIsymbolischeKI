@@ -10,7 +10,10 @@ import math, copy, time
 
 def main():
 
-    config.start_time = time.time()
+    config.game_start_time = time.time()
+    config.game_max_duration = 30  #30 sekunden als Beispiel
+    #config.game_max_duration = 1
+    config.timeout = False
 
     W = config.W
     B = config.B
@@ -104,7 +107,7 @@ def main():
     #print_board(remis50zug)
     #print_board(remis3Stellung)
     print("Game Starts!")
-
+    print(f"Maximale Spielzeit: {config.game_max_duration} Sekunden")
     config.onTurn = "White"
     #config.onTurn = "Black"
     #result = "Remis"
@@ -116,7 +119,7 @@ def main():
     #board = remis3Stellung
     board = starting_board
 
-    depth = 5
+    depth = 3
 
     # kann weg wenn in config das Startboard Anzahl angegeben wird
     for i in range(9):
@@ -135,23 +138,45 @@ def main():
         print(f"ERROR! Es ist kein König auf dem Spielfeld vorhanden")
         return
 
-    while checkBoard.checkBoard2(board) and config.start_time < config.end_time:
+    while checkBoard.checkBoard2(board) and not config.timeout:
     #i = 0
     #while i < 2:
         #print(f"Der Beste Zug: {config.bestMove}. (Sollte None zum Anfang)")
         
         #debug.print_board(board)
 
+        elapsed_time = time.time() - config.game_start_time
+        
+        if elapsed_time >= config.game_max_duration:
+            print(f"\n=== SPIELZEIT ABGELAUFEN! ({elapsed_time:.1f} Sekunden) ===")
+            print("Spiel endet mit aktuellem Stand")
+            break
+            
+        print(f"\n--- Zug {config.zugCounter} (Verstrichene Zeit: {elapsed_time:.1f}/{config.game_max_duration}s) ---")
+        print(f"Spieler: {config.onTurn}")        
+
         oldBoard = copy.deepcopy(board)
         
         print("ALPHA BETA BEGINNT")
 
-        if config.onTurn == "White":
-            alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=depth,all_Moves=makeMove.total_moves(board,config.onTurn),onTurn=config.onTurn,root=True)
-        else:
-            alphaBeta.alphaBetaMin(board=board,alpha=-math.inf,beta=math.inf,depth=depth,all_Moves=makeMove.total_moves(board,config.onTurn),onTurn=config.onTurn,root=True)
-        
-        print("ALPHA BETA ZUENDE")
+        move_start = time.time()
+        ## Hier kommt das andere
+        config.bestMove = alphaBeta.alphaBetaTime(board, depth, config.onTurn)
+
+        move_duration = time.time() - move_start
+
+        if config.bestMove is None:
+            print("Kein gültiger Zug gefunden!")
+            break
+
+        if config.timeout:
+            print("ZEIT IST ABGELAUFEN! Spiel wurde beendet.")
+            print(f"Der Beste Move für den Spieler {config.onTurn} welches ermittelt wurde: {config.bestMove}")
+            break
+
+        print(f"ALPHA BETA ZUENDE (Zug dauerte: {move_duration:.3f} Sekunden)")
+
+        #print("ALPHA BETA ZUENDE")
         board = makeMove.updateBoard(board, config.bestMove)
         print(f"Der beste Move welches nun durchgeführt wird: {config.bestMove}")
         
@@ -170,6 +195,12 @@ def main():
             break
 
         i += 1
+    
+    print("\n=== SPIEL ENDE ===")
+    if config.timeout:
+        print("Grund: Zeitlimit überschritten")  
+    
+    print(f"Benötigte Zeit gesamt: {time.time() - config.game_start_time}")
 
     return
         
