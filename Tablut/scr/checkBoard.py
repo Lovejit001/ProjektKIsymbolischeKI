@@ -17,8 +17,8 @@ def checkBoard2(board):
         print(f"ERROR! Es sind mehr als ein König auf dem Spielfeld vorhanden.")
         return False
     # Prüfung ob ein König auf dem Spielfeld vorhanden ist
-    elif config.K_pieces < 1:
-        print(f"Winner: Black")
+    elif config.K_pieces == 0:
+        print(f"Winner: Black, König geschlagen!")
         return False
     # Prüfung ob König sich auf den Eckfeldern befindet
     elif board[0][0] == config.K or board[0][8] == config.K or board[8][0] == config.K or board[8][8] == config.K:
@@ -63,7 +63,7 @@ def recent_moves(board):
         if past == curr:
             count += 1
     #print(config.boardHash)
-    print(f"Stellung kommt {count}-mal vor.")
+    #print(f"Stellung kommt {count}-mal vor.")
     return count >= 3
 
 

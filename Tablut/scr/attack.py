@@ -20,10 +20,8 @@ def attack(board,Pos):
     
     # Spieler Schwarz hat gezogen und greift Weiß an
     if board[row][col] == config.B:
-        print("BLACK")
         # nach oben
         if row > 0 and (board[row-1][col] in (config.W, config.K)) :
-            print("WEIßER GEGNER !!!")
             # Fall 1: Gegner steht im Thron‑Bereich (4,4 und Umgebung)
             #WAS IST MIT DEM FALL WEN NEBEN THORN EIN WEI?ER BAUER IST KANN ER EINGEKESSELT WERDEN ? 
                                                                     #HIER VARIAVLE SOUROUNDINGTHRONE
@@ -35,25 +33,26 @@ def attack(board,Pos):
                     config.K_pieces -= 1
             # Fall 2: Gegner ist direkt am Rand (nächste Position ist „Corner“)
             elif isAtCorner((row-2,col),board):
+                #Ist die geschlagene Figur
+                if board[row-1][col] == config.K:
+                    config.K_pieces -= 1
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
-            ############ neuer Edge Case
+            # Fall 3: Weiße Figur neben Thron (besetzt den Thron) und König eingekesselt von anderen 3 Seiten
             elif (board[row-1][col] == config.W and ((row-2,col) == (4,4)) and board[row-2][col] == config.K ):
                 #König umzingelt von Gegner (drüber, links und rechts) 
                 if board[row-3][col] == config.B and board[row-2][col-1] == config.B and board[row-2][col+1] == config.B:
-                    board[row-1][col] = 0                    
-
-            # Fall 3: Gegner ist eingeschlossen von einer eigenen Figur (Weiß)
+                    board[row-1][col] = 0 
+                    config.zugRegel = 0
+                    config.W_pieces -= 1  
+            # Fall 4: Gegner (Weiß Bauer oder König) ist eingeschlossen von einer eigenen Figur (Schwarz)
             elif board[row-2][col] == config.B:
-            #Wenn das gilt ist Gegner Figur eingeschlossen von aktuellen Spieler    
+                if board[row-1][col] == config.K:
+                    config.K_pieces -= 1  
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
-        
-        print(board[row-3][col]   == config.B)
-        print(board[row-2][col-1] == config.B)
-        print(board[row-2][col+1] == config.B)
         
         # nach unten
         if row < 8 and (board[row+1][col] in (config.W, config.K)) :
@@ -65,6 +64,8 @@ def attack(board,Pos):
                     config.W_pieces -= 1
                     config.K_pieces -= 1
             elif isAtCorner((row+2,col),board):
+                if board[row+1][col] == config.K:
+                    config.K_pieces -= 1
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -72,9 +73,13 @@ def attack(board,Pos):
             elif (board[row+1][col] == config.W and ((row+2,col) == (4,4)) and board[row+2][col] == config.K ):
                 #König umzingelt von Gegner (drunter, links und rechts) 
                 if board[row+3][col] == config.B and board[row+2][col-1] == config.B and board[row+2][col+1] == config.B:
-                    board[row+1][col] = 0 
+                    board[row+1][col] = 0
+                    config.zugRegel = 0
+                    config.W_pieces -= 1 
 
             elif board[row+2][col] == config.B:
+                if board[row+1][col] == config.K:
+                    config.K_pieces -= 1
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -89,6 +94,8 @@ def attack(board,Pos):
                     config.W_pieces -= 1
                     config.K_pieces -= 1
             elif isAtCorner((row,col-2),board):
+                if board[row][col-1] == config.K:
+                    config.K_pieces -= 1    
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -97,9 +104,13 @@ def attack(board,Pos):
             elif (board[row][col-1] == config.W and ((row,col-2) == (4,4)) and board[row][col-2] == config.K ):
                 #König umzingelt von Gegner (drüber, links und unten) 
                 if board[row][col-3] == config.B and board[row+1][col-2] == config.B and board[row-1][col-2] == config.B:
-                    board[row][col-1] = 0 
+                    board[row][col-1] = 0
+                    config.zugRegel = 0
+                    config.W_pieces -= 1 
 
             elif board[row][col-2] == config.B :
+                if board[row][col-1] == config.K:
+                    config.K_pieces -= 1
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -113,6 +124,9 @@ def attack(board,Pos):
                     config.W_pieces -= 1
                     config.K_pieces -= 1
             elif isAtCorner((row,col+2),board):
+                if board[row][col+1] == config.K:
+                    config.K_pieces -= 1
+                    
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -121,7 +135,11 @@ def attack(board,Pos):
                 #König umzingelt von Gegner (drüber, links und rechts) 
                 if board[row][col+3] == config.B and board[row+1][col+2] == config.B and board[row-1][col+2] == config.B:
                     board[row][col+1] = 0 
+                    config.zugRegel = 0
+                    config.W_pieces -= 1 
             elif board[row][col+2] == config.B:
+                if board[row][col+1] == config.K:
+                    config.K_pieces -= 1
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -172,9 +190,6 @@ def attack(board,Pos):
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
-
-    print("Der Board nach dem Attack:")
-    print_board(board)
 
     return board
 
@@ -275,19 +290,6 @@ def isAtCorner(pos,board):
 
 
 
-TestBoard2 = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, B, 0, 0, 0, 0],
-    [0, 0, B, W, K, B, 0, 0, 0],
-    [0, 0, 0, 0, B, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
-]
+#x = attack(attackBoard,(5,2))
 
-
-board = attack(TestBoard2,(4,2))
-
-print_board(board)
+#print_board(x)

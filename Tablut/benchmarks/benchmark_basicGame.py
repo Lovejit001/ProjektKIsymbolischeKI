@@ -14,7 +14,7 @@ def benchmark():
     print("=" * 60)
     runs = 10000
     total_time = 0
-    
+    """  
     # Test 1: Startspiel
 
     
@@ -75,7 +75,8 @@ def benchmark():
     print(f"\n Mid Board ({runs} runs):")
     print(f"   Total: {total_time:.4f} seconds")
     print(f"   Average: {total_time/runs:.4f} seconds\n")
-    
+    """
+ 
     # Test 3: Endspiel (angepasst an dein ursprÃ¼ngliches Board)
     
     total_time = 0
