@@ -86,13 +86,13 @@ def main():
 
     alphaBetaBoard= [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [5, 0, 0, 0, 0, 0, 0, 0, 0],
+    ['B', 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 'B', 0, 0, 0, 0],
-    ['K', 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 5, 0, 0, 0, 0, 0, 0, 0],
-    [5, 5, 0, 0, 0, 0, 0, 0, 0],
-    [0, 5, 5, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ['K', 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]
 
@@ -112,8 +112,7 @@ def main():
     #board = test2
     #board = remis50zug
     #board = remis3Stellung
-
-    # kann weg wenn in config das Startboard Anzahl angegeben wird
+         # kann weg wenn in config das Startboard Anzahl angegeben wird
     for i in range(9):
         for j in range(9):
             if board[i][j] == 'W':
@@ -125,11 +124,12 @@ def main():
                 config.B_pieces += 1
 
     #print(f"Weiße Figuren auf dem Brett: {config.W_pieces}, Schwarze Figuren auf dem Brett: {config.B_pieces}")
+    
 
     if config.K_pieces < 1:
         print(f"ERROR! Es ist kein König auf dem Spielfeld vorhanden")
         return
-
+    
 
 
     debug.print_board(board)
@@ -138,13 +138,13 @@ def main():
     onTurn = 'White'
     print("ALPHA BETA BEGINNT")
     #makeMove.total_moves(board,onTurn)
-    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=100,all_Moves=makeMove.total_moves(board,"White"),onTurn=onTurn,root=True)
+    alphaBeta.alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=3,all_Moves=makeMove.total_moves(board,onTurn),onTurn=onTurn,root=True,i=0)
     print("ALPHA BETA ZUENDE")
     print(config.bestMove)
-        
-    board = makeMove.updateBoard(board,config.bestMove)
-        
-    debug.print_board(board)
+    
+
+    #board = makeMove.updateBoard(board,config.bestMove)        
+    #debug.print_board(board)
 
     if config.onTurn == "White":
         config.onTurn = "Black"

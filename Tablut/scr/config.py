@@ -5,7 +5,7 @@ zugRegel = 0
 zugCounter = 0
 boardHash = []
 onTurn = "Black"
-bestMove = None # Output ((startRow, startCol),(goalRow, goaldCol))
+bestMove: tuple[tuple[int, int], tuple[int, int]] | None = None # Output ((startRow, startCol),(goalRow, goaldCol))
 
 W = 'W'
 K = 'K'

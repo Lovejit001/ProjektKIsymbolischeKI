@@ -1,7 +1,7 @@
 #Diese Funktion führt die Schritt aus und aktualisiert Board
 import random
 import math
-from scr import alphaBeta
+#from scr import alphaBeta
 from scr.attack import *
 from scr.positions import get_all_pos
 from scr.checkBoard import getHash
@@ -56,7 +56,7 @@ def makeMove(board,all_possible_moves):
     if all_possible_moves == {}:
         return board
 
-    alphaBeta.alphaBetaMax(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
+    #alphaBeta.alphaBetaMax(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
 
     
     #aktualisiert Board und prüft ob eine Figur geschlagen wurde 
@@ -75,10 +75,19 @@ def updateBoard(board,bestMove):
     
     goal_row, goal_col = goalPos
 
-    #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
-
     # Figur auf der Startposition merken
     figure = board[start_row][start_col]
+
+    #debug
+    #if (goal_row, goal_col) in [(0,0),(0,8),(8,0),(8,8)]:
+    #    print(f"⚠️  FIGUR {figure} landet auf Eckfeld ({goal_row},{goal_col})!")
+    #    print(f"   Startpos: ({start_row},{start_col})")
+
+    #print_board(board)
+
+    #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
+
+    
 
     # Startposition leeren
     board[start_row][start_col] = 0
@@ -237,9 +246,10 @@ def all_moves_right_to_Figure(board, StartPos):
     return moves
     
 #Prüft ob die jeweilige Position auf dem Feld leer ist
-def isEmptyField(Board,Pos): 
-    row, col = Pos
-    return Board[row][col] == 0
+def isEmptyField(board, pos):
+    row, col = pos
+    value = board[row][col]
+    return value == 0
 
 def validMove(board,Pos,StartPos):
     """
@@ -269,6 +279,9 @@ def validMove(board,Pos,StartPos):
         
     # Nur der König darf Eckfelder/Zielfelder betreten
     if ((row,col) in config.Goal):
+        #result = board[start_row][start_col] == config.K
+        #print(f"validMove Ecke {Pos}: Figur={board[start_row][start_col]}, erlaubt={result}")
+        
         return board[start_row][start_col] == config.K
     
     return True

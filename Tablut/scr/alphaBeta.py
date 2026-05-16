@@ -6,160 +6,136 @@ from scr import debug
 import math
 import copy
 
-def alphaBetaMax(board,alpha,beta,depth,all_Moves,onTurn,root):
-    # DEBUG: Prüfe den Typ
 
+def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root, i):
+
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+        score = evaluateFunction.eval(board)
+        print(f"WHITE reached child Note {i}-te Iteration: onTrun = {onTurn} depth={ depth} isGameOver= {not checkBoard.checkBoard2(board)} Moves ={all_Moves} score ={score}" )
+        return evaluateFunction.eval(board)
 
     maxVal = -math.inf
-    if depth == 0 or (not checkBoard.checkBoard2(board)):
-        return evaluateFunction.eval(board)
-    #Remember its a dictionary {(startRow,startCol):[(goalRow,goalCol),....]}
 
-    i = 1
-    # Falls keine Züge vorhanden sind
-    if not all_Moves:
-        return evaluateFunction.eval(board)
-    for startPos,allMoves in all_Moves.items(): 
-        print(f"all possible Moves: {allMoves}")
+    for startPos, allMoves in all_Moves.items():
+        print(f"{all_Moves}")
         for goalPos in allMoves:
-
-            #Macht den Zug
-            print(f"{i}-te Iteration !")
-            print(f"STARTPOSITION: {startPos}")
-            print(f"ZIELPOSITION: {goalPos}")
             
+            i += 1 
+            print(f"{i}-Iteration MAX $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+
+            boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
-            newBoard = makeMove.updateBoard(board,(startPos,goalPos))
-            debug.print_board(newBoard)
-            ###BISSS HIERR PASST ALLLESS !!!!!
-            score = alphaBetaMin(newBoard,alpha,beta,depth-1, makeMove.total_moves(newBoard,switch(onTurn)),(switch(onTurn)),False)
-            
-            #ALLE GLOBALEN VARIABLEN MÜSSEN RÜCKGÄNGIG GEMACHT WERDEN ?
-            undoMoveWithState(board,startPos,goalPos,saved_state)
+            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            #print(f"Nach updateBoard: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
+            score = alphaBetaMin(
+                newBoard, alpha, beta, depth - 1,
+                makeMove.total_moves(newBoard, switch(onTurn)),
+                switch(onTurn), False, i
+            )
+            if startPos == (4, 0) and goalPos == (8, 0):
+                print(f"GEWINNZUG gefunden! score={score}, maxVal={maxVal}, alpha={alpha}, beta={beta}, root={root}")
 
-            print("OLDBOARD $$$$$$$$$$$$$$$$$$")
-            debug.print_board(board)
-            print("OLDBOARD $$$$$$$$$$$$$$$$$$")
-            
-            
-            print(f"{i}-te Iteration ! Der Score: {score}")
-            
-            i += 1
-            if score > maxVal: 
+            restore_global_state(saved_state)
+            #print(f"Nach restore: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
 
-                #UNSICHER OB HIER DER BESTE ZUG GESPEICHERT WIRD
-                print(root)
-                if root == True : 
-                    config.bestMove = (startPos,goalPos)
+            if score > maxVal:
                 maxVal = score
-                print(f"BEST MOVE: {config.bestMove}")
+                #if root:
+                #    config.bestMove = (startPos, goalPos)
+
             if score > alpha:
                 alpha = score
+                config.bestMove = (startPos, goalPos)
+
             if score >= beta:
-                return score # Beta-Cutoff
-    
+                print("BETA CUT OFF")
+                return maxVal  # Beta-Cutoff
+            print(f"{startPos} ---> {goalPos} aktuelle Werte: maxVal={maxVal} alpha={alpha} beta= {beta}")
+
+    return maxVal  # ← NACH der Schleife
 
 
-def alphaBetaMin(board, alpha,beta,depth,all_Moves,onTurn,root):
-    print("MIN IST DRANNN")
-    minVal = 100000000
+def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root,i):
 
-    if depth == 0 or checkBoard.checkBoard2(board):
-        print("EVAL WIRD AUSGERUFEN !!!")
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+        score = evaluateFunction.eval(board)
+        print(f"reached child Note {i}-te Iteration: onTurn = {onTurn} depth={ depth} isGameOver= {not checkBoard.checkBoard2(board)} Moves ={all_Moves} score={score} " )
         return evaluateFunction.eval(board)
 
-    
-    for startPos,allMoves in all_Moves.items():
-        print(f"all possible Moves: {allMoves}") 
-        for goalPos in allMoves:  
+    minVal = math.inf
 
+    for startPos, allMoves in all_Moves.items():
+        print(f"{all_Moves}")
+        for goalPos in allMoves:
+            i += 1 
+            print(f"{i}-Iteration MIN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            
 
+            boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
-            newBoard= makeMove.updateBoard(board,(startPos,goalPos))                                        
-            score = alphaBetaMax(newBoard,alpha,beta,depth-1, makeMove.total_moves(newBoard,switch(onTurn)),switch(onTurn),False)
-            #MUSS BOARD RÜCKGÄNGIG GEMACHT WERDEN ?
-            undoMoveWithState(board,startPos,goalPos,saved_state)
+            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            #print(f"Nach updateBoard: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
+            score = alphaBetaMax(
+                newBoard, alpha, beta, depth - 1,
+                makeMove.total_moves(newBoard, switch(onTurn)),
+                switch(onTurn), False, i
+            )
 
-            print("OLDBOARD $$$$$$$$$$$$$$$$$$")
-            debug.print_board(board)
-            print("OLDBOARD $$$$$$$$$$$$$$$$$$")
 
+            restore_global_state(saved_state)
+            #print(f"Nach restore: B={config.B_pieces}, W={config.W_pieces}, K={config.K_pieces}")
             if score < minVal:
-                if root : 
-                    config.bestMove = (startPos,goalPos)
                 minVal = score
+                #if root:
+                #    config.bestMove = (startPos, goalPos)
+                #    print(f"NEUER BESTER MOVE: {config.bestMove}")
+
             if score < beta:
                 beta = score
+                config.bestMove = (startPos, goalPos)
+
             if score <= alpha:
-                return score # alpha-Cutoff
-    
+                return minVal  # Alpha-Cutoff
+            
+            print(f"{startPos} ---> {goalPos} aktuelle Werte: minVal={minVal} alpha={alpha} beta= {beta}")
+            
 
 
+    return minVal  # ← NACH der Schleife
 
-#SOLLTE MAN HIER LIEBER CONFIG ÄNDERN ODER LIEBER NICHT ?
-def switch(onTurn): 
+
+def switch(onTurn):
     if onTurn == "White":
         return "Black"
-    else: 
+    else:
         return "White"
 
 
-board= [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    ['K', 0, 'B', 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
-]
-
-
-#print(config.bestMove)
-#onTurn = 'White'
-#print("ALPHA BETA BEGINNT")
-#makeMove.total_moves(board,onTurn)
-#alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=1,all_Moves=makeMove.total_moves(board,"White"),onTurn=onTurn,root=True)
-#print("ALPHA BETA ZUENDE")
-#print(config.bestMove)
-
-
-
-def undoMoveWithState(board, startPos, goalPos, saved_state):
-    """
-    Macht einen Zug rückgängig UND stellt die globalen Variablen wieder her.
-    """
-    # Zuerst das Board rückgängig machen
-    #wichtig goalPos zuerst weil das der gemacht Schritt ist der zurückgesetzt werden soll!
-    undoMoveBoard(board, goalPos, startPos)
-    
-    # Dann die globalen Variablen wiederherstellen
-    restore_global_state(saved_state)
-
-def undoMoveBoard(board,startPos,goalPos):     
-
-    start_row, start_col = startPos
-    
-    goal_row, goal_col = goalPos
-
-    #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
-
-    # Figur auf der Startposition merken
-    figure = board[start_row][start_col]
-
-    # Startposition leeren
-    board[start_row][start_col] = 0
-    
-    # Zielposition mit der Figur belegen
-    board[goal_row][goal_col] = figure
-        
-    ##UNSICHER OB NOCH WAS GEMACHT WERDEN SOLLTE !
+def getBestMove(board, onTurn, depth):
+    if onTurn == "White":
+        alphaBetaMax(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, "White"),
+            onTurn="White",
+            root=True
+        )
+    else:
+        alphaBetaMin(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, "Black"),
+            onTurn="Black",
+            root=True
+        )
 
 
 def save_global_state():
-    """Speichert alle relevanten globalen Variablen."""
     return {
         'B_pieces': config.B_pieces,
         'W_pieces': config.W_pieces,
@@ -170,15 +146,33 @@ def save_global_state():
         'onTurn': config.onTurn
     }
 
+
 def restore_global_state(saved_state):
-    """Stellt die globalen Variablen aus einem gespeicherten Zustand wieder her."""
     config.B_pieces = saved_state['B_pieces']
     config.W_pieces = saved_state['W_pieces']
     config.K_pieces = saved_state['K_pieces']
     config.zugCounter = saved_state['zugCounter']
     config.zugRegel = saved_state['zugRegel']
-    config.boardHash = saved_state['boardHash'].copy() if saved_state['boardHash'] else [] #HIER UNSICHER LOVEJIT WEIß WAS boardHASH macht
+    config.boardHash = saved_state['boardHash'].copy() if saved_state['boardHash'] else []
     config.onTurn = saved_state['onTurn']
 
 
+board= [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
+    ['K', 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
+    [2, 0, 0, 'B', 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+]
 
+
+#print(config.bestMove)
+#onTurn = 'White'
+#print("ALPHA BETA BEGINNT")
+#alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=1,all_Moves=makeMove.total_moves(board,onTurn),onTurn=onTurn,root=True)
+#print("ALPHA BETA ZUENDE")
+#print(config.bestMove)
