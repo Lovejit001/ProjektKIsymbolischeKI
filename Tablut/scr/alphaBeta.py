@@ -102,7 +102,7 @@ def getBestMove(board, onTurn, depth):
             alpha=-math.inf,
             beta=math.inf,
             depth=depth,
-            all_Moves=makeMove.total_moves(board, "White"),
+            all_Moves=makeMove.total_moves(board, onTurn),
             onTurn="White",
             root=True
         )
@@ -112,7 +112,7 @@ def getBestMove(board, onTurn, depth):
             alpha=-math.inf,
             beta=math.inf,
             depth=depth,
-            all_Moves=makeMove.total_moves(board, "Black"),
+            all_Moves=makeMove.total_moves(board, onTurn),
             onTurn="Black",
             root=True
         )
