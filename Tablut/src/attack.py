@@ -1,5 +1,5 @@
-from scr import config
-from scr.debug import print_board
+from src import config
+from src.debug import print_board
 from tests.definitions import W,B,K
  
 
@@ -267,6 +267,7 @@ def isAtCorner(pos,board):
     row , col= pos
 
     # Normale Eckfelder (0,0), (0,8), (8,0), (8,8)
+    #TODO: prüfen ob man einfach hier config.Goal nutzen kann, sieht hier redundant aus 
     at_corner = (
         (row == 0 and col == 0) or
         (row == 0 and col == 8) or
@@ -286,10 +287,3 @@ def isAtCorner(pos,board):
     empty_Thron = board[4][4] == 0
  
     return at_corner or out_of_bounds or (next_to_Thron and empty_Thron)
-
-
-
-
-#x = attack(attackBoard,(5,2))
-
-#print_board(x)

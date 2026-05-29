@@ -1,6 +1,6 @@
 import unittest
 
-from scr.makeMove import makeMove
+from src.makeMove import makeMove
 from tests.definitions import movingBoard1, movingBoard2, movingBoard3, movingBoard4,B
 
 class TestMakeMoves(unittest.TestCase):

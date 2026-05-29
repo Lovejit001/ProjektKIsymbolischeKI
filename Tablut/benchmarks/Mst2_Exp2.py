@@ -1,7 +1,8 @@
 import math
 import time
+from src import alphaBeta
 from tests.definitions import starting_board, alphaBeta_FinalMove
-from scr import alphaBeta, makeMove, config, debug
+from src import makeMove, config, debug
 
 
 def iterative_deepening(board, onTurn, time_limit=1.0, max_depth=4):
@@ -43,6 +44,7 @@ def iterative_deepening(board, onTurn, time_limit=1.0, max_depth=4):
             break
 
     print(f"  → Beste Tiefe: {best_depth}, Bester Zug: {best_move}\n")
+    print(f"  Gesamte Zeit: {elapsed:.3f}s, Evaluierte Zustände gesamt: {config.eval_counter}")
     return best_move, best_depth
 
 

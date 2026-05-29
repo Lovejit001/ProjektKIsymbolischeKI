@@ -1,26 +1,41 @@
-from scr import checkBoard
-from scr import evaluateFunction
-from scr import makeMove
-from scr import config
-from scr import debug
+from src import checkBoard
+from src import evaluateFunction
+from src import makeMove
+from src import config
+from src import debug
+from src.transpositionTable import trans_table
 import math
 import copy
 
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
+    """
+    Alpha-Beta mit Transpositionstabelle für MAX-Spieler (Schwarz)
+    """
+    
+    # Prüfe Transpositionstabelle
+    found, tt_score, tt_flag, tt_best_move = trans_table.lookup(
+        board, depth, alpha, beta, onTurn
+    )
+    
+    if found:
+        # Wenn wir einen gespeicherten besten Zug haben und es die Wurzel ist
+        if tt_best_move is not None and root:
+            config.bestMove = tt_best_move
+        return tt_score
 
     if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
-        score = evaluateFunction.eval(board,depth)
-
-        return evaluateFunction.eval(board,depth)
+        score = evaluateFunction.eval(board, depth)
+        # Speichere terminale Positionen
+        trans_table.store(board, depth, score, 'exact', None, onTurn)
+        return score
 
     maxVal = -math.inf
+    best_move = None
 
     for startPos, allMoves in all_Moves.items():
-        #print(f"{all_Moves}")
         for goalPos in allMoves:
             
-
             boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
@@ -32,36 +47,52 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             )
 
             restore_global_state(saved_state)
+            
 
             if score > maxVal:
                 maxVal = score
+                best_move = (startPos, goalPos)
                 if root:
-                    config.bestMove = (startPos, goalPos)
+                    config.bestMove = best_move
 
             if score > alpha:
                 alpha = score
 
             if score >= beta:
-                return maxVal  # Beta-Cutoff
-        
+                # Beta-Cutoff - speichere als Lower Bound
+                trans_table.store(board, depth, maxVal, 'lower', best_move, onTurn)
+                return maxVal
 
-    return maxVal  # ← NACH der Schleife
+    # Speichere exakten Wert
+    flag = 'exact'
+    trans_table.store(board, depth, maxVal, flag, best_move, onTurn)
+    return maxVal
 
 
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
+    """
+    Alpha-Beta mit Transpositionstabelle für MIN-Spieler (Weiß)
+    """
+    
+    # Prüfe Transpositionstabelle
+    found, tt_score, tt_flag, tt_best_move = trans_table.lookup(
+        board, depth, alpha, beta, onTurn
+    )
+    
+    if found:
+        return tt_score
 
     if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
-        score = evaluateFunction.eval(board,depth)
-
-        return evaluateFunction.eval(board,depth)
+        score = evaluateFunction.eval(board, depth)
+        trans_table.store(board, depth, score, 'exact', None, onTurn)
+        return score
 
     minVal = math.inf
+    best_move = None
 
     for startPos, allMoves in all_Moves.items():
-
         for goalPos in allMoves:
             
-
             boardCopy = copy.deepcopy(board)
             saved_state = save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
@@ -73,19 +104,24 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
             )
 
             restore_global_state(saved_state)
+            
             if score < minVal:
                 minVal = score
+                best_move = (startPos, goalPos)
                 if root:
-                    config.bestMove = (startPos, goalPos)
+                    config.bestMove = best_move
 
             if score < beta:
                 beta = score
 
             if score <= alpha:
-                return minVal  # Alpha-Cutoff
-            
+                # Alpha-Cutoff - speichere als Upper Bound
+                trans_table.store(board, depth, minVal, 'upper', best_move, onTurn)
+                return minVal
 
-    return minVal  # ← NACH der Schleife
+    # Speichere exakten Wert
+    trans_table.store(board, depth, minVal, 'exact', best_move, onTurn)
+    return minVal
 
 
 def switch(onTurn):
@@ -96,8 +132,15 @@ def switch(onTurn):
 
 
 def getBestMove(board, onTurn, depth):
+    """Einstiegspunkt für die Alpha-Beta-Suche"""
+    # Transpositionstabelle für diese Suche zurücksetzen
+    trans_table.clear()
+    
+    print(f"Starte Alpha-Beta-Suche mit Tiefe {depth}")
+    print(f"Anzahl möglicher Züge: {debug.countMoves(makeMove.total_moves(board, onTurn))}")
+    
     if onTurn == "White":
-        alphaBetaMax(
+        result = alphaBetaMax(
             board=board,
             alpha=-math.inf,
             beta=math.inf,
@@ -107,7 +150,7 @@ def getBestMove(board, onTurn, depth):
             root=True
         )
     else:
-        alphaBetaMin(
+        result = alphaBetaMin(
             board=board,
             alpha=-math.inf,
             beta=math.inf,
@@ -116,6 +159,13 @@ def getBestMove(board, onTurn, depth):
             onTurn="Black",
             root=True
         )
+    
+    # Statistiken ausgeben
+    stats = trans_table.get_stats()
+    print(f"Transposition Table Stats: {stats}")
+    print(f"Eval-Aufrufe insgesamt: {config.eval_counter}")
+    
+    return result
 
 
 def save_global_state():
@@ -138,24 +188,3 @@ def restore_global_state(saved_state):
     config.zugRegel = saved_state['zugRegel']
     config.boardHash = saved_state['boardHash'].copy() if saved_state['boardHash'] else []
     config.onTurn = saved_state['onTurn']
-
-
-board= [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    ['K', 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [2, 0, 0, 'B', 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
-]
-
-
-#print(config.bestMove)
-#onTurn = 'White'
-#print("ALPHA BETA BEGINNT")
-#alphaBetaMax(board=board,alpha=-math.inf,beta=math.inf,depth=1,all_Moves=makeMove.total_moves(board,onTurn),onTurn=onTurn,root=True)
-#print("ALPHA BETA ZUENDE")
-#print(config.bestMove)

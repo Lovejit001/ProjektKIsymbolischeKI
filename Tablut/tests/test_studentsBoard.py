@@ -1,10 +1,10 @@
 import unittest
 
-from scr.debug import FenToBoard
-from scr.debug import print_board
-from scr.makeMove import total_moves
-from scr.debug import countMoves
-from scr import config 
+from src.debug import FenToBoard
+from src.debug import print_board
+from src.makeMove import total_moves
+from src.debug import countMoves
+from src import config 
 from tests.definitions import otherBoardFEN1,otherBoardFEN2,otherBoardFEN3,otherBoardFEN4,otherBoardFEN5
 
 

@@ -1,4 +1,4 @@
-from scr import config
+from src import config
 
 def print_dic(dict):
     for key, value in dict.items():

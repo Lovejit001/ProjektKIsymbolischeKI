@@ -1,8 +1,9 @@
 import math
 import time
+from Tablut.src import alphaBeta
 from tests.definitions import starting_board, alphaBeta_FinalMove
-from scr import alphaBetaWithTransposition, makeMove, config, debug
-from scr import config
+from src import makeMove, config, debug
+from src import config
 
 
 def iterative_deepening(board, onTurn, time_limit=1.0):
@@ -19,11 +20,11 @@ def iterative_deepening(board, onTurn, time_limit=1.0):
         config.bestMove = None
 
         if onTurn == "White":
-            alphaBetaWithTransposition.alphaBetaMax(board, -math.inf, math.inf, depth,
+            alphaBeta.alphaBetaMax(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "White"),
                                    "White", True)
         else:
-            alphaBetaWithTransposition.alphaBetaMin(board, -math.inf, math.inf, depth,
+            alphaBeta.alphaBetaMin(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "Black"),
                                    "Black", True)
 

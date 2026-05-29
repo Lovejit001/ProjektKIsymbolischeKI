@@ -1,6 +1,6 @@
 import unittest
-from scr import makeMove
-from scr import config
+from src import makeMove
+from src import config
 
 
 

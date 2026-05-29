@@ -1,4 +1,4 @@
-from scr import config
+from src import config
 import math
 
 class TranspositionTable:
@@ -38,6 +38,11 @@ class TranspositionTable:
             self.hits += 1
             entry = self.table[pos_hash]
             
+            # === DEBUG: Ausgabe des Eintrags ===
+            #print("DEBUG: entry =", entry)
+            #print("DEBUG: Typ von entry =", type(entry))
+            # =================================
+
             # Prüfe ob die gespeicherte Tiefe ausreicht
             if entry['depth'] < depth:
                 # Gespeicherte Tiefe ist geringer, nicht verwendbar
@@ -96,9 +101,9 @@ class TranspositionTable:
         }
 
         #ZUSATZZ: !!!
-        self.table[pos_hash] = {...}
-        if len(self.table) % 1000 == 0:
-            print(f"[TT] Store, size={len(self.table)}")
+        #self.table[pos_hash] = {...}
+        #if len(self.table) % 1000 == 0:
+        #    print(f"[TT] Store, size={len(self.table)}")
     
     def clear(self):
         """Löscht die gesamte Tabelle"""

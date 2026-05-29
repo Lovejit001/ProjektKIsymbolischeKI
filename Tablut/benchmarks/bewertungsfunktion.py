@@ -2,11 +2,11 @@ import math
 import time
 
 from tests.definitions import starting_board, alphaBeta_FinalMove
-from scr import alphaBeta
-from scr import makeMove
-from scr import config
-from scr import evaluateFunction
-from scr import debug
+from Tablut.src import alphaBeta
+from src import makeMove
+from src import config
+from src import evaluateFunction
+from src import debug
 
 """
 HIER WIRD DIE BEWERTUNGSFUNKTION 10000 durchlaufen

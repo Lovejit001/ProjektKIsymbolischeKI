@@ -2,11 +2,11 @@
 import random
 import math
 #from scr import alphaBeta
-from scr.attack import *
-from scr.positions import get_all_pos
-from scr.checkBoard import getHash
-from scr.debug import print_board
-from scr import config
+from src.attack import *
+from src.positions import get_all_pos
+from src.checkBoard import getHash
+from src.debug import print_board
+from src import config
 
 
 

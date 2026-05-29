@@ -1,9 +1,9 @@
-from scr import config
-from scr import checkBoard 
-from scr import makeMove 
-from scr import attack
-from scr import debug
-from scr import alphaBeta
+from src import config
+from src import checkBoard 
+from src import makeMove 
+from src import attack
+from src import debug
+from src import alphaBetaWithTransposition
 from tests import definitions
 
 import math
@@ -44,14 +44,16 @@ def main():
         oldBoard = [row[:] for row in board]
         
         #all_moves = makeMove.total_moves(board, config.onTurn) <-- ist in AlphaBeta Func drin
-        alphaBeta.getBestMove(board,config.onTurn,depth=4)
+        alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=5)
         
+        print(f"BESTER MOVE: {config.bestMove} Spieler am Zug: {config.onTurn}")
+
         board = makeMove.updateBoard(board,config.bestMove)
         
         debug.print_board(board)
 
-        print(f"Weiße Figuren auf dem Brett: {config.W_pieces}, Schwarze Figuren auf dem Brett: {config.B_pieces}")
-        print(f"Insgesamt Züge: {config.zugCounter}, 50-Züge-Regel: {config.zugRegel}")
+        #print(f"Weiße Figuren auf dem Brett: {config.W_pieces}, Schwarze Figuren auf dem Brett: {config.B_pieces}")
+        #print(f"Insgesamt Züge: {config.zugCounter}, 50-Züge-Regel: {config.zugRegel}")
 
         if config.onTurn == "White":
             config.onTurn = "Black"
@@ -63,7 +65,7 @@ def main():
             break
         
         
-        print("Am Zug:" + config.onTurn)
+        #print("Am Zug:" + config.onTurn)
 
     print("Game Over: End Board:")
     print(" ")

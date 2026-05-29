@@ -1,6 +1,6 @@
 import unittest
 
-from scr.makeMove import total_moves 
+from src.makeMove import total_moves 
 from tests.definitions import White, Black, simple_pawns, white_pawns, black_pawns, simple_board, starting_board
 
 ## Hier werden die Unit Tests für die Funktion moves() definiert

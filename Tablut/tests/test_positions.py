@@ -1,6 +1,6 @@
 import unittest
 
-from scr.positions import get_all_pos
+from src.positions import get_all_pos
 from tests.definitions import White, Black, simple_pawns, white_pawns, black_pawns, simple_board, starting_board
 
 ## Für die Erstellung der Unit Tests wurde folgendes Link verwendet:

@@ -1,9 +1,9 @@
 import unittest
 import math
 
-from scr import config
-from scr import alphaBeta
-from scr import makeMove
+from src import config
+from Tablut.src import alphaBeta
+from src import makeMove
 from tests.definitions import starting_board, alphaBeta_FinalMove
 
 class TestAlphaBeta(unittest.TestCase): 

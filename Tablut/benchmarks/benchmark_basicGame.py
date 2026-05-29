@@ -1,5 +1,5 @@
-import scr.main
-from scr import config
+import src.main
+from src import config
 
 B = config.B
 W = config.W
@@ -108,7 +108,7 @@ def benchmark():
         config.onTurn = "Black"
         print(f"Spiel {i+1}")
         start_time = time.time()
-        scr.main.main()
+        src.main.main()
         end_time = time.time()
         
         game_time = end_time - start_time

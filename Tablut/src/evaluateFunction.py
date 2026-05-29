@@ -1,4 +1,4 @@
-from scr import config
+from src import config
 """
 Tablut Bewertungsfunktion
 =========================

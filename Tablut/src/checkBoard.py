@@ -1,4 +1,4 @@
-from scr import config
+from src import config
 
 ## Hier wird überprüft ob der König sich nicht mehr auf dem Board befindet => Der König wurde geschlagen
 ## + ob der König sich auf den Eckfeldern befindet => Weiß gewinnt
