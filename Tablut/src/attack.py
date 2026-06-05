@@ -32,7 +32,8 @@ def attack(board,Pos):
                     config.W_pieces -= 1
                     config.K_pieces -= 1
             # Fall 2: Gegner ist direkt am Rand (nächste Position ist „Corner“)
-            elif isAtCorner((row-2,col),board):
+            #elif isAtCorner((row-2,col),board):
+            elif ((row-1,col) == (1,0) or (row-1,col) == (1,8)):     
                 #Ist die geschlagene Figur
                 if board[row-1][col] == config.K:
                     config.K_pieces -= 1
@@ -47,7 +48,7 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1  
             # Fall 4: Gegner (Weiß Bauer oder König) ist eingeschlossen von einer eigenen Figur (Schwarz)
-            elif board[row-2][col] == config.B:
+            elif (not isAtCorner((row-1,col),board)) and board[row-2][col] == config.B:
                 if board[row-1][col] == config.K:
                     config.K_pieces -= 1  
                 board[row-1][col] = 0
@@ -63,7 +64,8 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-            elif isAtCorner((row+2,col),board):
+            #elif isAtCorner((row+2,col),board):
+            elif ((row+1,col) == (7,0) or (row+1,col) == (7,8)):
                 if board[row+1][col] == config.K:
                     config.K_pieces -= 1
                 board[row+1][col] = 0
@@ -77,7 +79,7 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1 
 
-            elif board[row+2][col] == config.B:
+            elif (not isAtCorner((row+1,col),board)) and board[row+2][col] == config.B:
                 if board[row+1][col] == config.K:
                     config.K_pieces -= 1
                 board[row+1][col] = 0
@@ -93,7 +95,8 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-            elif isAtCorner((row,col-2),board):
+            #elif isAtCorner((row,col-2),board):
+            elif ((row,col-1) == (0,1) or (row,col-1) == (8,1)):
                 if board[row][col-1] == config.K:
                     config.K_pieces -= 1    
                 board[row][col-1] = 0
@@ -108,7 +111,7 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1 
 
-            elif board[row][col-2] == config.B :
+            elif (not isAtCorner((row,col-1),board)) and board[row][col-2] == config.B :
                 if board[row][col-1] == config.K:
                     config.K_pieces -= 1
                 board[row][col-1] = 0
@@ -123,7 +126,8 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-            elif isAtCorner((row,col+2),board):
+            #elif isAtCorner((row,col+2),board):
+            elif ((row,col+1) == (0,7) or (row,col+1) == (8,7)):
                 if board[row][col+1] == config.K:
                     config.K_pieces -= 1
                     
@@ -137,7 +141,7 @@ def attack(board,Pos):
                     board[row][col+1] = 0 
                     config.zugRegel = 0
                     config.W_pieces -= 1 
-            elif board[row][col+2] == config.B:
+            elif (not isAtCorner((row,col+1),board)) and board[row][col+2] == config.B:
                 if board[row][col+1] == config.K:
                     config.K_pieces -= 1
                 board[row][col+1] = 0
@@ -149,44 +153,48 @@ def attack(board,Pos):
     elif board[row][col] in (config.W, config.K) : 
         # nach oben
         if row > 0 and (board[row-1][col] == config.B) :
-            if isAtCorner((row-2,col),board):
+            #if isAtCorner((row-2,col),board):
+            if ((row-1,col) == (1,0) or (row-1,col) == (1,8)):
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
-            elif board[row-2][col] in (config.W, config.K) :
+            elif (not isAtCorner((row-1,col),board)) and board[row-2][col] in (config.W, config.K) :
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
         
         # nach unten
         if row < 8 and (board[row+1][col] == config.B) :
-            if isAtCorner((row+2,col),board):
+            #if isAtCorner((row+2,col),board):
+            if ((row+1,col) == (7,0) or (row+1,col) == (7,8)):    
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
-            elif board[row+2][col] in (config.W, config.K):
+            elif (not isAtCorner((row+1,col),board)) and board[row+2][col] in (config.W, config.K):
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
         
         # nach links
         if col > 0 and (board[row][col-1] == config.B):
-            if isAtCorner((row,col-2),board):
+            #if isAtCorner((row,col-2),board):
+            if ((row,col-1) == (0,1) or (row,col-1) == (8,1)):
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
-            elif board[row][col-2] in (config.W, config.K) :
+            elif (not isAtCorner((row,col-1),board)) and board[row][col-2] in (config.W, config.K) :
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
 
         # nach rechts
         if col < 8 and (board[row][col+1] == config.B):
-            if isAtCorner((row,col+2),board):
+            #if isAtCorner((row,col+2),board):
+            if ((row,col+1) == (0,7) or (row,col+1) == (8,7)):    
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
-            elif board[row][col+2] in (config.W, config.K):
+            elif (not isAtCorner((row,col+1),board)) and board[row][col+2] in (config.W, config.K):
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
@@ -266,6 +274,8 @@ def isAtCorner(pos,board):
     """
     row , col= pos
 
+    return (row == 0) or (row == 8) or (col== 0) or (col == 8)
+"""
     # Normale Eckfelder (0,0), (0,8), (8,0), (8,8)
     #TODO: prüfen ob man einfach hier config.Goal nutzen kann, sieht hier redundant aus 
     at_corner = (
@@ -287,3 +297,20 @@ def isAtCorner(pos,board):
     empty_Thron = board[4][4] == 0
  
     return at_corner or out_of_bounds or (next_to_Thron and empty_Thron)
+"""
+
+
+expected2 = [
+            [0, W, 0, 0, 0, 0, 0, W, 0],
+            [W, B, 0, 0, 0, 0, 0, B, W],
+            [B, 0, 0, 0, 0, 0, 0, 0, B],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [B, 0, 0, 0, 0, 0, 0, 0, W],
+            [W, B, 0, 0, 0, 0, 0, W, B],
+            [0, W, 0, 0, 0, 0, W, B, 0] 
+        ]
+
+b=attack(expected2,(1,7))
+print_board(b)

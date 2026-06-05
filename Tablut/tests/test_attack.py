@@ -2,7 +2,7 @@ import unittest
 
 import src.config
 from src.attack import *
-from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23,attackBoard24,K,B,W
+from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23,attackBoard24,K,B,W,attackBoard202,attackBoard203,attackBoard204,attackBoard205,attackBoard206,attackBoard207,attackBoard208
 
 
 class TestAttack(unittest.TestCase):
@@ -338,8 +338,11 @@ class TestAttack(unittest.TestCase):
 
         print(f"✓ King is sourrended Thron: test passed")
 
+    # TODO TEST fertig schreiben! 
+    
     def test_attackKingAnyOtherPlace(self):
 
+        
         expected1 = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -352,7 +355,101 @@ class TestAttack(unittest.TestCase):
             [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
-        self.assertEqual(attack(attackBoard20,(2,0)),expected1 )        
+        expected2 = [
+            [0, 0, B, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        expected3 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [B, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        expected4 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, B, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        expected5 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, B, 0, 0] 
+        ]
+
+        expected6 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, B],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        expected7 = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, B],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        expected8 = [
+            [0, 0, 0, 0, 0, 0, B, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+        ]
+
+        self.assertEqual(attack(attackBoard20,(2,0)),expected1)
+        self.assertEqual(attack(attackBoard202,(0,2)),expected2)
+        self.assertEqual(attack(attackBoard203,(6,0)),expected3)
+        self.assertEqual(attack(attackBoard204,(8,2)),expected4)
+        self.assertEqual(attack(attackBoard205,(8,6)),expected5)
+        self.assertEqual(attack(attackBoard206,(6,8)),expected6)
+        self.assertEqual(attack(attackBoard207,(2,8)),expected7)
+        self.assertEqual(attack(attackBoard208,(0,6)),expected8)
+
+
+ 
 
     def test_whiteAttacks(self):
         expected1 = [
@@ -411,7 +508,7 @@ class TestAttack(unittest.TestCase):
             [0, W, 0, 0, 0, 0, W, B, 0] 
         ]
         expected2 = [
-            [0, 0, 0, 0, 0, 0, 0, W, 0],
+            [0, W, 0, 0, 0, 0, 0, W, 0],
             [0, B, 0, 0, 0, 0, 0, B, W],
             [B, 0, 0, 0, 0, 0, 0, 0, B],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -422,59 +519,38 @@ class TestAttack(unittest.TestCase):
             [0, W, 0, 0, 0, 0, W, B, 0] 
         ]
 
-        expected3 = [
-            [0, 0, 0, 0, 0, 0, 0, W, 0],
+        expected4 = [
+            [0, W, 0, 0, 0, 0, 0, W, 0],
             [0, B, 0, 0, 0, 0, 0, B, W],
             [B, 0, 0, 0, 0, 0, 0, 0, B],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [B, 0, 0, 0, 0, 0, 0, 0, W],
-            [0, B, 0, 0, 0, 0, 0, W, B],
-            [0, 0, 0, 0, 0, 0, W, B, 0] 
+            [W, B, 0, 0, 0, 0, 0, W, 0],
+            [0, W, 0, 0, 0, 0, W, B, 0] 
         ]
 
-        expected4 = [
-            [0, 0, 0, 0, 0, 0, 0, W, 0],
-            [0, B, 0, 0, 0, 0, 0, B, W],
-            [B, 0, 0, 0, 0, 0, 0, 0, B],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [B, 0, 0, 0, 0, 0, 0, 0, W],
-            [0, B, 0, 0, 0, 0, 0, W, 0],
-            [0, 0, 0, 0, 0, 0, W, B, 0] 
-        ]
         expected5 = [
-            [0, 0, 0, 0, 0, 0, 0, W, 0],
+            [0, W, 0, 0, 0, 0, 0, W, 0],
             [0, B, 0, 0, 0, 0, 0, B, W],
             [B, 0, 0, 0, 0, 0, 0, 0, B],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [B, 0, 0, 0, 0, 0, 0, 0, W],
-            [0, B, 0, 0, 0, 0, 0, W, 0],
-            [0, 0, 0, 0, 0, 0, W, 0, 0] 
+            [W, B, 0, 0, 0, 0, 0, W, 0],
+            [0, W, 0, 0, 0, 0, W, 0, 0] 
         ]
         
-        expected6 = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, B, 0, 0, 0, 0, 0, B, 0],
-            [B, 0, 0, 0, 0, 0, 0, 0, B],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [B, 0, 0, 0, 0, 0, 0, 0, W],
-            [0, B, 0, 0, 0, 0, 0, W, 0],
-            [0, 0, 0, 0, 0, 0, W, 0, 0] 
-        ]
+        
 
         self.assertEqual(attack(attackBoard24,(2,0)),expected1) 
         self.assertEqual(attack(attackBoard24,(1,1)),expected2)
-        self.assertEqual(attack(attackBoard24,(7,1)),expected3)
+        self.assertEqual(attack(attackBoard24,(7,1)),expected2)
         self.assertEqual(attack(attackBoard24,(6,8)),expected4)
         self.assertEqual(attack(attackBoard24,(8,6)),expected5)
-        self.assertEqual(attack(attackBoard24,(1,7)),expected6)
+        self.assertEqual(attack(attackBoard24,(1,7)),expected5)
 
         print(f"✓ Corner Attacks: test passed")
 
