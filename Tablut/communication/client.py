@@ -8,10 +8,12 @@ import socket
 import sys
 import time
 import argparse
+import math
 from src import config
 from src import makeMove
 from src import debug
 from src import alphaBeta
+from src import finalAlgo
 from src import checkBoard
 
 
@@ -196,8 +198,8 @@ def decode_move(command):
 
 
 def myTurn(board,client):
-    alphaBeta.getBestMove(board,config.onTurn,depth=3)
-    makeMove.updateBoard(board,config.bestMove)
+    #alphaBeta.getBestMove(board,config.onTurn,depth=4)
+    finalAlgo.getBestMove(board,config.onTurn,depth=3)
     convert_move=encode_move(config.bestMove)
     command =f"{convert_move}\n"
     print("MOVE IST:")
@@ -205,6 +207,7 @@ def myTurn(board,client):
     print("AKTUELLES BOARD:")
     debug.print_board(board)
     client.send(f"{convert_move}\n")
+    makeMove.updateBoard(board,config.bestMove)
     #client.sendall(command.encode("utf-8"))
     #TODO NACH JEDEM MOVE ERHÄLT MAN SEINE RESTLICHE ZEIT MIT !
 
@@ -245,9 +248,9 @@ class Client:
         return response
     
     def close(self):
-        self.reader.close()
-        self.writer.close()
-        self.sock.close()
+        self._reader.close()
+        self._writer.close()
+        #self.sock.close()
 
 
 
@@ -316,6 +319,8 @@ def main():
 
             gameType,timeAcc,playerTimeAccount,boardStr,verify = getGameData(client)
 
+            config.timeout = False
+
             print("A")
             board, onturn = debug.FenToBoard(boardStr.split("'")[1])
             print("B")
@@ -334,12 +339,28 @@ def main():
             if response == "start":                
                 print("START")
                 switchTurn(True,onturn)
+
+                if (config.onTurn == "Black"):
+                    config.remainingBlackTime = float(timeAcc.split(" ")[2])
+                    print(f"Black Time: {config.remainingBlackTime}")
+                else:
+                    config.remainingWhiteTime = float(timeAcc.split(" ")[2])
+                    print(f"White Time: {config.remainingWhiteTime}")
+
                 print(config.onTurn)
                 myTurn(board,client)
 
             elif response == "wait":
                 print("Wait")
                 switchTurn(False,onturn)
+
+                if (config.onTurn == "Black"):
+                    config.remainingBlackTime = float(timeAcc.split(" ")[2])
+                    print(f"Black Time: {config.remainingBlackTime}")
+                else:
+                    config.remainingWhiteTime = float(timeAcc.split(" ")[2])
+                    print(f"White Time: {config.remainingWhiteTime}")
+
                 print(config.onTurn)
                 response = client.recv()                
                 enemyTurn(board,response)
@@ -352,17 +373,36 @@ def main():
             while True:
                 
                 #Spielende erreicht:
+
                 response = client.recv()
                 if response == 'over':
                     print(f"response: {response}")
                     break
-                elif response == "err 'invalid move or not your turn'":... #TODO
-                elif response == "err 'time account exceeded": ... #TODO
+                elif response == "err 'invalid move or not your turn'":
+                    print(f"FEHLER: {response}")
+                    return
+                elif response == "err 'time account exceeded'":
+                    print(f"FEHLER: {response}")
+                    if config.onTurn == 'Black' :
+                        print("Winner White")
+                    elif  config.onTurn == 'White' :
+                        print("Winner Black")
+                    return
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)
                     #Move aussuchen und Server informieren
+                        
                     myTurn(board,client)
+
+                elif response.startswith("time "):
+                    if (config.onTurn == "Black"):
+                        config.remainingBlackTime = float(response.split(" ")[1]) 
+                        print(f"Black Time: {config.remainingBlackTime}")
+                    else:
+                        config.remainingWhiteTime = float(response.split(" ")[1]) 
+                        print(f"White Time: {config.remainingWhiteTime}")
+
                 else:
                     print(f"HIER NICHT BEACHTET COMMAND : {response}")
 
@@ -372,7 +412,7 @@ def main():
 
             #TODO letzter Move wird nicht ausgeführt daher DRAW
             result = checkBoard.checkBoard2(board)
-            if result == 2: 
+            if result == 1: 
                 print("WINNER IS WHITE")
             elif result == -1:
                 print("WINNER IS BLACK")

@@ -3,26 +3,21 @@ from src import evaluateFunction
 from src import makeMove
 from src import config
 from src import debug
-from src import saveBoardState
 from src import zugsortierung
-import math
-import copy
-import time
-
+from src import saveBoardState
+import copy, time, math
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves or config.timeout:
-        score = evaluateFunction.eval(board,depth)
-        return evaluateFunction.eval(board,depth)
+        return evaluateFunction.eval(board, depth)
 
     maxVal = -math.inf
-    #HIER MUSS ALLPHA BETA 
-    zugsortierung.zugsortierung(board,all_Moves)
+    zugsortierung.zugsortierung(board, all_Moves)
+
+    first_move = True
 
     for startPos, allMoves in all_Moves.items():
-        #print(f"{all_Moves}")
-
         for goalPos in allMoves:
 
             current_time = time.time()
@@ -30,28 +25,26 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             if current_time >= config.endTime:
                 config.timeout = True
                 
-                #if maxVal != -math.inf:
-                #    return maxVal
-                #else:
-                #    return evaluateFunction.eval(board,depth)
-                return evaluateFunction.eval(board,depth)
-
-
+                if maxVal != -math.inf:
+                    return maxVal
+                else:
+                    return evaluateFunction.eval(board,depth)
+            
 
             boardCopy = copy.deepcopy(board)
             saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
-            
-            row,col = startPos
-            figure = board[row][col]
+            next_moves = makeMove.total_moves(newBoard, switch(onTurn))
 
-            score = alphaBetaMin(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
-                switch(onTurn), False
-            )
-            
-            #saveBoardState.undoMove(board,changed_List,goalPos,startPos,figure)
+            if first_move:
+                score = alphaBetaMin(newBoard, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                first_move = False
+
+            else:
+                score = alphaBetaMin(newBoard, alpha, alpha + 1, depth - 1, next_moves, switch(onTurn), False)
+                if alpha < score < beta:
+                    score = alphaBetaMin(newBoard, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+
             saveBoardState.restore_global_state(saved_state)
 
             if score > maxVal:
@@ -63,50 +56,50 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 alpha = score
 
             if score >= beta:
-                return maxVal  # Beta-Cutoff        
+                return maxVal  # Beta-Cutoff
 
-    return maxVal  # ← NACH der Schleife
+    return maxVal
 
 
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves or config.timeout:
-        score = evaluateFunction.eval(board,depth)
-        return evaluateFunction.eval(board,depth)
+        return evaluateFunction.eval(board, depth)
 
     minVal = math.inf
+    zugsortierung.zugsortierung(board, all_Moves)
 
-    zugsortierung.zugsortierung(board,all_Moves)
+    first_move = True
 
     for startPos, allMoves in all_Moves.items():
-
         for goalPos in allMoves:
-
 
             current_time = time.time()
 
             if current_time >= config.endTime:
                 config.timeout = True
-                
-                #if minVal != math.inf:
-                #    return minVal
-                #else:
-                #    return evaluateFunction.eval(board,depth)
-                return evaluateFunction.eval(board,depth)
-                
+                if minVal != math.inf:
+                    return minVal
+                else:
+                    return evaluateFunction.eval(board,depth)
+                            
 
-            
             boardCopy = copy.deepcopy(board)
             saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            next_moves = makeMove.total_moves(newBoard, switch(onTurn))
 
-            score = alphaBetaMax(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
-                switch(onTurn), False
-            )
+            if first_move:
+                score = alphaBetaMax(newBoard, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                first_move = False
+
+            else:
+                score = alphaBetaMax(newBoard, beta - 1, beta, depth - 1, next_moves, switch(onTurn), False)
+                if alpha < score < beta:
+                    score = alphaBetaMax(newBoard, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
 
             saveBoardState.restore_global_state(saved_state)
+
             if score < minVal:
                 minVal = score
                 if root:
@@ -117,16 +110,12 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
             if score <= alpha:
                 return minVal  # Alpha-Cutoff
-            
 
-    return minVal  # ← NACH der Schleife
+    return minVal
 
 
 def switch(onTurn):
-    if onTurn == "White":
-        return "Black"
-    else:
-        return "White"
+    return "Black" if onTurn == "White" else "White"
 
 
 def getBestMove(board, onTurn, depth):
@@ -143,11 +132,8 @@ def getBestMove(board, onTurn, depth):
     
     move_time_limit = max(1.0, remainingTime * 1)
 
-    print(f"Move Time Limit: {move_time_limit:.2f} seconds")
-
     config.endTime = config.startingTime + move_time_limit
-
-
+    
     if onTurn == "White":
         alphaBetaMax(
             board=board,
@@ -168,6 +154,3 @@ def getBestMove(board, onTurn, depth):
             onTurn="Black",
             root=True
         )
-    
-
-

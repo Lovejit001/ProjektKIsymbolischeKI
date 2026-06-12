@@ -12,6 +12,12 @@ W = 'W'
 K = 'K'
 B = 'B'
 
+remainingWhiteTime = 0
+remainingBlackTime = 0
+startingTime = 0
+endTime = 0
+timeout = False
+
 Throne = (4, 4)
 surroundingThrone = (4,4), (4,3), (3,4), (4,5), (5,4)
 Goal = [(0,0), (0,8), (8,0), (8,8)]
@@ -29,7 +35,7 @@ Edge = [
 #HIER VIELLEICHT AUCH EIN VARIABLE CORNER DIE GUCKT OB MAN AN SEITENRAND IST !
 
 def reset_pieces():
-    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, eval_counter 
+    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, eval_counter, remainingWhiteTime, remainingBlackTime, startingTime, timeout, endTime
     B_pieces = 0
     W_pieces = 0
     K_pieces = 0
@@ -38,7 +44,12 @@ def reset_pieces():
     zugCounter = 0
     onTurn = "Black"
     bestMove = None
-
+    remainingWhiteTime = 0
+    remainingBlackTime = 0
+    startingTime = 0
+    endTime = 0
+    timeout = False
+    
 def init_pieces(board):
     global B_pieces, W_pieces, K_pieces
     B_pieces = 0
