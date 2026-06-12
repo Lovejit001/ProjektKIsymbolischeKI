@@ -21,3 +21,21 @@ def restore_global_state(saved_state):
     config.boardHash = saved_state['boardHash'].copy() if saved_state['boardHash'] else []
     config.onTurn = saved_state['onTurn']
 
+def undoMove(board,changed_list,newPos,oldPos,figure):
+    #der Schritt den der Spieler macht wird zurückgesetzt
+    newRow,newCol = newPos
+    oldRow,oldCol = oldPos
+    
+    board[newRow][newCol]= 0
+    board[oldRow][oldCol]= figure
+
+    #Einfügen aller gekillten Figuren
+    if config.onTurn == 'White':
+        for (row,col) in changed_list:
+            board[row][col] = 'B'
+
+    else:
+        for ((row,col),fig) in changed_list:
+            board[row][col] = fig
+
+

@@ -8,6 +8,7 @@ import socket
 import sys
 import time
 import argparse
+import math
 from src import config
 from src import makeMove
 from src import debug
@@ -197,12 +198,12 @@ def decode_move(command):
 
 def myTurn(board,client):
     alphaBeta.getBestMove(board,config.onTurn,depth=3)
-    makeMove.updateBoard(board,config.bestMove)
     convert_move=encode_move(config.bestMove)
     command =f"{convert_move}\n"
-    print("MOVE IST:")
+    print(f"MOVE IST: {config.bestMove}")
     print(command)
     print("AKTUELLES BOARD:")
+    makeMove.updateBoard(board,config.bestMove)
     debug.print_board(board)
     client.send(f"{convert_move}\n")
     #client.sendall(command.encode("utf-8"))
@@ -215,7 +216,7 @@ def enemyTurn(board,response):
     getMove = decode_move(response)      
     print(f"getMove VOM GEGNER: {getMove}")          
     makeMove.updateBoard(board,getMove)
-    #switchTurn()
+
 
 def switchTurn(onTurnFlag,player):
     if player == 'a' and onTurnFlag:
@@ -247,7 +248,7 @@ class Client:
     def close(self):
         self._reader.close()
         self._writer.close()
-        self.sock.close()
+
 
 
 
