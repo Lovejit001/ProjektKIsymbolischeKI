@@ -11,7 +11,7 @@ import copy
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board,depth)
         return evaluateFunction.eval(board,depth)
 
@@ -55,7 +55,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board,depth)
 
         return evaluateFunction.eval(board,depth)

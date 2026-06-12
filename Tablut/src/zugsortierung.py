@@ -20,8 +20,10 @@ Idee: Bevor jeder alpha-Beta läuft soll die Liste optimal sortiert werden, d.h 
 def zugsortierung(board,allMoves : dict):
    
    #config.init_pieces(board) --> muss beim Testen aktiviert werden weil globale Variablen nicht initialisiert, im richtigen Spiel schon
+    
+    #TODO: DAS IST REDUNDANT, trotzdem ist es mit initPieces schneller als ohne obwohl anzahl pieces wir kennen WARUM ist das so ?  
     config.init_pieces(board)
-    config.onTurn = 'Black'
+    #config.onTurn = 'Black'
 
 
     for startPos, possible_moves in allMoves.items():

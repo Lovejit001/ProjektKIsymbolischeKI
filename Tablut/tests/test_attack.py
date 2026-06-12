@@ -544,7 +544,6 @@ class TestAttack(unittest.TestCase):
         ]
         
         
-
         self.assertEqual(attack(attackBoard24,(2,0)),expected1) 
         self.assertEqual(attack(attackBoard24,(1,1)),expected2)
         self.assertEqual(attack(attackBoard24,(7,1)),expected2)

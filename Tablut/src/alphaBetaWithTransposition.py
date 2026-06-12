@@ -4,6 +4,9 @@ from src import makeMove
 from src import config
 from src import debug
 from src.transpositionTable import trans_table
+#from src import transpositionTable_array
+#trans_table = transpositionTable_array.ArrayTranspositionTable(size_mb=128)
+from src import saveBoardState
 import math
 import copy
 
@@ -24,7 +27,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             config.bestMove = tt_best_move
         return tt_score
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         # Speichere terminale Positionen
         trans_table.store(board, depth, score, 'exact', None, onTurn)
@@ -37,7 +40,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
         for goalPos in allMoves:
             
             boardCopy = copy.deepcopy(board)
-            saved_state = save_global_state()
+            saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
 
             score = alphaBetaMin(
@@ -46,7 +49,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 switch(onTurn), False
             )
 
-            restore_global_state(saved_state)
+            saveBoardState.restore_global_state(saved_state)
             
 
             if score > maxVal:
@@ -82,7 +85,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     if found:
         return tt_score
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         trans_table.store(board, depth, score, 'exact', None, onTurn)
         return score
@@ -90,11 +93,14 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     minVal = math.inf
     best_move = None
 
+    #print(type(all_Moves))
+    #print(f"THE MOVES: {all_Moves}")
+
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
             
             boardCopy = copy.deepcopy(board)
-            saved_state = save_global_state()
+            saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
 
             score = alphaBetaMax(
@@ -103,7 +109,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
                 switch(onTurn), False
             )
 
-            restore_global_state(saved_state)
+            saveBoardState.restore_global_state(saved_state)
             
             if score < minVal:
                 minVal = score
@@ -136,8 +142,8 @@ def getBestMove(board, onTurn, depth):
     # Transpositionstabelle für diese Suche zurücksetzen
     trans_table.clear()
     
-    print(f"Starte Alpha-Beta-Suche mit Tiefe {depth}")
-    print(f"Anzahl möglicher Züge: {debug.countMoves(makeMove.total_moves(board, onTurn))}")
+    #print(f"Starte Alpha-Beta-Suche mit Tiefe {depth}")
+    #print(f"Anzahl möglicher Züge: {debug.countMoves(makeMove.total_moves(board, onTurn))}")
     
     if onTurn == "White":
         result = alphaBetaMax(
@@ -162,29 +168,8 @@ def getBestMove(board, onTurn, depth):
     
     # Statistiken ausgeben
     stats = trans_table.get_stats()
-    print(f"Transposition Table Stats: {stats}")
-    print(f"Eval-Aufrufe insgesamt: {config.eval_counter}")
+    #print(f"Transposition Table Stats: {stats}")
+    #print(f"Eval-Aufrufe insgesamt: {config.eval_counter}")
     
     return result
 
-
-def save_global_state():
-    return {
-        'B_pieces': config.B_pieces,
-        'W_pieces': config.W_pieces,
-        'K_pieces': config.K_pieces,
-        'zugCounter': config.zugCounter,
-        'zugRegel': config.zugRegel,
-        'boardHash': config.boardHash.copy() if config.boardHash else [],
-        'onTurn': config.onTurn
-    }
-
-
-def restore_global_state(saved_state):
-    config.B_pieces = saved_state['B_pieces']
-    config.W_pieces = saved_state['W_pieces']
-    config.K_pieces = saved_state['K_pieces']
-    config.zugCounter = saved_state['zugCounter']
-    config.zugRegel = saved_state['zugRegel']
-    config.boardHash = saved_state['boardHash'].copy() if saved_state['boardHash'] else []
-    config.onTurn = saved_state['onTurn']

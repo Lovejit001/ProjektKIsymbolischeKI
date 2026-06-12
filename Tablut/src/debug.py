@@ -1,4 +1,5 @@
 from src import config
+from tests import definitions
 
 def print_dic(dict):
     for key, value in dict.items():
@@ -57,27 +58,35 @@ def print_board_colorful(board, old_board):
         print()
 
 
-def FenToBoard(fen: str):
-    parts = fen.split()
+def FenToBoard(fen: str):  
 
+    if fen == "":        
+        fen ="3aaa3/4a4/4d4/a3d3a/aaddkddaa/a3d3a/4d4/4a4/3aaa3 a 0 0"
+    #print("1")
+    parts = fen.split()
+    #print("2")
     if len(parts) < 4:
         raise ValueError("Ungültiger FEN-String: zu wenige Teile")
-
+    #print("3")
     board_part = parts[0]
+    #print("4")
     side_to_move = parts[-3] #onTurn
+    #print("5")
     halfmove_clock = int(parts[-2]) #50 Züge rügel
+    #print("6")
     fullmove_number = int(parts[-1]) #
-
-    if side_to_move == 's':
-        config.onTurn = 'Black'
-    else:
-        config.onTurn = 'White'
-    
+    #print("7")
+    #Wird in Client.py festgelegt wer drann ist, denn wer vom Server "Start" erhält wird diese Art von Figur sein.
+    #if side_to_move == 'a':
+    #    config.onTurn = 'Black'
+    #else:
+    #    config.onTurn = 'White'
+    #print("8")
     config.zugCounter = fullmove_number
-
+    #print("9")
     config.zugRegel = halfmove_clock
-
-    return fen_to_array(board_part)
+    #print("10")
+    return fen_to_array(board_part), side_to_move
 
 #konvertiert FEN-Notation zu einem 2d Array (Board)
 def fen_to_array(fen: str):
@@ -91,11 +100,11 @@ def fen_to_array(fen: str):
             if char.isdigit():
                 current_row.extend([0] * int(char))   # Leerfelder
             else:
-                if char == 'r':    
+                if char == 'a':    
                     current_row.append('B')
-                elif char == 'R':
+                elif char == 'd':
                     current_row.append('W')
-                elif char == 'K':
+                elif char == 'k':
                     current_row.append('K')                    
         board.append(current_row)
 
@@ -107,3 +116,13 @@ def countMoves(moves :dict):
         counter += len(list_moves)
     return counter
  
+
+
+#fenStr = "9/9/4d4/a3d3a/aadd1ddaa/a3d3a/4d4/4a4/3aka3 a 0 0"
+
+#board = FenToBoard(fenStr)
+
+#print_board(board)
+#print(config.onTurn)
+#print(config.zugCounter)
+#print(config.zugRegel)

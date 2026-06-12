@@ -11,37 +11,37 @@ def checkBoard2(board):
     # Prüfung ob es noch Spielfiguren auf dem Spielfeld vorhanden sind
     if config.B_pieces == 0 and config.W_pieces == 0:
         #print(f"ERROR! Es sind keine (weiteren) Spielfiguren auf dem Spielfeld vorhanden.")
-        return False
+        return 0
     # Prüfung ob mehrere Könige auf dem Spielfeld vorhanden sind
     elif config.K_pieces > 1:
         #print(f"ERROR! Es sind mehr als ein König auf dem Spielfeld vorhanden.")
-        return False
+        return 0
     # Prüfung ob ein König auf dem Spielfeld vorhanden ist
     elif config.K_pieces == 0:
         #print(f"Winner: Black, König geschlagen!")
-        return False
+        return -1
     # Prüfung ob König sich auf den Eckfeldern befindet
     elif board[0][0] == config.K or board[0][8] == config.K or board[8][0] == config.K or board[8][8] == config.K:
         #print(f"Winner: White")
-        return False
+        return 1
     # Prüfung ob es noch schwarze Spielfiguren auf dem Spielfeld vorhanden sind
     elif config.B_pieces == 0:
         #print(f"Winner: White")
-        return False
+        return 1
     # Prüfung ob es noch weiße Spielfiguren auf dem Spielfeld vorhanden sind
     elif config.W_pieces == 0:
         #print(f"Winner: Black")
-        return False
+        return -1
     # Prüfung ob nach 50 Zügen eine Spielfigur geschlagen wurde
     elif config.zugRegel == 50:
         #print(f"REMIS! Nach 50 Zügen wurde kein einziges Spielfigur geschlagen.")
-        return False
+        return 0
     # Prüfung ob drei Stellungswiderholungen vorkommen
     elif recent_moves(board):
         #print(f"REMIS! 3-fache Stellungswiderholung.")
-        return False
+        return 0
 
-    return True
+    return -2
 
 
 def recent_moves(board):

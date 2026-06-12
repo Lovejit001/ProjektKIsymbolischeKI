@@ -1,6 +1,6 @@
 import math
 import time
-from src import alphaBeta
+from src import alphaBetaWithTransposition
 from tests.definitions import starting_board, alphaBeta_FinalMove
 from src import makeMove, config, debug
 
@@ -22,11 +22,11 @@ def iterative_deepening(board, onTurn, time_limit=1.0, max_depth=4):
         config.eval_counter = 0  # ← Zähler zurücksetzen
 
         if onTurn == "White":
-            alphaBeta.alphaBetaMax(board, -math.inf, math.inf, depth,
+            alphaBetaWithTransposition.alphaBetaMax(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "White"),
                                    "White", True)
         else:
-            alphaBeta.alphaBetaMin(board, -math.inf, math.inf, depth,
+            alphaBetaWithTransposition.alphaBetaMin(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "Black"),
                                    "Black", True)
 
