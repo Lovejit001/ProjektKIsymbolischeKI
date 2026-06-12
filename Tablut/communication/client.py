@@ -245,8 +245,8 @@ class Client:
         return response
     
     def close(self):
-        self.reader.close()
-        self.writer.close()
+        self._reader.close()
+        self._writer.close()
         self.sock.close()
 
 
@@ -356,13 +356,16 @@ def main():
                 if response == 'over':
                     print(f"response: {response}")
                     break
-                elif response == "err 'invalid move or not your turn'":... #TODO
+                elif response == "err 'invalid move or not your turn'":
+                    print("ERRRRRRORRRRRRR") #TODO
                 elif response == "err 'time account exceeded": ... #TODO
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)
                     #Move aussuchen und Server informieren
                     myTurn(board,client)
+                elif response.startswith("time "):
+                    accTime = float(response.split(" ")[1])
                 else:
                     print(f"HIER NICHT BEACHTET COMMAND : {response}")
 
