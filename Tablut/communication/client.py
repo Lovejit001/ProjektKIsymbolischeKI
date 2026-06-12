@@ -14,6 +14,9 @@ from src import debug
 from src import alphaBeta
 from src import checkBoard
 
+
+
+
 #Lobby konfigurieren
 #Optionen: tictactoe, archimedes, tablut
 GAMETYPE = "tablut"
@@ -49,79 +52,99 @@ args = parser.parse_args()
 
 def joinLobby(client):
     #Lobby beitreten/erstellen
-    command =f"join {args.lobbyname}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()          
-    print(f"Empfangen: {response}")
+    client.send(f"join {args.lobbyname}\n")
+    #command =f"join {args.lobbyname}\n"
+    #client.sendall(command.encode("utf-8"))
+    response = client.recv()          
     print(f"Erfolgreich in {args.lobbyname} drin")  
 
-def getGameData(client,res):
+def getGameData(client):
+
+    res = client.recv()
     print(f"Empfangen: {res}")
     if res == "config":
         #Sammeln der Spieleinstellungen
-        gameType = client.recv(1024).decode("utf-8").strip()
+        gameType = client.recv()
+        print("1")
         print(gameType)
-        timeAcc = client.recv(1024).decode("utf-8").strip()
+        timeAcc = client.recv()
+        print("2")
         print(timeAcc)
-        response = client.recv(1024).decode("utf-8").strip()
+        response = client.recv()
+        print("3")
         print(response)
-        board = client.recv(1024).decode("utf-8").strip()
+        board = client.recv()
+        print("4")
         print(board)        
-        verify = client.recv(1024).decode("utf-8").strip()
+        verify = client.recv()
+        print("5")
         print(verify)
 
     return gameType,timeAcc,response,board,verify
 
 def createLobby(client):
     print("LOBBY ERSTELLEN:")
-    command =f"create {args.lobbyname}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()            
-    print(response)
+    client.send(f"create {args.lobbyname}\n")
+    #command =f"create {args.lobbyname}\n"
+    #client.sendall(command.encode("utf-8"))
+    #response = client.recv(1024).decode("utf-8").strip()            
+    response = client.recv()            
+
     print("TABLUT EINSTELLEN:")
-    command =f"set game.type {GAMETYPE}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()
-    print(response)
+    client.send(f"set game.type {GAMETYPE}\n")
+    #command =f"set game.type {GAMETYPE}\n"
+    #client.sendall(command.encode("utf-8"))
+    #response = client.recv(1024).decode("utf-8").strip()
+    response = client.recv()
+
     print("SCHEDULER EINSTELLEN:")       
-    command =f"set scheduler {SCHEDULER}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()
-    print(response)
+    client.send(f"set scheduler {SCHEDULER}\n")
+    #command =f"set scheduler {SCHEDULER}\n"
+    #client.sendall(command.encode("utf-8"))
+    #response = client.recv(1024).decode("utf-8").strip()
+    response = client.recv()
+    #print(response)
 
     print("MIN_PLAYERS EINSTELLEN:")       
-    command =f"set min_players {MIN_PLYERS}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()
-    print(response)
+    client.send(f"set min_players {MIN_PLYERS}\n")
+    #command =f"set min_players {MIN_PLYERS}\n"
+    #client.sendall(command.encode("utf-8"))
+    #response = client.recv(1024).decode("utf-8").strip()
+    response = client.recv()
 
     print("MAX_PLAYERS EINSTELLEN:")       
-    command =f"set min_players {MAX_PLYERS}\n"
-    client.sendall(command.encode("utf-8"))
-    response = client.recv(1024).decode("utf-8").strip()
-    print(response)
+    client.send(f"set max_players {MAX_PLYERS}\n")
+    #command =f"set max_players {MAX_PLYERS}\n"
+    #client.sendall(command.encode("utf-8"))
+    #response = client.recv(1024).decode("utf-8").strip()
+    response = client.recv()
+
 
 def registerLogin(client):
     #registrieren
-    command = "register\n"
-    client.sendall(command.encode("utf-8")) 
-    print(f"gesendet: {command}")        
+    #command = "register\n"
+    #client.sendall(command.encode("utf-8")) 
+    #print(f"gesendet: {command}")
     # Antwort empfangen
-    response = client.recv(1024).decode("utf-8").strip()            
-    print(f"Empfangen: {response}")   
+    client.send("register\n")
+    response = client.recv()
+    client.send(f"login {response}\n")
+    response = client.recv()             
+    
+    #print(f"Empfangen: {response}")   
     #login
-    command = f"login {response}\n"
-    client.sendall(command.encode("utf-8")) 
-    print(f"gesendet: {command}")  
-    response = client.recv(1024).decode("utf-8").strip()            
-    print(f"Empfangen: {response}")
+    #command = f"login {response}\n"
+    #client.sendall(command.encode("utf-8"))       
+    #print(f"gesendet: {command}")  
+    #response = client.recv(1024).decode("utf-8").strip()            
+    #print(f"Empfangen: {response}")
 
 def findLobbies(client):
-    command =f"ls\n"
-    client.sendall(command.encode("utf-8"))
-    print(f"gesendet: {command}")  
-    response = client.recv(1024).decode("utf-8").strip()            
-    print(f"Empfangen: {response}") 
+    #command =f"ls\n"
+    #client.sendall(command.encode("utf-8"))
+    #print(f"gesendet: {command}")  
+    client.send(f"ls\n")
+    response = client.recv()            
     return response
 
 def convertTo2D(boardStr):
@@ -181,7 +204,8 @@ def myTurn(board,client):
     print(command)
     print("AKTUELLES BOARD:")
     debug.print_board(board)
-    client.sendall(command.encode("utf-8"))
+    client.send(f"{convert_move}\n")
+    #client.sendall(command.encode("utf-8"))
     #TODO NACH JEDEM MOVE ERHÄLT MAN SEINE RESTLICHE ZEIT MIT !
 
     
@@ -203,26 +227,49 @@ def switchTurn(onTurnFlag,player):
     elif player == 'd' and not onTurnFlag :
         config.onTurn = 'Black' 
 
+
+class Client:
+    def __init__(self, client):
+        self.client = client #UNKLAR
+        self._writer = client.makefile('w', encoding='utf-8')
+        self._reader = client.makefile('r', encoding='utf-8')
+      
+    def send(self, msg):
+        print(msg)
+        self._writer.write(msg)
+        self._writer.flush()
+
+    def recv(self) -> str:
+        response = self._reader.readline().strip()
+        print(f"Empfangen: {response}")
+        return response
+    
+    def close(self):
+        self.reader.close()
+        self.writer.close()
+        self.sock.close()
+
+
+
 def main():
     LOBBYCREATOR = False
     # Server-Konfiguration (Standard-Werte anpassen falls nötig)
     HOST = "127.0.0.1"  # localhost
     PORT = 5000        # Standard-Port (ggf. anpassen)
+    client = None
 
     try:
         # Verbindung zum Server herstellen
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect((HOST, PORT))
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((HOST, PORT))
         print(f"Verbunden mit {HOST}:{PORT}")
+        
+        client = Client(sock)
+    
+    
+        client.send("gspy\n")
+        response = client.recv()
 
-        # Handshake-Befehl senden
-        command = "gspy\n"
-        client.sendall(command.encode("utf-8"))
-        print(f"Gesendet: {command.strip()}")
-
-        # Antwort empfangen
-        response = client.recv(1024).decode("utf-8").strip()
-        print(f"Empfangen: {response}")
 
         # Prüfen ob Antwort "ok" ist
         if response == "ok":
@@ -239,32 +286,35 @@ def main():
                 LOBBYCREATOR = True
                 createLobby(client)
 
-            if LOBBYCREATOR  :
+            if LOBBYCREATOR :
                 #Creator versucht alle 3 sek Spiel zu starten, denn es kann sein das er alleine in Lobby ist, sonst spielbeginnt
                 while True:
-                    command = f"start\n"
-                    client.sendall(command.encode("utf-8"))
-                    response = client.recv(1024).decode("utf-8").strip()
-                    print(response)
+                    client.send(f"start\n")
+                    response = client.recv()
+                    #command = f"start\n"
+                    #client.sendall(command.encode("utf-8"))
+                    #response = client.recv(1024).decode("utf-8").strip()
+                    #print(response)
                     if response == "queued":                        
                         break
                     time.sleep(3)
-                    
+
             else:
                 print("Warte auf Spielstart...")
                 while True:                    
                     #Es wird aus schleife rausgebrochen sobald Lobby ersteller "start drückt", Teilnehmer kriegt die Info queued.
-                    response = client.recv(1024).decode("utf-8").strip()
+                    #response = client.recv(1024).decode("utf-8").strip()
+                    response = client.recv()
                     if response == "queued":
                         break
                     time.sleep(20)
-
             print("Spielbeginnt:")   
 
             #TODO timeAcc,PlayerTimAccount noch anpassen
             #TODO String FEN übers Terminal anpassbar
-            response = client.recv(1024).decode("utf-8").strip()
-            gameType,timeAcc,playerTimeAccount,boardStr,verify = getGameData(client,response)
+            #response = client.recv(1024).decode("utf-8").strip()
+
+            gameType,timeAcc,playerTimeAccount,boardStr,verify = getGameData(client)
 
             print("A")
             board, onturn = debug.FenToBoard(boardStr.split("'")[1])
@@ -276,15 +326,11 @@ def main():
                 print(f"Falsches Spiel erhalten: {gameType}. Programm wird beendet.")
                 sys.exit(1)
 
-            #print(verify)
-            #print(type(verify))
             if verify == 'ok':
-                command = f"ok\n"
-                client.sendall(command.encode("utf-8"))
-                print("GESENDET! ")
+                client.send(f"ok\n")
             
-            
-            response = client.recv(1024).decode("utf-8").strip()
+            response = client.recv()
+
             if response == "start":                
                 print("START")
                 switchTurn(True,onturn)
@@ -295,23 +341,23 @@ def main():
                 print("Wait")
                 switchTurn(False,onturn)
                 print(config.onTurn)
-                response = client.recv(1024).decode("utf-8").strip()                
+                response = client.recv()                
                 enemyTurn(board,response)
                 myTurn(board,client)
             else:
                 print(f"FEHLER Response war: {response}")
             
-            response = client.recv(1024).decode("utf-8").strip()
-            print(response)
+            response = client.recv()
     
             while True:
                 
                 #Spielende erreicht:
-                response = client.recv(1024).decode("utf-8").strip()
+                response = client.recv()
                 if response == 'over':
                     print(f"response: {response}")
                     break
-                elif response == "err 'invalid move or not your turn'":...
+                elif response == "err 'invalid move or not your turn'":... #TODO
+                elif response == "err 'time account exceeded": ... #TODO
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)

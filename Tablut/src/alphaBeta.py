@@ -23,19 +23,21 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
         #print(f"{all_Moves}")
 
         for goalPos in allMoves:
-            
-
 
             boardCopy = copy.deepcopy(board)
             saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            
+            row,col = startPos
+            figure = board[row][col]
 
             score = alphaBetaMin(
                 newBoard, alpha, beta, depth - 1,
                 makeMove.total_moves(newBoard, switch(onTurn)),
                 switch(onTurn), False
             )
-
+            
+            #saveBoardState.undoMove(board,changed_List,goalPos,startPos,figure)
             saveBoardState.restore_global_state(saved_state)
 
             if score > maxVal:
@@ -47,8 +49,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 alpha = score
 
             if score >= beta:
-                return maxVal  # Beta-Cutoff
-        
+                return maxVal  # Beta-Cutoff        
 
     return maxVal  # ← NACH der Schleife
 
@@ -57,7 +58,6 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board,depth)
-
         return evaluateFunction.eval(board,depth)
 
     minVal = math.inf
@@ -68,7 +68,6 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
         for goalPos in allMoves:
             
-
             boardCopy = copy.deepcopy(board)
             saved_state = saveBoardState.save_global_state()
             newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))

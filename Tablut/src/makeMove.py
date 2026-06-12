@@ -78,17 +78,6 @@ def updateBoard(board,bestMove):
     # Figur auf der Startposition merken
     figure = board[start_row][start_col]
 
-    #debug
-    #if (goal_row, goal_col) in [(0,0),(0,8),(8,0),(8,8)]:
-    #    print(f"⚠️  FIGUR {figure} landet auf Eckfeld ({goal_row},{goal_col})!")
-    #    print(f"   Startpos: ({start_row},{start_col})")
-
-    #print_board(board)
-
-    #print(f"StartPos: {random_StartPos} Zufälliger Zug: {random_GoalPos}")
-
-    
-
     # Startposition leeren
     board[start_row][start_col] = 0
     
