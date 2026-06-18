@@ -3,6 +3,7 @@ from src import evaluateFunction
 from src import makeMove
 from src import config
 from src import debug
+from src import zugsortierung
 from src.transpositionTable import trans_table
 #from src import transpositionTable_array
 #trans_table = transpositionTable_array.ArrayTranspositionTable(size_mb=128)
@@ -36,19 +37,22 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     maxVal = -math.inf
     best_move = None
 
+    zugsortierung.zugsortierung(board,all_Moves)
+
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
             
-            boardCopy = copy.deepcopy(board)
+            
             saved_state = saveBoardState.save_global_state()
-            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            changed_List = makeMove.updateBoard(board, (startPos, goalPos))
 
             score = alphaBetaMin(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
+                board, alpha, beta, depth - 1,
+                makeMove.total_moves(board, switch(onTurn)),
                 switch(onTurn), False
             )
 
+            saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
             
 
@@ -96,19 +100,22 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     #print(type(all_Moves))
     #print(f"THE MOVES: {all_Moves}")
 
+    zugsortierung.zugsortierung(board,all_Moves)
+
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
             
-            boardCopy = copy.deepcopy(board)
+            
             saved_state = saveBoardState.save_global_state()
-            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            changed_List = makeMove.updateBoard(board, (startPos, goalPos))
 
             score = alphaBetaMax(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
+                board, alpha, beta, depth - 1,
+                makeMove.total_moves(board, switch(onTurn)),
                 switch(onTurn), False
             )
 
+            saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
             
             if score < minVal:

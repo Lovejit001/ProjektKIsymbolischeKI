@@ -97,9 +97,10 @@ def updateBoard(board,bestMove):
     if len(config.boardHash) > 20:
         config.boardHash.pop(0)
 
-    board = attack(board,goalPos)
+    move_track = attack(board,goalPos)
 
-    return board
+
+    return [figure, bestMove, move_track]
 
 def get_figures_Moves(board,pos): 
 

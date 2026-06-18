@@ -24,20 +24,20 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
         for goalPos in allMoves:
 
-            boardCopy = copy.deepcopy(board)
+            
             saved_state = saveBoardState.save_global_state()
-            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            changed_List = makeMove.updateBoard(board, (startPos, goalPos))
             
             row,col = startPos
-            figure = board[row][col]
+            
 
             score = alphaBetaMin(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
+                board, alpha, beta, depth - 1,
+                makeMove.total_moves(board, switch(onTurn)),
                 switch(onTurn), False
             )
             
-            #saveBoardState.undoMove(board,changed_List,goalPos,startPos,figure)
+            saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
 
             if score > maxVal:
@@ -68,16 +68,17 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
         for goalPos in allMoves:
             
-            boardCopy = copy.deepcopy(board)
+            
             saved_state = saveBoardState.save_global_state()
-            newBoard = makeMove.updateBoard(boardCopy, (startPos, goalPos))
+            changed_List = makeMove.updateBoard(board, (startPos, goalPos))
 
             score = alphaBetaMax(
-                newBoard, alpha, beta, depth - 1,
-                makeMove.total_moves(newBoard, switch(onTurn)),
+                board, alpha, beta, depth - 1,
+                makeMove.total_moves(board, switch(onTurn)),
                 switch(onTurn), False
             )
 
+            saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
             if score < minVal:
                 minVal = score

@@ -12,7 +12,7 @@ import math
 from src import config
 from src import makeMove
 from src import debug
-from src import alphaBeta
+from src import alphaBetaWithTransposition
 from src import checkBoard
 
 
@@ -197,7 +197,7 @@ def decode_move(command):
 
 
 def myTurn(board,client):
-    alphaBeta.getBestMove(board,config.onTurn,depth=3)
+    alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
     convert_move=encode_move(config.bestMove)
     command =f"{convert_move}\n"
     print(f"MOVE IST: {config.bestMove}")
@@ -359,7 +359,14 @@ def main():
                     break
                 elif response == "err 'invalid move or not your turn'":
                     print("ERRRRRRORRRRRRR") #TODO
-                elif response == "err 'time account exceeded": ... #TODO
+                elif response == "err 'time account exceeded'":  #TODO
+
+                    if config.onTurn == 'Black' :
+                        result =1 
+                    elif  config.onTurn == 'White' :
+                        result = -1
+                        
+                    
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)
@@ -373,10 +380,12 @@ def main():
             print("GAME OVER")
             print("End Board: \n")
             debug.print_board(board)
+            
 
             #TODO letzter Move wird nicht ausgeführt daher DRAW
-            result = checkBoard.checkBoard2(board)
-            if result == 2: 
+            if result != 1 and result != -1:
+                result = checkBoard.checkBoard2(board)
+
                 print("WINNER IS WHITE")
             elif result == -1:
                 print("WINNER IS BLACK")

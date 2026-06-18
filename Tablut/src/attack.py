@@ -31,16 +31,16 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-                    #changed_list.append((row-1,col),config.K) 
+                    changed_list.append(((row-1,col),config.K))
             # Fall 2: Gegner ist direkt am Rand (nächste Position ist „Corner“)
             #elif isAtCorner((row-2,col),board):
             elif ((row-1,col) == (1,0) or (row-1,col) == (1,8)):     
                 #Ist die geschlagene Figur
                 if board[row-1][col] == config.K:
                     config.K_pieces -= 1
-                    #changed_list.append((row-1,col),config.K)
-                #else:
-                    #changed_list.append((row-1,col),config.W)  
+                    changed_list.append(((row-1,col),config.K))
+                else:
+                    changed_list.append(((row-1,col),config.W))
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -51,15 +51,21 @@ def attack(board,Pos):
                     board[row-1][col] = 0 
                     config.zugRegel = 0
                     config.W_pieces -= 1  
-                    #changed_list.append((row-1,col),config.W) 
-            # Fall 4: Gegner (Weiß Bauer oder König) ist eingeschlossen von einer eigenen Figur (Schwarz)
+                    changed_list.append(((row-1,col),config.W))
+            # Fall 4: Gegner (Weiß Bauer) ist eingeschlossen vom Gegner und Thron
+            elif (row-1,col) == (5,4) and board[row-1][col] == config.W:
+                board[row-1][col] = 0
+                config.zugRegel = 0
+                config.W_pieces -= 1
+                changed_list.append(((row-1,col),config.W))
+            
+            # Fall 5: Gegner (Weiß Bauer oder König) ist eingeschlossen von einer eigenen Figur (Schwarz)    
             elif (row -1 >= 1) and board[row-2][col] == config.B:
-                print("AAA")
                 if board[row-1][col] == config.K:
                     config.K_pieces -= 1  
-                    #changed_list.append((row-1,col),config.K)
-                #else:
-                    #changed_list.append((row-1,col),config.W)  
+                    changed_list.append(((row-1,col),config.K))
+                else:
+                    changed_list.append(((row-1,col),config.W))
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -73,14 +79,14 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-                    #changed_list.append((row+1,col),config.K) 
+                    changed_list.append(((row+1,col),config.K))
             #elif isAtCorner((row+2,col),board):
             elif ((row+1,col) == (7,0) or (row+1,col) == (7,8)):
                 if board[row+1][col] == config.K:
                     config.K_pieces -= 1
-                    #changed_list.append((row+1,col),config.K)
-                #else:
-                    #changed_list.append((row+1,col),config.W)      
+                    changed_list.append(((row+1,col),config.K))
+                else:
+                    changed_list.append(((row+1,col),config.W))      
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -92,14 +98,21 @@ def attack(board,Pos):
                     board[row+1][col] = 0
                     config.zugRegel = 0
                     config.W_pieces -= 1 
-                    #changed_list.append((row+1,col),config.W) 
+                    changed_list.append(((row+1,col),config.W)) 
+            
+            # Fall 4: Gegner (Weiß Bauer) ist eingeschlossen vom Gegner und Thron
+            elif (row+1,col) == (3,4) and board[row+1][col] == config.W:
+                board[row+1][col] = 0
+                config.zugRegel = 0
+                config.W_pieces -= 1
+                changed_list.append(((row+1,col),config.W))
 
             elif (row+1 <= 7) and board[row+2][col] == config.B:
                 if board[row+1][col] == config.K:
                     config.K_pieces -= 1
-                    #changed_list.append((row+1,col),config.K)
-                #else:
-                    #changed_list.append((row+1,col),config.W)  
+                    changed_list.append(((row+1,col),config.K))
+                else:
+                    changed_list.append(((row+1,col),config.W))  
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -113,14 +126,14 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-                    #changed_list.append((row,col-1),config.K) 
+                    changed_list.append(((row,col-1),config.K) )
             #elif isAtCorner((row,col-2),board):
             elif ((row,col-1) == (0,1) or (row,col-1) == (8,1)):
                 if board[row][col-1] == config.K:
                     config.K_pieces -= 1    
-                    #changed_list.append((row,col-1),config.K) 
-                #else:
-                    #changed_list.append((row,col-1),config.W) 
+                    changed_list.append(((row,col-1),config.K)) 
+                else:
+                    changed_list.append(((row,col-1),config.W))
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -132,14 +145,20 @@ def attack(board,Pos):
                     board[row][col-1] = 0
                     config.zugRegel = 0
                     config.W_pieces -= 1 
-                    #changed_list.append((row,col-1),config.W) 
+                    changed_list.append(((row,col-1),config.W)) 
+            # Fall 4: Gegner (Weiß Bauer) ist eingeschlossen vom Gegner und Thron
+            elif (row,col-1) == (4,5) and board[row][col-1] == config.W:
+                board[row][col-1] = 0
+                config.zugRegel = 0
+                config.W_pieces -= 1
+                changed_list.append(((row,col-1),config.W))
 
             elif (col-1 >= 1) and board[row][col-2] == config.B :
                 if board[row][col-1] == config.K:
                     config.K_pieces -= 1
-                    #changed_list.append((row,col-1),config.K) 
-                #else:
-                    #changed_list.append((row,col-1),config.W) 
+                    changed_list.append(((row,col-1),config.K))
+                else:
+                    changed_list.append(((row,col-1),config.W))
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -152,14 +171,14 @@ def attack(board,Pos):
                     config.zugRegel = 0
                     config.W_pieces -= 1
                     config.K_pieces -= 1
-                    #changed_list.append((row,col+1),config.K) 
+                    changed_list.append(((row,col+1),config.K))
             #elif isAtCorner((row,col+2),board):
             elif ((row,col+1) == (0,7) or (row,col+1) == (8,7)):
                 if board[row][col+1] == config.K:
                     config.K_pieces -= 1
-                    #changed_list.append((row,col+1),config.K)
-                #else:
-                    #changed_list.append((row,col+1),config.W)                      
+                    changed_list.append(((row,col+1),config.K))
+                else:
+                    changed_list.append(((row,col+1),config.W))                      
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -170,14 +189,20 @@ def attack(board,Pos):
                     board[row][col+1] = 0 
                     config.zugRegel = 0
                     config.W_pieces -= 1 
-                    #changed_list.append((row,col+1),config.W) 
+                    changed_list.append(((row,col+1),config.W))
+            # Fall 4: Gegner (Weiß Bauer) ist eingeschlossen vom Gegner und Thron
+            elif (row,col+1) == (4,3) and board[row][col+1] == config.W:
+                board[row][col+1] = 0
+                config.zugRegel = 0
+                config.W_pieces -= 1
+                changed_list.append(((row,col+1),config.W))
+
             elif (col +1 <= 7) and board[row][col+2] == config.B:
                 if board[row][col+1] == config.K:                    
                     config.K_pieces -= 1
-                    #changed_list.append((row,col+1),config.K) 
-                #else: 
-                    #changed_list.append((row,col+1),config.W) 
-
+                    changed_list.append(((row,col+1),config.K)) 
+                else: 
+                    changed_list.append(((row,col+1),config.W))
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.W_pieces -= 1
@@ -189,12 +214,18 @@ def attack(board,Pos):
         if row > 0 and (board[row-1][col] == config.B) :
             #if isAtCorner((row-2,col),board):
             if ((row-1,col) == (1,0) or (row-1,col) == (1,8)):
-                #changed_list.append((row-1,col))
+                changed_list.append((row-1,col))
+                board[row-1][col] = 0
+                config.zugRegel = 0
+                config.B_pieces -= 1
+            # eingeschlossen vom Gegner und Thron
+            elif (row-1,col) == (5,4) and board[row-1][col] == config.B:
+                changed_list.append((row-1,col))
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
             elif (row-1 >= 1) and board[row-2][col] in (config.W, config.K) :
-                #changed_list.append((row-1,col))
+                changed_list.append((row-1,col))
                 board[row-1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
@@ -203,12 +234,17 @@ def attack(board,Pos):
         if row < 8 and (board[row+1][col] == config.B) :
             #if isAtCorner((row+2,col),board):
             if ((row+1,col) == (7,0) or (row+1,col) == (7,8)):   
-                #changed_list.append((row+1,col)) 
+                changed_list.append((row+1,col)) 
+                board[row+1][col] = 0
+                config.zugRegel = 0
+                config.B_pieces -= 1
+            elif (row+1,col) == (3,4) and board[row+1][col] == config.B:
+                changed_list.append((row+1,col))
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
             elif (row+1 <= 7) and board[row+2][col] in (config.W, config.K):
-                #changed_list.append((row+1,col)) 
+                changed_list.append((row+1,col)) 
                 board[row+1][col] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
@@ -218,13 +254,20 @@ def attack(board,Pos):
             #if isAtCorner((row,col-2),board):
             if ((row,col-1) == (0,1) or (row,col-1) == (8,1)):
                 
-                #changed_list.append((row,col-1)) 
+                changed_list.append((row,col-1)) 
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
+
+            elif (row,col-1) == (4,5) and board[row][col-1] == config.B:
+                changed_list.append((row,col-1))
+                board[row][col-1] = 0
+                config.zugRegel = 0
+                config.B_pieces -= 1
+
             elif (col-1 >= 1) and board[row][col-2] in (config.W, config.K) :
                 
-                ##changed_list.append((row,col-1)) 
+                changed_list.append((row,col-1)) 
                 board[row][col-1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
@@ -233,17 +276,25 @@ def attack(board,Pos):
         if col < 8 and (board[row][col+1] == config.B):
             #if isAtCorner((row,col+2),board):
             if ((row,col+1) == (0,7) or (row,col+1) == (8,7)):    
-                #changed_list.append((row,col+1)) 
-                board[row][col+1] = 0
-                config.zugRegel = 0
-                config.B_pieces -= 1
-            elif (col+1 <= 7) and board[row][col+2] in (config.W, config.K):
-                ##changed_list.append((row,col+1)) 
+                changed_list.append((row,col+1)) 
                 board[row][col+1] = 0
                 config.zugRegel = 0
                 config.B_pieces -= 1
 
-    return board
+            elif (row,col+1) == (4,3) and board[row][col+1] == config.B:
+                changed_list.append((row,col+1))
+                board[row][col+1] = 0
+                config.zugRegel = 0
+                config.B_pieces -= 1    
+
+            elif (col+1 <= 7) and board[row][col+2] in (config.W, config.K):
+                changed_list.append((row,col+1)) 
+                board[row][col+1] = 0
+                config.zugRegel = 0
+                config.B_pieces -= 1
+
+    #gibt alle korridanten Zurück von Felder die man vom Gegener geschlagen hat (relevant für UndoMove)
+    return changed_list
 
 # Funktion prüft ob könig im Thron, umzingelt ist
 def isKingSurrounded(board,Pos):
@@ -343,7 +394,7 @@ def isAtCorner(pos,board):
     return at_corner or out_of_bounds or (next_to_Thron and empty_Thron)
 """
 
-
+"""
 expected2 = [
             [0, W, 0, 0, 0, 0, 0, W, 0],
             [W, B, 0, 0, 0, 0, 0, B, W],
@@ -359,14 +410,59 @@ expected2 = [
 expected = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, B],
-    [0, 0, 0, B, 0, B, B, 0, 0],
+    [0, 0, 0, 0, B, 0, 0, 0, 0],
     [B, 0, 0, 0, W, 0, 0, 0, 0],
-    [B, B, 0, W, 0, 0, 0, 0, B],
-    [B, 0, 0, 0, 0, W, 0, B, 0],
-    [K, 0, 0, 0, 0, 0, 0, 0, 0],
+    [B, 0, B, W, 0, W, B, 0, B],
+    [B, 0, 0, 0, W, 0, 0, B, 0],
+    [K, 0, 0, 0, B, 0, 0, 0, 0],
     [B, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, B, B, B, W, 0, 0]
 ]
 
-b=attack(expected,(7,0))
+b=attack(expected,(2,4))
+b=attack(expected,(4,2))
+b=attack(expected,(6,4))
+b=attack(expected,(4,6))
 print_board(b)
+
+
+
+expected2 = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, B],
+    [0, 0, 0, 0, W, 0, 0, 0, 0],
+    [B, 0, 0, 0, B, 0, 0, 0, 0],
+    [B, 0, W, B, 0, B, W, 0, B],
+    [B, 0, 0, 0, B, 0, 0, B, 0],
+    [K, 0, 0, 0, W, 0, 0, 0, 0],
+    [B, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, B, B, B, W, 0, 0]
+]
+
+
+c=attack(expected2,(2,4))
+c=attack(expected2,(4,2))
+c=attack(expected2,(6,4))
+c=attack(expected2,(4,6))
+print_board(c)
+
+
+expected3 = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, B],
+    [0, 0, 0, 0, B, 0, 0, 0, 0],
+    [B, 0, 0, 0, K, 0, 0, 0, 0],
+    [B, 0, B, K, 0, K, B, 0, B],
+    [B, 0, 0, 0, K, 0, 0, B, 0],
+    [K, 0, 0, 0, B, 0, 0, 0, 0],
+    [B, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, B, B, B, W, 0, 0]
+]
+
+d=attack(expected3,(2,4))
+d=attack(expected3,(4,2))
+d=attack(expected3,(6,4))
+d=attack(expected3,(4,6))
+print_board(d)
+
+"""
