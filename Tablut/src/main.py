@@ -17,7 +17,18 @@ def main():
 
     config.onTurn = "Black"
 
-    board = definitions.starting_board
+    #board = definitions.starting_board
+    board = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, B, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [K, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
+    ]
 
     #Zählt Anzahl aller Figuren jeweils vor Start des Spieles
     config.init_pieces(board)
