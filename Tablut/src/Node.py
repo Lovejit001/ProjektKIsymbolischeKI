@@ -66,13 +66,28 @@ def ucb_score(parent, child):
 
     #Explorationskonstante
     C=1
+    progressive_bias_weight = 0.5
 
     if child.visit_count == 0:
         return math.inf
     
     value = -child.value() if child.visit_count > 0 else 0
     explore = C * math.sqrt(math.log(parent.visit_count + 1) / child.visit_count)
-    return value + explore
+
+    progressive_bias = 0
+    if child.state is not None:
+        heuristic = eval(child.state, 0)
+        if parent.onTurn == 'Black':
+            heuristic = -heuristic
+
+        normalized_heuristic = math.tanh(heuristic / 100000)
+        progressive_bias = (
+            progressive_bias_weight
+            * normalized_heuristic
+            / (child.visit_count + 1)
+        )
+
+    return value + explore + progressive_bias
 
 
 def legal_moves(board, onTurn):
@@ -197,10 +212,10 @@ class MCTS:
         init_pieces(state)
         
         saved_state = saveBoardState.save_global_state()
-        print("VORHER ")
-        print(config.B_pieces)
-        print(config.W_pieces)
-        print(config.K_pieces)
+        #print("VORHER ")
+        #print(config.B_pieces)
+        #print(config.W_pieces)
+        #print(config.K_pieces)
         #TODO EINE ART UNDOMOVE muss rein weil sonst tatsächtliches Board modifiziert wird
 
         #root = Node(state, onTurn)
@@ -260,9 +275,9 @@ class MCTS:
         for move,node in root.children.items():
             print(f"{move} -- {node.score_sum}")
 
-        #print("BEST MOVE")
-        #best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
-        #print(best_move)
+        print("BEST MOVE")
+        best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
+        print(best_move)
 
 
         
@@ -270,8 +285,8 @@ class MCTS:
         best_move, _, best_score = root.best_child()
 
         # Fallback: Falls kein Zug die Mindestbesuche hat, nimm den meistbesuchten
-        #if best_move is None:
-        #    best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
+        if best_move is None:
+            best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
     
         print(f"BEST MOVE: {best_move} (Score: {best_score})")
 
@@ -342,7 +357,7 @@ movingBoard1 = [
     [B, 0, 0, B, 0, 0, 0, 0, 0],
     [0, B, 0, 0, 0, 0, 0, 0, 0],
     [0, B, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, B, 0, 0, K, 0, 0],
+    [0, 0, 0, B, 0, 0, 0, 0, K],
     [0, 0, 0, B, 0, 0, 0, 0, 0],
     [0, B, B, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
