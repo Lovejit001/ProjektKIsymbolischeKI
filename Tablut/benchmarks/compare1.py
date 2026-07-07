@@ -23,10 +23,19 @@ def game1(board):
 
     #Zählt Anzahl aller Figuren jeweils vor Start des Spieles
     config.init_pieces(board)
-
+    
     config.onTurn ='Black'
 
+    #print(board)
+    #print(type(board))
+    #debug.print_board(board)
+    #print(board[0][0])
+    #print(board[0][8])
+    #print(board[8][0])
+    #print(board[8][8])
+    
     while checkBoard.checkBoard2(board) == -2:
+        #print("HELLLLLLOOOOOO$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
         oldBoard = [row[:] for row in board]
 
@@ -35,7 +44,13 @@ def game1(board):
         else:
             alphaBeta.getBestMove(board,config.onTurn,depth=3)
 
-        board = makeMove.updateBoard(board,config.bestMove)
+        #print("BEST MOVE")
+        #print(config.bestMove)
+
+
+        makeMove.updateBoard(board,config.bestMove)
+        #debug.print_board(board)
+
 
         if config.onTurn == "White":
             config.onTurn = "Black"

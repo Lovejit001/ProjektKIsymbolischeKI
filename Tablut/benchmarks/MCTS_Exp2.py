@@ -2,6 +2,7 @@ import copy
 import time
 
 from src import config, debug
+from src import checkBoard
 from src.Node import MCTS
 from tests.definitions import starting_board, alphaBeta_FinalMove
 
@@ -44,4 +45,4 @@ if __name__ == "__main__":
         print(f"{'='*55}")
         print(f"Stellung: {name} | Am Zug: {turn}")
         debug.print_board(board)
-        benchmark_mcts(board, turn, number_simulations=10000)
+        benchmark_mcts(board, turn, number_simulations=1000)

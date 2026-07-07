@@ -258,9 +258,9 @@ class MCTS:
         #print_path_to_best(root)
 
 
-        print("FINALER MOVE")
-        print(root.score_sum)
-        print(root.visit_count)
+        #print("FINALER MOVE")
+        #print(root.score_sum)
+        #print(root.visit_count)
         #debug.print_debug(root.state)
 
 
@@ -270,14 +270,14 @@ class MCTS:
         #print(config.K_pieces)
 
         move, _, _ = root.best_child()   
-        print("BEST MOVE:")
-        print(move)
-        for move,node in root.children.items():
-            print(f"{move} -- {node.score_sum}")
+        #print("BEST MOVE:")
+        #print(move)
+        #for move,node in root.children.items():
+            #print(f"{move} -- {node.score_sum}")
 
-        print("BEST MOVE")
+        #print("BEST MOVE")
         best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
-        print(best_move)
+        #print(best_move)
 
 
         
@@ -288,7 +288,7 @@ class MCTS:
         if best_move is None:
             best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
     
-        print(f"BEST MOVE: {best_move} (Score: {best_score})")
+        #print(f"BEST MOVE: {best_move} (Score: {best_score})")
 
         return root
 
@@ -313,7 +313,7 @@ class MCTS:
         while(checkBoard2(board) == -2 ):
             
             #Wenn nach 100 Zügen das Spiel nicht zuende ist wird  wird Unentschieden 0 zurückgegeben
-            if i == 100: 
+            if i == 30: 
                 saveBoardState.restore_global_state(saved_state)
                 return 0 
             
@@ -339,12 +339,12 @@ class MCTS:
 
         #Wenn Spielzuende ist wird nochmal einmal zu viel gemacht daher muss man hier einmal zurücksetzen
         
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        debug.print_board(board)
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        #debug.print_board(board)
         # In MCTS ist i die Anzahl bereits gespielter Simulationszuege.
         # evaluateFunction.eval erwartet aber: groesserer depth = frueherer Gewinn.
         score = self.score_for_player(board, -i, onTurn)
-        print(f"Score IST {score} onTurn: {onTurn} ")
+        #print(f"Score IST {score} onTurn: {onTurn} ")
         
         saveBoardState.restore_global_state(saved_state)
         return score
@@ -365,12 +365,12 @@ movingBoard1 = [
 ]
 
 
-if __name__ == "__main__":
-    board = movingBoard1
+#if __name__ == "__main__":
+    #board = movingBoard1
     #board = starting_board
-    onTurn = 'White'
+    #onTurn = 'White'
 
-    mcts = MCTS()
-    root = mcts.run(state=board,onTurn=onTurn)
-    print("Ende")
-    print(root.avg_value())
+    #mcts = MCTS()
+    #root = mcts.run(state=board,onTurn=onTurn)
+    #print("Ende")
+    #print(root.avg_value())
