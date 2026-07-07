@@ -1,9 +1,7 @@
 from src import config
-from src import alphaBeta
 from src import makeMove
-from src import debug
 from src import saveBoardState
-from src import attack
+
 import copy
 
 B = 'B'

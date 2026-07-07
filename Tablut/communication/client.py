@@ -319,6 +319,7 @@ def main():
 
             print("A")
             board, onturn = debug.FenToBoard(boardStr.split("'")[1])
+            config.init_pieces(board) #Neu TODO gucken ob pass
             print("B")
             debug.print_board(board)
             print("C")

@@ -7,6 +7,10 @@ eval_counter = 0
 boardHash = []
 onTurn = "Black"
 bestMove: tuple[tuple[int, int], tuple[int, int]] | None = None # Output ((startRow, startCol),(goalRow, goaldCol))
+search_start = 0.0
+stop_time = 0.0
+nodes = 0
+stop_search = False
 
 W = 'W'
 K = 'K'
@@ -53,3 +57,10 @@ def init_pieces(board):
                 W_pieces += 1
             elif board[i][j] == W:
                 W_pieces += 1
+
+def reset_time():
+    global search_start, stop_time, nodes, stop_search
+    search_start = 0.0
+    stop_time = 0.0
+    nodes = 0
+    stop_search = False

@@ -67,6 +67,20 @@ def makeMove(board,all_possible_moves):
 
     return board
 
+def randomMove(board,onTurn):
+
+    all_Moves = total_moves(board,onTurn)
+
+    if all_Moves:
+        startPos = random.choice(list(all_Moves.keys()))
+        goalPos = random.choice(all_Moves[startPos])
+        return (startPos, goalPos)
+    
+    else: 
+        print(f"in FILE makeMoke Zeile 80 Bin ich: Fehler liegt daran KEINE MOVES MÖGLICH FÜR SPIELER: {onTurn} ")
+        return ((),())
+
+
 def updateBoard(board,bestMove):     
 
     (startPos, goalPos) = bestMove

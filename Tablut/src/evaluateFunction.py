@@ -282,8 +282,8 @@ def eval(board, depth=0):
     score += w_center * W_CENTER_CONTROL
     score += b_center * B_CENTER_CONTROL
 
-    if depth != 0:
-        score = score / depth
+    #if depth != 0:
+    #    score = score / depth
 
     return score
 
