@@ -5,7 +5,7 @@ def print_dic(dict):
     for key, value in dict.items():
         print(f"{key}: {value},")
 
-def print_board(board):
+def print_board1(board):
     size = len(board)
 
     for i, row in enumerate(board):
@@ -19,6 +19,35 @@ def print_board(board):
     col_numbers = "   " + " ".join(f"{i:>2}" for i in range(size))
     print(col_numbers)
 
+
+def print_board(board):
+    size = len(board)
+    
+    # ANSI-Farbcodes
+    BLUE = '\033[94m'    # Blau für König
+    GREEN = '\033[92m'   # Grün für Weiß
+    RED = '\033[91m'     # Rot für Schwarz
+    RESET = '\033[0m'    # Reset
+    
+    for i, row in enumerate(board):
+        # Zeilennummer links
+        row_str = []
+        for cell in row:
+            if cell == 'K':
+                row_str.append(f"{BLUE}{cell:>2}{RESET}")
+            elif cell == 'W':
+                row_str.append(f"{GREEN}{cell:>2}{RESET}")
+            elif cell == 'B':
+                row_str.append(f"{RED}{cell:>2}{RESET}")
+            else:
+                row_str.append(f"{cell:>2}")
+        print(f"{i}  {' '.join(row_str)}")
+    
+    print()
+    
+    # Spaltennummern unten
+    col_numbers = "   " + " ".join(f"{i:>2}" for i in range(size))
+    print(col_numbers)
 
 def print_possible_Moves(list_Moves): 
     gruppen = {}

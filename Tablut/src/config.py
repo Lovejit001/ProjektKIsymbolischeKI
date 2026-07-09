@@ -12,6 +12,7 @@ stop_time = 0.0
 nodes = 0
 stop_search = False
 
+
 W = 'W'
 K = 'K'
 B = 'B'
@@ -33,7 +34,7 @@ Edge = [
 #HIER VIELLEICHT AUCH EIN VARIABLE CORNER DIE GUCKT OB MAN AN SEITENRAND IST !
 
 def reset_pieces():
-    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, eval_counter 
+    global B_pieces, W_pieces, K_pieces, zugRegel, zugCounter, boardHash, onTurn, bestMove, eval_counter, search_start, stop_time, nodes, stop_search
     B_pieces = 0
     W_pieces = 0
     K_pieces = 0
@@ -42,6 +43,11 @@ def reset_pieces():
     zugCounter = 0
     onTurn = "Black"
     bestMove = None
+    search_start = 0.0
+    stop_time = 0.0
+    nodes = 0
+    stop_search = False
+
 
 def init_pieces(board):
     global B_pieces, W_pieces, K_pieces

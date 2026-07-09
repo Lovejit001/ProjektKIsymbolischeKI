@@ -3,47 +3,45 @@ from src import evaluateFunction
 from src import makeMove
 from src import config
 from src import debug
-from src import saveBoardState
 from src import zugsortierung
-import math
-import time
-import copy
+from src import saveBoardState
+import copy, time, math
 
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
 
-    config.nodes += 1
-
-    if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
-        if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
-            raise TimeoutError
-            #return evaluateFunction.eval(board,depth)
-
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
-        score = evaluateFunction.eval(board,depth)
-        return evaluateFunction.eval(board,depth)
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves or config.timeout:
+        return evaluateFunction.eval(board, depth)
 
     maxVal = -math.inf
-    
+    zugsortierung.zugsortierung(board, all_Moves)
+
+    first_move = True
 
     for startPos, allMoves in all_Moves.items():
-        #print(f"{all_Moves}")
-
         for goalPos in allMoves:
+     
+            # --- Optional Time Check Block ---
+            if config.timeout:
+                return maxVal if maxVal != -math.inf else evaluateFunction.eval(board, depth)
 
-            
+
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
-            
-            row,col = startPos
-            
+            next_moves = makeMove.total_moves(board, switch(onTurn))
 
-            score = alphaBetaMin(
-                board, alpha, beta, depth - 1,
-                makeMove.total_moves(board, switch(onTurn)),
-                switch(onTurn), False
-            )
-            
+            if first_move:
+                # 1. Full window search for the suspected PV-Node
+                score = alphaBetaMin(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                first_move = False
+            else:
+                # 2. Null-window search to verify this move is worse than current alpha
+                score = alphaBetaMin(board, alpha, alpha + 1, depth - 1, next_moves, switch(onTurn), False)
+                
+                # 3. If it fails high, we must re-search with the full window
+                if alpha < score < beta:
+                    score = alphaBetaMin(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+
             saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
 
@@ -56,44 +54,49 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 alpha = score
 
             if score >= beta:
-                return maxVal  # Beta-Cutoff        
+                return maxVal  # Beta-Cutoff
 
-    return maxVal  # ← NACH der Schleife
+    return maxVal
 
 
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
-    config.nodes += 1
-
-    if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
-        if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
-            raise TimeoutError
-            #return evaluateFunction.eval(board,depth)
-
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
-        score = evaluateFunction.eval(board,depth)
-        return evaluateFunction.eval(board,depth)
+    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves or config.timeout:
+        return evaluateFunction.eval(board, depth)
 
     minVal = math.inf
+    zugsortierung.zugsortierung(board, all_Moves)
 
-    #zugsortierung.zugsortierung(board,all_Moves)
+    first_move = True
 
     for startPos, allMoves in all_Moves.items():
-
         for goalPos in allMoves:
-            
-            
+
+            # --- Optional Time Check Block ---
+            if config.timeout:
+                return minVal if minVal != math.inf else evaluateFunction.eval(board, depth)
+
+
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
+            next_moves = makeMove.total_moves(board, switch(onTurn))
 
-            score = alphaBetaMax(
-                board, alpha, beta, depth - 1,
-                makeMove.total_moves(board, switch(onTurn)),
-                switch(onTurn), False
-            )
+
+            if first_move:
+                # 1. Full window search for the suspected PV-Node
+                score = alphaBetaMax(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                first_move = False
+            else:
+                # 2. Null-window search to verify this move is worse than current beta
+                score = alphaBetaMax(board, beta - 1, beta, depth - 1, next_moves, switch(onTurn), False)
+                
+                # 3. If it fails low, we must re-search with the full window
+                if alpha < score < beta:
+                    score = alphaBetaMax(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
 
             saveBoardState.undoMove(board,changed_List)
             saveBoardState.restore_global_state(saved_state)
+
             if score < minVal:
                 minVal = score
                 if root:
@@ -104,9 +107,8 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
             if score <= alpha:
                 return minVal  # Alpha-Cutoff
-            
 
-    return minVal  # ← NACH der Schleife
+    return minVal
 
 
 def switch(onTurn):
@@ -114,7 +116,6 @@ def switch(onTurn):
         return "Black"
     else:
         return "White"
-
 
 def getBestMove(board, onTurn, depth):
     
@@ -217,7 +218,6 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     return best_move, best_depth, used_time
 
 
-
 B = 'B'
 W = 'W'
 K = 'K'
@@ -237,15 +237,5 @@ alphaBeta_FinalMove = [
 onTurn = 'White'
 all_Moves=makeMove.randomMove(alphaBeta_FinalMove, onTurn)
 
-
-bestMove, _ , _ =iterative_deepening(alphaBeta_FinalMove,onTurn,120)
+bestMove, _ , _  =iterative_deepening(alphaBeta_FinalMove,onTurn,120)
 print(bestMove)
-
-#makeMove.updateBoard(alphaBeta_FinalMove, ((3,2),(3,0)) )
-#debug.print_board(alphaBeta_FinalMove)
-
-#print("HEYYY")
-#print(config.bestMove)
-#alphaBetaMin(alphaBeta_FinalMove, -math.inf, math.inf, 2, makeMove.total_moves(alphaBeta_FinalMove, "Black"), "Black", True)
-#print(config.bestMove)
-#print("HEYYY")

@@ -12,10 +12,18 @@ def create_empty_board():
 
 def is_valid_position(row, col):
     """Prüft ob eine Position gültig ist (kein Eckfeld)"""
+    # Eckfelder sind (0,0), (0,8), (8,0), (8,8)
     if (row == 0 and col == 0) or (row == 0 and col == 8) or \
        (row == 8 and col == 0) or (row == 8 and col == 8):
         return False
     return True
+
+def place_piece(board, row, col, piece):
+    """Platziert eine Figur nur wenn Position gültig ist"""
+    if is_valid_position(row, col):
+        board[row][col] = piece
+        return True
+    return False
 
 boards = []
 
@@ -851,18 +859,139 @@ board38[7][4] = B
 board38[8][4] = B
 boards.append(board38)
 
-# BOARD 39: König auf dem Vormarsch - sicher
+# ============================================================
+# KATEGORIE 5: ENDSPIEL-STELLUNGEN (Boards 39-50)
+# ============================================================
+
+# BOARD 39: Wenige Figuren, offene Stellung
 board39 = create_empty_board()
-board39[3][2] = K
+board39[4][3] = K  # König auf d5
 board39[3][3] = W
-board39[2][2] = W
-board39[4][2] = W
-board39[3][1] = W
-board39[2][3] = W
-board39[3][4] = W
-board39[4][3] = W
-board39[1][2] = B
-board39[3][5] = B
-board39[5][2] = B
-board39[4][4] = B
-board39
+board39[5][3] = W
+board39[2][4] = B
+board39[6][4] = B
+board39[4][2] = B
+boards.append(board39)
+
+# BOARD 40: König mit zwei Verteidigern
+board40 = create_empty_board()
+board40[2][2] = K  # König auf c7
+board40[2][3] = W
+board40[3][2] = W
+board40[1][2] = B
+board40[2][1] = B
+board40[4][2] = B
+boards.append(board40)
+
+# BOARD 41: Letzte Verteidigung
+board41 = create_empty_board()
+board41[5][4] = K  # König auf e4
+board41[5][3] = W
+board41[4][4] = W
+board41[5][5] = W
+board41[6][4] = B
+board41[4][3] = B
+board41[5][6] = B
+boards.append(board41)
+
+# BOARD 42: 1-gegen-1 Kampf um die Ecke
+board42 = create_empty_board()
+board42[0][2] = K  # König auf c9
+board42[0][1] = W
+board42[0][3] = B
+board42[1][2] = B
+boards.append(board42)
+
+# BOARD 43: König am Rand, wenige Figuren
+board43 = create_empty_board()
+board43[0][3] = K  # König auf d9
+board43[0][2] = W
+board43[0][4] = W
+board43[1][3] = B
+board43[1][2] = B
+boards.append(board43)
+
+# BOARD 44: Zwei gegen zwei
+board44 = create_empty_board()
+board44[4][2] = K  # König auf c5
+board44[4][3] = W
+board44[4][1] = B
+board44[3][2] = B
+board44[5][2] = W
+boards.append(board44)
+
+# BOARD 45: König in der Mitte, allein
+board45 = create_empty_board()
+board45[4][4] = K  # König auf Thron
+board45[3][4] = B
+board45[5][4] = B
+board45[4][3] = B
+board45[4][5] = W
+boards.append(board45)
+
+# BOARD 46: Kritische Endspiel-Stellung
+board46 = create_empty_board()
+board46[3][3] = K  # König auf d6
+board46[3][2] = W
+board46[3][4] = B
+board46[2][3] = B
+board46[4][3] = B
+board46[5][3] = W
+boards.append(board46)
+
+# BOARD 47: König auf der Flucht
+board47 = create_empty_board()
+board47[2][3] = K  # König auf d7
+board47[2][4] = W
+board47[2][2] = B
+board47[3][3] = B
+board47[1][3] = B
+board47[4][3] = W
+boards.append(board47)
+
+# BOARD 48: Minimalistische Endspiel-Stellung
+board48 = create_empty_board()
+board48[5][3] = K  # König auf d4
+board48[5][4] = W
+board48[4][3] = B
+board48[6][3] = B
+board48[5][2] = W
+boards.append(board48)
+
+# BOARD 49: Kampf um die letzte Ecke
+board49 = create_empty_board()
+board49[0][2] = K  # König auf c9
+board49[0][1] = W
+board49[0][3] = B
+board49[1][2] = B
+board49[1][1] = W
+boards.append(board49)
+
+# BOARD 50: Entscheidende Endspiel-Situation
+board50 = create_empty_board()
+board50[0][1] = K  # König auf b9 (fast am Ziel)
+board50[0][2] = W
+board50[1][1] = B
+board50[0][0] = 0  # Eckfeld bleibt frei
+board50[1][2] = B
+boards.append(board50)
+
+# ============================================================
+# AUSGABE
+# ============================================================
+
+if __name__ == "__main__":
+    print(f"Erfolgreich {len(boards)} Boards generiert.")
+    
+    # Statistik anzeigen
+    for i, board in enumerate(boards):
+        white = sum(row.count(W) for row in board)
+        black = sum(row.count(B) for row in board)
+        king = sum(row.count(K) for row in board)
+        total = white + black + king
+        print(f"Board {i+1}: {total} Figuren (W:{white}, B:{black}, K:{king})")
+    
+    # Board 1 anzeigen
+    print("\nBoard 1 (Startstellung):")
+    for row in boards[0]:
+        print(row)

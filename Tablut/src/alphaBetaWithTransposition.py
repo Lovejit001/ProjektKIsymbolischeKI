@@ -219,7 +219,7 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     base_time =  usable_time / estimated_moves_left #sek
 
     remaining_time = base_time * phase_multiplier
-    print(f"Zeit für Zug {remaining_time}")
+    #print(f"Zeit für Zug {remaining_time}")
 
     best_move = None
     best_depth = 0
@@ -230,7 +230,7 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time
         if elapsed >= remaining_time:
-            print(f"Abbruch: verbrauchte ZEIT: {elapsed}")
+            #print(f"Abbruch: verbrauchte ZEIT: {elapsed}")
             break
 
         config.init_pieces(board)
@@ -245,7 +245,7 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         try:
             getBestMove(board, onTurn, depth)
         except TimeoutError:
-            print("Suche wegen Zeit beendet.")
+            #print("Suche wegen Zeit beendet.")
             break
 
         #führt AlphaBeta aus
@@ -253,19 +253,20 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         elapsed = time.perf_counter() - start_time
 
         if elapsed < remaining_time:
-            print(f"ONTIME: verbrauchte ZEIT: {elapsed}")
+            #print(f"ONTIME: verbrauchte ZEIT: {elapsed}")
             best_move = config.bestMove
             best_depth = depth
-            print(f"BEST MOVE: {best_move} mit DEPTH : {best_depth}")
+            #print(f"BEST MOVE: {best_move} mit DEPTH : {best_depth}")
         else:
             break
         
     
-    gesamtZeit = time.perf_counter() - x 
-    print( f"GESAMTE ZEIT: {gesamtZeit} ") 
-    if(best_move == None):        
-        best_move = makeMove.randomMove(board,onTurn)        
-    return best_move, best_depth
+    used_time = time.perf_counter() - x 
+    #print( f"GESAMTE ZEIT: {used_time} ") 
+    #Idee War wenn Zeit vorbei ist soll man einen random move geben aber macht wenig Sinn weil so dann auch bei 0 Sekunden ein Move gegeben wird
+    #if(best_move == None):        
+    #    best_move = makeMove.randomMove(board,onTurn)        
+    return best_move, best_depth, used_time
 
 
 B = 'B'
@@ -286,6 +287,6 @@ alphaBeta_FinalMove = [
 
 onTurn = 'White'
 
-iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-print(config.bestMove)
-print("ENDE TRANSPOSITON")
+#iterative_deepening(alphaBeta_FinalMove,onTurn,120)
+#print(config.bestMove)
+#print("ENDE TRANSPOSITON")

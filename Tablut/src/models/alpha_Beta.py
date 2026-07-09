@@ -1,3 +1,16 @@
+# ============================================================================
+# ALPHA-BETA-PRUNING MIT ITERATIVER TIEFENSUCHE
+# ============================================================================
+# Dieses Modul implementiert einen Alpha-Beta-Suchalgorithmus mit:
+# - Alpha-Beta-Pruning (Cutoffs) für effiziente Minimax-Suche
+# - Iterativer Tiefensuche (Iterative Deepening) für Zeitkontrolle
+# - Zeitmanagement mit Stockfish-inspiriertem Zeitüberwachung
+# - Bewertungsfunktion aus src.evaluateFunction
+# Verwendung: 
+#   best_move, depth, time = iterative_deepening(board, onTurn, remaining_time, max_depth=4)
+# ============================================================================
+
+
 from src import checkBoard
 from src import evaluateFunction
 from src import makeMove
@@ -8,6 +21,10 @@ from src import zugsortierung
 import math
 import time
 import copy
+
+"""
+Diese File enthält das klassiche Alpha Beta Modell was dafür da ist nur alpha Beta mit cuttofs
+"""
 
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
@@ -234,12 +251,12 @@ alphaBeta_FinalMove = [
     [0, 0, 0, B, 0 ,0 ,0, 0, 0]
 ]
 
-onTurn = 'White'
-all_Moves=makeMove.randomMove(alphaBeta_FinalMove, onTurn)
+#onTurn = 'White'
+#all_Moves=makeMove.randomMove(alphaBeta_FinalMove, onTurn)
 
 
-bestMove, _ , _ =iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-print(bestMove)
+#bestMOve, _  =iterative_deepening(alphaBeta_FinalMove,onTurn,0)
+#print(bestMOve)
 
 #makeMove.updateBoard(alphaBeta_FinalMove, ((3,2),(3,0)) )
 #debug.print_board(alphaBeta_FinalMove)
