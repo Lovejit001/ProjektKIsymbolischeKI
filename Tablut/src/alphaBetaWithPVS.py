@@ -2,105 +2,198 @@ from src import checkBoard
 from src import evaluateFunction
 from src import makeMove
 from src import config
-from src import debug
 from src import zugsortierung
+from src.transpositionTable import trans_table
 from src import saveBoardState
-import copy, time, math
+import math
+import time
+
 
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
+    """
+    Alpha-Beta mit Transpositionstabelle für MAX-Spieler
+    + Principal Variation Search (PVS)
+    """
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves :
-        return evaluateFunction.eval(board, depth)
+    config.nodes += 1
 
+    if (config.nodes % 1024 == 0):
+        if time.perf_counter() > config.stop_time:
+            raise TimeoutError
+
+    # Prüfe Transpositionstabelle
+    found, tt_score, tt_flag, tt_best_move = trans_table.lookup(
+        board, depth, alpha, beta, onTurn
+    )
+
+    if found:
+        if tt_best_move is not None and root:
+            config.bestMove = tt_best_move
+        return tt_score
+
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+        score = evaluateFunction.eval(board, depth)
+        trans_table.store(board, depth, score, 'exact', None, onTurn)
+        return score
+
+    alpha_original = alpha   # <<< PVS CHANGED
     maxVal = -math.inf
+    best_move = None
+
     zugsortierung.zugsortierung(board, all_Moves)
 
-    first_move = True
+    first_move = True   # <<< PVS CHANGED
 
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
-     
 
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
-            next_moves = makeMove.total_moves(board, switch(onTurn))
 
-            if first_move:
-                # 1. Full window search for the suspected PV-Node
-                score = alphaBetaMin(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+            if first_move:   # <<< PVS CHANGED
+                score = alphaBetaMin(
+                    board, alpha, beta, depth - 1,
+                    makeMove.total_moves(board, switch(onTurn)),
+                    switch(onTurn), False
+                )
                 first_move = False
             else:
-                # 2. Null-window search to verify this move is worse than current alpha
-                score = alphaBetaMin(board, alpha, alpha + 1, depth - 1, next_moves, switch(onTurn), False)
-                
-                # 3. If it fails high, we must re-search with the full window
-                if alpha < score < beta:
-                    score = alphaBetaMin(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                # Nullfenster-Suche / Scout Search   # <<< PVS CHANGED
+                score = alphaBetaMin(
+                    board, alpha, alpha + 1, depth - 1,
+                    makeMove.total_moves(board, switch(onTurn)),
+                    switch(onTurn), False
+                )
 
-            saveBoardState.undoMove(board,changed_List)
+                # Falls der Zug alpha verbessert, aber noch kein Cutoff auslöst:
+                # Re-Search mit vollem Fenster   # <<< PVS CHANGED
+                if score > alpha and score < beta:
+                    score = alphaBetaMin(
+                        board, alpha, beta, depth - 1,
+                        makeMove.total_moves(board, switch(onTurn)),
+                        switch(onTurn), False
+                    )
+
+            saveBoardState.undoMove(board, changed_List)
             saveBoardState.restore_global_state(saved_state)
 
             if score > maxVal:
                 maxVal = score
+                best_move = (startPos, goalPos)
                 if root:
-                    config.bestMove = (startPos, goalPos)
+                    config.bestMove = best_move
 
             if score > alpha:
                 alpha = score
 
-            if score >= beta:
-                return maxVal  # Beta-Cutoff
+            if alpha >= beta:
+                trans_table.store(board, depth, maxVal, 'lower', best_move, onTurn)
+                return maxVal
 
+    # TT-Flag sauber setzen   # <<< PVS CHANGED
+    if maxVal <= alpha_original:
+        flag = 'upper'
+    elif maxVal >= beta:
+        flag = 'lower'
+    else:
+        flag = 'exact'
+
+    trans_table.store(board, depth, maxVal, flag, best_move, onTurn)
     return maxVal
 
 
+
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
+    """
+    Alpha-Beta mit Transpositionstabelle für MIN-Spieler
+    + Principal Variation Search (PVS)
+    """
 
-    if depth == 0 or (not checkBoard.checkBoard2(board)) or not all_Moves :
-        return evaluateFunction.eval(board, depth)
+    config.nodes += 1
 
+    if (config.nodes % 1024 == 0):
+        if time.perf_counter() > config.stop_time:
+            raise TimeoutError
+
+    # Prüfe Transpositionstabelle
+    found, tt_score, tt_flag, tt_best_move = trans_table.lookup(
+        board, depth, alpha, beta, onTurn
+    )
+
+    if found:
+        return tt_score
+
+    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+        score = evaluateFunction.eval(board, depth)
+        trans_table.store(board, depth, score, 'exact', None, onTurn)
+        return score
+
+    beta_original = beta   # <<< PVS CHANGED
     minVal = math.inf
+    best_move = None
+
     zugsortierung.zugsortierung(board, all_Moves)
 
-    first_move = True
+    first_move = True   # <<< PVS CHANGED
 
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
 
-
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
-            next_moves = makeMove.total_moves(board, switch(onTurn))
 
-
-            if first_move:
-                # 1. Full window search for the suspected PV-Node
-                score = alphaBetaMax(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+            if first_move:   # <<< PVS CHANGED
+                score = alphaBetaMax(
+                    board, alpha, beta, depth - 1,
+                    makeMove.total_moves(board, switch(onTurn)),
+                    switch(onTurn), False
+                )
                 first_move = False
             else:
-                # 2. Null-window search to verify this move is worse than current beta
-                score = alphaBetaMax(board, beta - 1, beta, depth - 1, next_moves, switch(onTurn), False)
-                
-                # 3. If it fails low, we must re-search with the full window
-                if alpha < score < beta:
-                    score = alphaBetaMax(board, alpha, beta, depth - 1, next_moves, switch(onTurn), False)
+                # Nullfenster-Suche / Scout Search   # <<< PVS CHANGED
+                score = alphaBetaMax(
+                    board, beta - 1, beta, depth - 1,
+                    makeMove.total_moves(board, switch(onTurn)),
+                    switch(onTurn), False
+                )
 
-            saveBoardState.undoMove(board,changed_List)
+                # Falls der Zug beta senkt, aber noch kein Cutoff auslöst:
+                # Re-Search mit vollem Fenster   # <<< PVS CHANGED
+                if score < beta and score > alpha:
+                    score = alphaBetaMax(
+                        board, alpha, beta, depth - 1,
+                        makeMove.total_moves(board, switch(onTurn)),
+                        switch(onTurn), False
+                    )
+
+            saveBoardState.undoMove(board, changed_List)
             saveBoardState.restore_global_state(saved_state)
 
             if score < minVal:
                 minVal = score
+                best_move = (startPos, goalPos)
                 if root:
-                    config.bestMove = (startPos, goalPos)
+                    config.bestMove = best_move
 
             if score < beta:
                 beta = score
 
-            if score <= alpha:
-                return minVal  # Alpha-Cutoff
+            if alpha >= beta:
+                trans_table.store(board, depth, minVal, 'upper', best_move, onTurn)
+                return minVal
 
+    # TT-Flag sauber setzen   # <<< PVS CHANGED
+    if minVal >= beta_original:
+        flag = 'lower'
+    elif minVal <= alpha:
+        flag = 'upper'
+    else:
+        flag = 'exact'
+
+    trans_table.store(board, depth, minVal, flag, best_move, onTurn)
     return minVal
+
 
 
 def switch(onTurn):
@@ -109,10 +202,14 @@ def switch(onTurn):
     else:
         return "White"
 
+
+
 def getBestMove(board, onTurn, depth):
-    
+    """Einstiegspunkt für die Alpha-Beta-Suche"""
+    trans_table.clear()
+
     if onTurn == "White":
-        alphaBetaMax(
+        result = alphaBetaMax(
             board=board,
             alpha=-math.inf,
             beta=math.inf,
@@ -122,7 +219,7 @@ def getBestMove(board, onTurn, depth):
             root=True
         )
     else:
-        alphaBetaMin(
+        result = alphaBetaMin(
             board=board,
             alpha=-math.inf,
             beta=math.inf,
@@ -132,34 +229,33 @@ def getBestMove(board, onTurn, depth):
             root=True
         )
 
+    stats = trans_table.get_stats()
+    return result
+
+
 
 def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
-    x  = time.perf_counter()
-    safety_buffer = 3 # 3 Sekunden
+    x = time.perf_counter()
+    safety_buffer = 3
 
     usable_time = remaining_total_time - safety_buffer
     estimated_moves_left = 0
     phase_multiplier = 0
 
     pieces = config.B_pieces + config.W_pieces + config.K_pieces
-    
-    if pieces > 20 : 
-        #Anfangszustände vom Board
+
+    if pieces > 20:
         phase_multiplier = 0.7
         estimated_moves_left = 35
-    elif pieces <= 20 and pieces >= 10 : 
-        #Mitelspiel
+    elif pieces <= 20 and pieces >= 10:
         phase_multiplier = 1.25
         estimated_moves_left = 20
     else:
-        #Endspiel
         phase_multiplier = 1.5
         estimated_moves_left = 10
 
-    base_time =  usable_time / estimated_moves_left #sek
-
+    base_time = usable_time / estimated_moves_left
     remaining_time = base_time * phase_multiplier
-    #print(f"Zeit für Zug {remaining_time}")
 
     best_move = None
     best_depth = 0
@@ -167,17 +263,13 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
 
     for depth in range(1, max_depth + 1):
 
-        # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time
         if elapsed >= remaining_time:
-            #print(f"Abbruch: verbrauchte ZEIT: {elapsed}")
             break
 
         config.init_pieces(board)
-        #config.bestMove = None
-        config.eval_counter = 0  # ← Zähler zurücksetzen
+        config.eval_counter = 0
 
-        #TODO gucken ob es Fehler gibt
         config.reset_time()
         config.search_start = time.perf_counter()
         config.stop_time = config.search_start + remaining_time
@@ -185,28 +277,19 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         try:
             getBestMove(board, onTurn, depth)
         except TimeoutError:
-            #print("Suche wegen Zeit beendet.")
+
             break
 
-        #führt AlphaBeta aus
-        # Zeit prüfen NACHDEM wir gesucht haben
         elapsed = time.perf_counter() - start_time
 
         if elapsed < remaining_time:
-            #print(f"ONTIME: verbrauchte ZEIT: {elapsed}")
             best_move = config.bestMove
             best_depth = depth
-            #print(f"BEST MOVE: {best_move} mit DEPTH : {best_depth}")
         else:
             break
-        
-        
+
+    used_time = time.perf_counter() - x
     
-    used_time = time.perf_counter() - x 
-    #print( f"GESAMTE ZEIT: {used_time} ") 
-    #Idee War wenn Zeit vorbei ist soll man einen random move geben aber macht wenig Sinn weil so dann auch bei 0 Sekunden ein Move gegeben wird
-    #if(best_move == None):        
-    #    best_move = makeMove.randomMove(board,onTurn)        
     return best_move, best_depth, used_time
 
 
@@ -227,7 +310,7 @@ alphaBeta_FinalMove = [
 ]
 
 onTurn = 'White'
-all_Moves=makeMove.randomMove(alphaBeta_FinalMove, onTurn)
 
-bestMove, _ , _  =iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-print(bestMove)
+#iterative_deepening(alphaBeta_FinalMove,onTurn,120)
+#print(config.bestMove)
+#print("ENDE TRANSPOSITON")

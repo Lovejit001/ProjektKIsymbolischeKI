@@ -9,6 +9,7 @@ def iterative_deepening(board, onTurn, time_limit=10.0, max_depth=4):
     best_move = None
     best_depth = 0
     start_time = time.perf_counter()
+    config.stop_time = math.inf #Dieser Timer wird auf unenedlich gesetzt, da er für den Benchmark nicht relevant ist, beim tatsächtlichen Spielen schon.
 
     for depth in range(1, max_depth + 1):
 
@@ -22,11 +23,11 @@ def iterative_deepening(board, onTurn, time_limit=10.0, max_depth=4):
         config.eval_counter = 0  # ← Zähler zurücksetzen
 
         if onTurn == "White":
-            alphaBetaWithPVS.alphaBetaMax(board, -math.inf, math.inf, depth,
+            score = alphaBetaWithPVS.alphaBetaMax(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "White"),
                                    "White", True)
         else:
-            alphaBetaWithPVS.alphaBetaMin(board, -math.inf, math.inf, depth,
+            score = alphaBetaWithPVS.alphaBetaMin(board, -math.inf, math.inf, depth,
                                    makeMove.total_moves(board, "Black"),
                                    "Black", True)
 
@@ -36,7 +37,7 @@ def iterative_deepening(board, onTurn, time_limit=10.0, max_depth=4):
         if elapsed < time_limit:
             best_move = config.bestMove
             best_depth = depth
-            print(f"  Tiefe {depth} ✓ in {elapsed:.3f}s → Zug: {best_move}")
+            print(f"  Tiefe {depth} ✓ in {elapsed:.3f}s → Zug: {best_move} --> SCORE {score}")
             print(f"  Evaluierte Zustände: {config.eval_counter}")
         else:
             print(f"  Tiefe {depth} ✗ abgebrochen nach {elapsed:.3f}s")

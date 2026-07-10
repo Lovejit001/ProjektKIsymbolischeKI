@@ -992,6 +992,6 @@ if __name__ == "__main__":
         print(f"Board {i+1}: {total} Figuren (W:{white}, B:{black}, K:{king})")
     
     # Board 1 anzeigen
-    print("\nBoard 1 (Startstellung):")
-    for row in boards[0]:
-        print(row)
+#    print("\nBoard 1 (Startstellung):")
+#    for row in boards[0]:
+#        print(row)
