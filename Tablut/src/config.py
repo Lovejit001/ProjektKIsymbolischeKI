@@ -70,3 +70,8 @@ def reset_time():
     stop_time = 0.0
     nodes = 0
     stop_search = False
+
+def account_move():
+    global zugCounter,zugRegel 
+    zugCounter += 1
+    zugRegel += 1

@@ -3,13 +3,14 @@ import time
 
 from src import config, debug
 from src import checkBoard
-from src.Node import MCTS
+from src.Node3 import MCTS
 from tests.definitions import starting_board, alphaBeta_FinalMove
 
 
 def benchmark_mcts(board, onTurn, number_simulations=100):
     board_copy = copy.deepcopy(board)
-
+    
+    config.reset_pieces()
     config.init_pieces(board_copy)
     config.eval_counter = 0
 

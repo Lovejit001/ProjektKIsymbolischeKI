@@ -1,3 +1,7 @@
+"""
+MCTS + UCT + Progressive Bias 
+"""
+
 import copy
 import math
 import random
@@ -12,12 +16,9 @@ from .evaluateFunction import eval
 from tests.definitions import starting_board
 
 
-
 B = 'B'
 W = 'W'
 K = 'K'
-
-
 
 
 def print_path_to_best(node):
@@ -226,6 +227,9 @@ class MCTS:
         #Beginn der Simulation:
 
         for _ in range(number_simulations):
+            config.zugRegel = 0
+            config.zugCounter= 0
+
             node = root
             searched_path=[node]
 
@@ -239,6 +243,7 @@ class MCTS:
             #TODO alternitve finden kann ineffizent sein
             new_state = copy.deepcopy(parent.state)             
             makeMove.updateBoard(new_state,move)
+            #HIER MUSS ZUG COUNTER ERHÖHT WERDEN
                         
             init_pieces(new_state)
 

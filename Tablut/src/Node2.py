@@ -1,7 +1,10 @@
+"""
+MCTS + UCT 
+"""
 import copy
 import math
 import random
-
+from . import config
 from . import makeMove
 from . import saveBoardState
 from .checkBoard import checkBoard2
@@ -127,6 +130,8 @@ class MCTS:
         return -score
 
     def run(self, state, onTurn, number_simulations=10000):
+        
+        
         init_pieces(state)
 
         saved_state = saveBoardState.save_global_state()
@@ -135,6 +140,9 @@ class MCTS:
         root.expand(state, onTurn)
 
         for _ in range(number_simulations):
+            config.zugRegel = 0
+            config.zugCounter= 0
+            
             node = root
             searched_path = [node]
 
