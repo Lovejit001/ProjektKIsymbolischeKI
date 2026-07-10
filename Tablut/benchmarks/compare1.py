@@ -9,11 +9,23 @@ from src import attack
 from src import debug
 from src import alphaBetaWithTransposition
 from src import alphaBeta
-from benchmarks import testboards
+from benchmarks import testboards5
 import time
 import math
+import copy
 
-def game1(board):
+
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+#Problem liegt bei REMIS
+
+
+def game(board):
     """
     In diesem Fall hat Spieler Schwarz das Feature von Transpostiontable
     """
@@ -28,6 +40,7 @@ def game1(board):
     timeclock_Black = 60
     config.onTurn ='Black'
     res = -math.inf
+    board = copy.deepcopy(board)  # <-- DAS HAT GEFEHLT!
 
     
     while checkBoard.checkBoard2(board) == -2:
@@ -39,21 +52,28 @@ def game1(board):
             
             #alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
 
+            print(f"MY {config.onTurn} Remaining Time: {timeclock_Black}")
             bestMove, _, usedTime = alphaBetaWithTransposition.iterative_deepening(board, config.onTurn,timeclock_Black)
             timeclock_Black = timeclock_Black - usedTime
+            print(f"{config.onTurn}  USED TIME {usedTime}")
+            print(f"AFTER : MY {config.onTurn} Remaining Time: {timeclock_Black}")
             if timeclock_Black <= 0 :
                 #Spieler hat keine Zeit mehr SChwarz verliert:
+                print("Spieler Black hat keine Zeit mehr ")
                 res = 1
                 break
                 
 
         else:
             #alphaBeta.getBestMove(board,config.onTurn,depth=3)
-            
+            print(f"MY {config.onTurn} Remaining Time: {timeclock_White}")
             bestMove, _, usedTime = alphaBeta.iterative_deepening(board, config.onTurn,timeclock_White)
             timeclock_White = timeclock_White - usedTime
+            print(f"{config.onTurn}  USED TIME {usedTime}")
+            print(f"AFTER : MY {config.onTurn} Remaining Time: {timeclock_White}")
             if timeclock_White <= 0 :
                 #Spieler hat keine Zeit mehr Weiß verliert:
+                print("Spieler Black hat keine Zeit mehr ")
                 res = -1
                 break
         
@@ -91,14 +111,18 @@ def game1(board):
 
 def main():
     
-    boards = testboards.generated_boards
+    boards = testboards5.all_boards
 
     counter_black = 0 
     counter_white = 0 
     counter_draw = 0
-
+    i = 0
     for board in boards:
-        result = game1(board)
+        i+= 1
+        if i < 50: 
+            continue
+
+        result = game(board)
         print(result)
         if result == -1 : 
             counter_black += 1
@@ -110,6 +134,7 @@ def main():
             
     print(f"Anzahl gewonnener Spiele für Black: {counter_black} ")
     print(f"Anzahl gewonnener Spiele für White: {counter_white} ")
+    print(f"Anzahl Unentschieden:               {counter_draw} ")
 
 if __name__ == "__main__":
     main()
