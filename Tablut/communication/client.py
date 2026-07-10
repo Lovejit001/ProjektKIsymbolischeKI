@@ -196,13 +196,18 @@ def decode_move(command):
     return ((a,b),(c,d))
 
 
-def myTurn(board,client):
-    alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
+def myTurn(board,client,time):
+    print("AAAAAAAAA")
+    alphaBetaWithTransposition.iterative_deepening(board,config.onTurn,time)
+    #alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
+    print(config.onTurn)
     convert_move=encode_move(config.bestMove)
     command =f"{convert_move}\n"
     print(f"MOVE IST: {config.bestMove}")
     print(command)
     print("AKTUELLES BOARD:")
+    debug.print_board(board)
+    print("GEUPDATES BOARD:")
     makeMove.updateBoard(board,config.bestMove)
     debug.print_board(board)
     client.send(f"{convert_move}\n")
@@ -327,6 +332,9 @@ def main():
             if gameType.split(" ")[2] != 'tablut':
                 print(f"Falsches Spiel erhalten: {gameType}. Programm wird beendet.")
                 sys.exit(1)
+            
+            myTime = float(timeAcc.split()[-1])
+            print(f"MYTIME IS : {myTime}")
 
             if verify == 'ok':
                 client.send(f"ok\n")
@@ -337,7 +345,7 @@ def main():
                 print("START")
                 switchTurn(True,onturn)
                 print(config.onTurn)
-                myTurn(board,client)
+                myTurn(board,client,myTime)
 
             elif response == "wait":
                 print("Wait")
@@ -345,7 +353,7 @@ def main():
                 print(config.onTurn)
                 response = client.recv()                
                 enemyTurn(board,response)
-                myTurn(board,client)
+                myTurn(board,client,myTime)
             else:
                 print(f"FEHLER Response war: {response}")
             
@@ -366,14 +374,14 @@ def main():
                         result =1 
                     elif  config.onTurn == 'White' :
                         result = -1
-                        
-                    
+                                             
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)
                     #Move aussuchen und Server informieren
-                    myTurn(board,client)
+                    myTurn(board,client,myTime)
                 elif response.startswith("time "):
+                    myTime = float(response.split(" ")[1])
                     accTime = float(response.split(" ")[1])
                 else:
                     print(f"HIER NICHT BEACHTET COMMAND : {response}")
@@ -381,7 +389,7 @@ def main():
             print("GAME OVER")
             print("End Board: \n")
             debug.print_board(board)
-            
+            result = checkBoard.checkBoard2(board)
 
             #TODO letzter Move wird nicht ausgeführt daher DRAW
             if result != 1 and result != -1:
