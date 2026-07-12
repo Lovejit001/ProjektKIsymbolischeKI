@@ -9,6 +9,7 @@ from src import attack
 from src import debug
 from src import alphaBetaWithTransposition
 from src import alphaBeta
+from src import alphaBetaWithPVS
 from benchmarks import testboards5
 import time
 import math
@@ -38,21 +39,26 @@ def get_move(board, onTurn, agent, time_limit, max_depth=4):
             board, onTurn, time_limit, max_depth
         )
     elif agent == 'AB_TT_PVS':
-        from src import alphaBetaPVS   # passe den Import an
-        best_move, _, used_time = alphaBetaPVS.iterative_deepening(
+        from src import alphaBetaWithPVS   
+        best_move, _, used_time = alphaBetaWithPVS.iterative_deepening(
             board, onTurn, time_limit, max_depth
         )
     elif agent == 'MCTS':
-        from src import mcts
-        best_move, _, used_time = mcts.get_best_move(board, onTurn, time_limit)
-        # MCTS liefert keine Tiefe, daher setzen wir sie auf 0
-        _ = 0
+        from src import Node
+        mcts = Node.MCTS()
+        start_time = time.perf_counter()
+        root = mcts.run(board, onTurn, number_simulations=1000)  # oder 10000
+        end_time = time.perf_counter()
+        used_time = end_time - start_time
+        # Besten Zug aus root.children holen (max visits)
+        #best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
+        best_move, _, _ = root.best_child() 
     else:
         raise ValueError(f"Unbekannter Agent: {agent}")
     return best_move, used_time
 
 
-def game1(board, black_agent, white_agent, time_limit=60, max_depth=4):
+def game(board, black_agent, white_agent, time_limit=60, max_depth=4,i=0):
     """
     Spielt eine Partie zwischen zwei KI‑Agenten.
     black_agent, white_agent: Strings aus {'AB', 'AB_TT', 'AB_TT_PVS', 'MCTS'}
@@ -82,12 +88,12 @@ def game1(board, black_agent, white_agent, time_limit=60, max_depth=4):
         if config.onTurn == 'Black':
             timeclock_Black -= usedTime
             if timeclock_Black <= 0:
-                print("⏰ Schwarz hat keine Zeit mehr → Weiß gewinnt!")
+                print(" Schwarz hat keine Zeit mehr → Weiß gewinnt!")
                 return 1
         else:
             timeclock_White -= usedTime
             if timeclock_White <= 0:
-                print("⏰ Weiß hat keine Zeit mehr → Schwarz gewinnt!")
+                print(" Weiß hat keine Zeit mehr → Schwarz gewinnt!")
                 return -1
 
         makeMove.updateBoard(board, bestMove)
@@ -98,16 +104,21 @@ def game1(board, black_agent, white_agent, time_limit=60, max_depth=4):
         if oldBoard == board:
             print("Fehler: Kein Zug ausgeführt!")
             break
-
+    
+    debug.print_board(board)
     # Spiel zu Ende – Ergebnis aus der Brettbewertung
     res = checkBoard.checkBoard2(board)
     if res == 0:
         print("Remis")
     elif res == -1:
-        print("Schwarz gewinnt")
+        print(f"Schwarz gewinnt {i}")
     elif res == 1:
-        print("Weiß gewinnt")
+        print(f"Weiß gewinnt {i}")
     
+    #debug.print_board(board)
+    #print(f"checkBoard2 ergibt: {res}")
+    #print(f"Aktueller Spieler (onTurn) am Ende: {config.onTurn}")
+
     return res
 
 
@@ -120,9 +131,9 @@ def play(board, agent1, agent2, time_limit=60, max_depth=4):
     Ergebnis: -1 = Schwarz gewinnt, 1 = Weiß gewinnt, 0 = Remis
     """
     # Partie 1: agent1 als Schwarz, agent2 als Weiß
-    res1 = game1(board, agent1, agent2, time_limit, max_depth)
+    res1 = game(board, agent1, agent2, time_limit, max_depth,1)
     # Partie 2: agent1 als Weiß, agent2 als Schwarz
-    res2 = game1(board, agent2, agent1, time_limit, max_depth)
+    res2 = game(board, agent2, agent1, time_limit, max_depth,2)
     return res1, res2
 
 
@@ -153,14 +164,24 @@ def main():
         ('AB_TT_PVS', 'MCTS'),
     ]
 
+    i = 0
+
     # Für jede Paarung einen eigenen Score‑Zähler
     all_scores = {}
 
     for agent1, agent2 in pairings:
+        i = 0
         scores = {agent1: 0, agent2: 0, 'draw': 0}
+        #print("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
+        #print(f"{agent1} vs {agent2}  ")
+        #print("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
         for board in boards:
+            i += 1
+            
+            
 
             # Zwei Partien (Farben getauscht)
+            board= copy.deepcopy(board)
             res1, res2 = play(board, agent1, agent2, time_limit, max_depth)
             add_result(res1, agent1, agent2, scores)
             add_result(res2, agent2, agent1, scores)  # Achtung: Farben getauscht!
@@ -170,7 +191,12 @@ def main():
     # Ergebnisse ausgeben
     for (a1, a2), scores in all_scores.items():
         total = scores[a1] + scores[a2] + scores['draw']
-        print(f"\n📊 {a1} vs {a2}:")
+        print(f"\n {a1} vs {a2}:")
         print(f"  {a1} Siege: {scores[a1]} ({scores[a1]/total*100:.1f}%)")
         print(f"  {a2} Siege: {scores[a2]} ({scores[a2]/total*100:.1f}%)")
         print(f"  Remis:    {scores['draw']} ({scores['draw']/total*100:.1f}%)")
+    
+    print(f"Anzahl gespielter Spiele: {i}")
+
+if __name__ == "__main__":
+    main()

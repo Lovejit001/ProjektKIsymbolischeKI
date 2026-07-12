@@ -124,6 +124,8 @@ class Node:
         
         # Spiel bereits beendet
         if checkBoard2(state) != -2:   
+            #    print("SPIEL BEREITS zuende================================================================================================================= ")
+            #debug.print_board(state)
             return
         
         self.state = state
@@ -223,6 +225,10 @@ class MCTS:
         root = Node(onTurn)  
         #Knoten wird expandiert, d.h alle Kinder Knoten generiert 
         root.expand(state, onTurn)
+        if checkBoard2(root.state) != -2:
+            print(f"{checkBoard2(root.state)} ROOT SPIEL BEREITS zuende=================================================================================================================%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ")
+            debug.print_board(root.state)
+
 
         #Beginn der Simulation:
 
@@ -237,8 +243,14 @@ class MCTS:
             #LOGIK UNKLAR WANN FÜREN WIR DEN MOVE AUS ? 
             while node.expanded():                
                 move, node = node.select_child()                
-                searched_path.append(node)
-                     
+                searched_path.append(node)     
+                #if node == None:           
+                #    print(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Node {node} ")
+
+
+            if(len(searched_path)== 1):
+                print(f"SEARCHED PATH {searched_path}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")                
+            #    continue
             parent = searched_path[-2]
             #TODO alternitve finden kann ineffizent sein
             new_state = copy.deepcopy(parent.state)             

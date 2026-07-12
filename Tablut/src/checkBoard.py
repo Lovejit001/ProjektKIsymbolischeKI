@@ -37,9 +37,9 @@ def checkBoard2(board):
         print(f"REMIS! Nach 50 Zügen wurde kein einziges Spielfigur geschlagen.")
         return 0
     # Prüfung ob drei Stellungswiderholungen vorkommen
-    elif recent_moves(board):
-        print(f"REMIS! 3-fache Stellungswiderholung.")
-        return 0
+    #elif recent_moves(board):
+    #    print(f"REMIS! 3-fache Stellungswiderholung.")
+    #    return 0
 
     return -2
 
