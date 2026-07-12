@@ -7,6 +7,7 @@ from src.transpositionTable import trans_table
 from src import saveBoardState
 import math
 import time
+import copy
 
 
 
@@ -232,9 +233,33 @@ def getBestMove(board, onTurn, depth):
     stats = trans_table.get_stats()
     return result
 
+def getBestMove2(board, onTurn, depth):
+    score = 0
+    if onTurn == "White":
+        score = alphaBetaMax(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="White",
+            root=True
+        )
+    else:
+        score = alphaBetaMin(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="Black",
+            root=True
+        )
+    return score
 
 
 def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
+    board = copy.deepcopy(board)
     x = time.perf_counter()
     safety_buffer = 3
 

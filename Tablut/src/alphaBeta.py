@@ -24,7 +24,8 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
         return evaluateFunction.eval(board,depth)
 
     maxVal = -math.inf
-    
+
+    #zugsortierung.zugsortierung(board, all_Moves)
 
     for startPos, allMoves in all_Moves.items():
         #print(f"{all_Moves}")
@@ -55,8 +56,8 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             if score > alpha:
                 alpha = score
 
-            if score >= beta:
-                return maxVal  # Beta-Cutoff        
+            #if score >= beta:
+            #    return maxVal  # Beta-Cutoff        
 
     return maxVal  # ← NACH der Schleife
 
@@ -102,8 +103,8 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
             if score < beta:
                 beta = score
 
-            if score <= alpha:
-                return minVal  # Alpha-Cutoff
+            #if score <= alpha:
+            #    return minVal  # Alpha-Cutoff
             
 
     return minVal  # ← NACH der Schleife
@@ -139,6 +140,29 @@ def getBestMove(board, onTurn, depth):
             root=True
         )
 
+def getBestMove2(board, onTurn, depth):
+    score = 0
+    if onTurn == "White":
+        score = alphaBetaMax(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="White",
+            root=True
+        )
+    else:
+        score = alphaBetaMin(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="Black",
+            root=True
+        )
+    return score
 
 def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     x  = time.perf_counter()
@@ -173,6 +197,8 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     start_time = time.perf_counter()
 
     for depth in range(1, max_depth + 1):
+
+
 
         # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time

@@ -12,10 +12,8 @@ import math
 from src import config
 from src import makeMove
 from src import debug
-from src import alphaBetaWithTransposition
+from src import alphaBetaWithPVS
 from src import checkBoard
-
-
 
 
 #Lobby konfigurieren
@@ -198,7 +196,7 @@ def decode_move(command):
 
 def myTurn(board,client,time):
     print("AAAAAAAAA")
-    alphaBetaWithTransposition.iterative_deepening(board,config.onTurn,time)
+    alphaBetaWithPVS.iterative_deepening(board,config.onTurn,time)
     #alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
     print(config.onTurn)
     convert_move=encode_move(config.bestMove)
@@ -260,8 +258,11 @@ class Client:
 def main():
     LOBBYCREATOR = False
     # Server-Konfiguration (Standard-Werte anpassen falls nötig)
-    HOST = "127.0.0.1"  # localhost
-    PORT = 5000        # Standard-Port (ggf. anpassen)
+    #HOST = "127.0.0.1"  # localhost
+    HOST = "bore.pub"
+
+    #PORT = 5000        # Standard-Port (ggf. anpassen)
+    PORT = 44843
     client = None
 
     try:

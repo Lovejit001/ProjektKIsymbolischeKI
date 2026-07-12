@@ -3,7 +3,7 @@ import time
 
 from src import config, debug
 from src import checkBoard
-from src.Node3 import MCTS
+from src.Node import MCTS
 from tests.definitions import starting_board, alphaBeta_FinalMove
 
 

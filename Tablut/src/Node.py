@@ -294,7 +294,8 @@ class MCTS:
             best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
     
         #print(f"BEST MOVE: {best_move} (Score: {best_score})")
-
+        #TODO gucken ob passt 
+        config.bestMove = best_move
         return root
 
 

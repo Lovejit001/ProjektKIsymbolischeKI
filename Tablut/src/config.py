@@ -63,6 +63,7 @@ def init_pieces(board):
                 W_pieces += 1
             elif board[i][j] == W:
                 W_pieces += 1
+    
 
 def reset_time():
     global search_start, stop_time, nodes, stop_search

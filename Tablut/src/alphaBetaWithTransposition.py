@@ -194,6 +194,30 @@ def getBestMove(board, onTurn, depth):
     return result
 
 
+def getBestMove2(board, onTurn, depth):
+    score = 0
+    if onTurn == "White":
+        score = alphaBetaMax(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="White",
+            root=True
+        )
+    else:
+        score = alphaBetaMin(
+            board=board,
+            alpha=-math.inf,
+            beta=math.inf,
+            depth=depth,
+            all_Moves=makeMove.total_moves(board, onTurn),
+            onTurn="Black",
+            root=True
+        )
+    return score
+
 def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     board = copy.deepcopy(board)
     x  = time.perf_counter()

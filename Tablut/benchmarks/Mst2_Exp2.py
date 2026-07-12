@@ -60,4 +60,4 @@ if __name__ == "__main__":
         print(f"{'='*55}")
         print(f"Stellung: {name} | Am Zug: {turn}")
         debug.print_board(board)
-        iterative_deepening(board, turn, time_limit=120.0, max_depth=4)
+        iterative_deepening(board, turn, time_limit=120.0, max_depth=10)
