@@ -20,9 +20,12 @@ def iterative_deepening(board, onTurn, time_limit=10.0, max_depth=4,algo=1):
     best_depth = 0
     start_time = time.perf_counter()
     config.stop_time = math.inf #Dieser Timer wird auf unenedlich gesetzt, da er für den Benchmark nicht relevant ist, beim tatsächtlichen Spielen schon.
-    number_simulations=1000
+    number_simulations=2000
 
-    for depth in range(1, max_depth + 1):
+    for depth in range(1, max_depth + 1 ):
+
+        if depth != max_depth:
+            continue
 
         # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time
@@ -54,7 +57,7 @@ def iterative_deepening(board, onTurn, time_limit=10.0, max_depth=4,algo=1):
         if elapsed < time_limit:
             best_move = config.bestMove
             best_depth = depth
-            number_simulations += 100
+            number_simulations += 150
             print(f"  Tiefe {depth} ✓ in {elapsed:.3f}s → Zug: {best_move} --> SCORE {score}")
             print(f"  Evaluierte Zustände: {config.eval_counter}")
         else:
@@ -93,7 +96,7 @@ def run():
         #print(f"Stellung: {name} | Am Zug: {turn}")
         print(f"Stellung | Am Zug: {turn}")
         debug.print_board(board)
-        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=4,algo=2)
+        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=3,algo=2)
         temp.append(values)
     
     result.append(temp)
@@ -104,7 +107,7 @@ def run():
         #print(f"Stellung: {name} | Am Zug: {turn}")
         print(f"Stellung | Am Zug: {turn}")
         debug.print_board(board)
-        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=4,algo=3)
+        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=3,algo=3)
         temp.append(values)
     
     result.append(temp)
@@ -115,7 +118,7 @@ def run():
         #print(f"Stellung: {name} | Am Zug: {turn}")
         print(f"Stellung | Am Zug: {turn}")
         debug.print_board(board)
-        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=4,algo=4)
+        _, _, values =iterative_deepening(board, turn, time_limit=120.0, max_depth=3,algo=4)
         temp.append(values)
     
     result.append(temp)

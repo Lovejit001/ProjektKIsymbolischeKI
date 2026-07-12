@@ -47,6 +47,7 @@ def get_move(board, onTurn, agent, time_limit, max_depth=4):
         from src import Node
         mcts = Node.MCTS()
         start_time = time.perf_counter()
+        board = copy.deepcopy(board)
         root = mcts.run(board, onTurn, number_simulations=1000)  # oder 10000
         end_time = time.perf_counter()
         used_time = end_time - start_time
@@ -130,10 +131,12 @@ def play(board, agent1, agent2, time_limit=60, max_depth=4):
     Gibt zurück: (ergebnis_1, ergebnis_2)
     Ergebnis: -1 = Schwarz gewinnt, 1 = Weiß gewinnt, 0 = Remis
     """
+    board1 = copy.deepcopy(board)
+    board2 = copy.deepcopy(board)
     # Partie 1: agent1 als Schwarz, agent2 als Weiß
-    res1 = game(board, agent1, agent2, time_limit, max_depth,1)
+    res1 = game(board1, agent1, agent2, time_limit, max_depth,1)
     # Partie 2: agent1 als Weiß, agent2 als Schwarz
-    res2 = game(board, agent2, agent1, time_limit, max_depth,2)
+    res2 = game(board2, agent2, agent1, time_limit, max_depth,2)
     return res1, res2
 
 
@@ -152,16 +155,16 @@ def add_result(res, agent_black, agent_white, scores):
 def main():
     boards = testboards5.all_boards
     time_limit = 60
-    max_depth = 4
+    max_depth = 3
 
     # Definiere die Paarungen, die du testen willst
     pairings = [
-        ('AB', 'AB_TT'),
-        ('AB', 'AB_TT_PVS'),
-        ('AB_TT', 'AB_TT_PVS'),
-        ('AB', 'MCTS'),
-        ('AB_TT', 'MCTS'),
-        ('AB_TT_PVS', 'MCTS'),
+        #('AB', 'AB_TT'),
+        #('AB', 'AB_TT_PVS'),
+        #('AB_TT', 'AB_TT_PVS'),
+        ('AB', 'MCTS')#,
+        #('AB_TT', 'MCTS'),
+        #('AB_TT_PVS', 'MCTS'),
     ]
 
     i = 0
@@ -177,11 +180,10 @@ def main():
         #print("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
         for board in boards:
             i += 1
-            
-            
+            if i >= 10:
+                break
 
-            # Zwei Partien (Farben getauscht)
-            board= copy.deepcopy(board)
+
             res1, res2 = play(board, agent1, agent2, time_limit, max_depth)
             add_result(res1, agent1, agent2, scores)
             add_result(res2, agent2, agent1, scores)  # Achtung: Farben getauscht!
@@ -196,7 +198,7 @@ def main():
         print(f"  {a2} Siege: {scores[a2]} ({scores[a2]/total*100:.1f}%)")
         print(f"  Remis:    {scores['draw']} ({scores['draw']/total*100:.1f}%)")
     
-    print(f"Anzahl gespielter Spiele: {i}")
+    print(f"Anzahl gespielter Spiele: {i * 2}")
 
 if __name__ == "__main__":
     main()

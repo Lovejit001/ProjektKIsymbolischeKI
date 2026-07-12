@@ -67,7 +67,7 @@ def ucb_score(parent, child):
 
     #Explorationskonstante
     C=1
-    progressive_bias_weight = 0.5
+    progressive_bias_weight = 0.1
 
     if child.visit_count == 0:
         return math.inf
@@ -210,7 +210,7 @@ class MCTS:
 
     def run(self,state,onTurn,number_simulations = 10000):
         #alle Globalen Variablen merken, da nun alles nachdem MCTS gleich bleiben soll und die Simulationen nix am Spiel ändern dürfen
-
+        state = copy.deepcopy(state)
         #PROVISORSCH TO DO WEIL NOCH NICHT IN GAME LOGIK DRIN IST 
         init_pieces(state)
         

@@ -51,39 +51,40 @@ place(board4, 6, 4, 'B')
 place(board4, 4, 6, 'B')
 all_boards.append(board4)
 
-# Board 5: Sechs weiße, sechs schwarze – unregelmäßige Verteilung
+# Board 5: Acht weiße, acht schwarze – dichter Kampf
 board5 = create_empty_board()
 place(board5, 4, 4, 'K')
-place(board5, 6, 4, 'W')
-place(board5, 3, 2, 'W')
-place(board5, 2, 3, 'W')
-place(board5, 2, 5, 'W')
-place(board5, 3, 6, 'W')
-place(board5, 5, 2, 'W')
-place(board5, 6, 3, 'W')
+for row in [2, 3, 5, 6]:
+    place(board5, row, 4, 'W')
+    place(board5, 4, row, 'W')   # symmetrisch
 place(board5, 1, 4, 'B')
-place(board5, 4, 1, 'B')
 place(board5, 7, 4, 'B')
+place(board5, 4, 1, 'B')
 place(board5, 4, 7, 'B')
-place(board5, 0, 4, 'B')
-place(board5, 4, 0, 'B')
+place(board5, 0, 3, 'B')
+place(board5, 0, 5, 'B')
+place(board5, 8, 3, 'B')
+place(board5, 8, 5, 'B')
 all_boards.append(board5)
 
-# Board 6: Acht weiße, acht schwarze – dichter Kampf
+# Board 6: Sechs weiße, sechs schwarze – unregelmäßige Verteilung
 board6 = create_empty_board()
 place(board6, 4, 4, 'K')
-for row in [2, 3, 5, 6]:
-    place(board6, row, 4, 'W')
-    place(board6, 4, row, 'W')   # symmetrisch
+place(board6, 6, 4, 'W')
+place(board6, 3, 2, 'W')
+place(board6, 2, 3, 'W')
+place(board6, 2, 5, 'W')
+place(board6, 3, 6, 'W')
+place(board6, 5, 2, 'W')
+place(board6, 6, 3, 'W')
 place(board6, 1, 4, 'B')
-place(board6, 7, 4, 'B')
 place(board6, 4, 1, 'B')
+place(board6, 7, 4, 'B')
 place(board6, 4, 7, 'B')
-place(board6, 0, 3, 'B')
-place(board6, 0, 5, 'B')
-place(board6, 8, 3, 'B')
-place(board6, 8, 5, 'B')
+place(board6, 0, 4, 'B')
+place(board6, 4, 0, 'B')
 all_boards.append(board6)
+
 
 # Board 7: Acht weiße, zehn schwarze – asymmetrisch, viele am Rand
 board7 = create_empty_board()

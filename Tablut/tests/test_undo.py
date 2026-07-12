@@ -92,7 +92,7 @@ class TestUndoMove(unittest.TestCase):
         board[6][6] = config.W   
       
         board_before = copy.deepcopy(board)
-        print(f"&&&&&&&&&&&&&&&&&&&%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
         changed_list = makeMove.updateBoard(board, ((5,4), (6,4)))   # Schwarz schlägt Weiß
         print("VOHRER")
         debug.print_board(board_before)
@@ -116,11 +116,19 @@ class TestUndoMove(unittest.TestCase):
         board[4][3] = config.W          # Weiß auf dem Weg
         board[4][2] = config.K          # König auf dem Ziel
         board_before = copy.deepcopy(board)
+        
 
-        # Schwarz zieht von (4,4) nach (4,2) – auf dem Weg liegt (4,3) mit Weiß,
-        # Ziel (4,2) ist König → beide werden geschlagen (falls implementiert)
-        changed_list = makeMove.updateBoard(board, ((4,4), (4,2)))
+        changed_list = makeMove.updateBoard(board, ((5,4), (6,4)))   # Schwarz schlägt Weiß
+        print("VOHRER")
+        debug.print_board(board_before)
+        
+        print("Nacher")
+        debug.print_board(board)
+
+
+        print("NACH UNDO")
         undoMove(board, changed_list)
+        debug.print_board(board)
 
         self.assertEqual(board, board_before)
 

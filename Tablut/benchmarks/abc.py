@@ -49,7 +49,7 @@ plt.plot(boards, times_mcts, marker='D', linestyle='-', color='orange',
 # Achsenbeschriftungen und Titel
 plt.xlabel('Board‑Komplexität (1 = einfach → 10 = komplex)', fontsize=12)
 plt.ylabel('Suchzeit (Sekunden)', fontsize=12)
-plt.title('Vergleich der Suchzeiten – drei Verfahren', fontsize=14)
+plt.title('Vergleich der Suchzeiten von vier KI-Modell', fontsize=14)
 
 
 # Gitter

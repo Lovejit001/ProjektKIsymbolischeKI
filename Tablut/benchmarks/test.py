@@ -1,5 +1,5 @@
-#from .testboard_for2Graph import all_boards
-from .testboards5 import all_boards
+from .testboard_for2Graph import all_boards
+#from .testboards5 import all_boards
 from src.debug import print_board
 from src.checkBoard import checkBoard2
 from src import config
@@ -14,11 +14,8 @@ for board in all_boards:
     i += 1
     config.reset_pieces()
     config.init_pieces(board)
-
-    if checkBoard2(board) != -2:
         
-        print(checkBoard2(board))
-        print_board(board)
+    print_board(board)
 
 print(i)
 
