@@ -9,14 +9,15 @@ import sys
 import time
 import argparse
 import math
-from src import config
-from src import makeMove
-from src import debug
-from src import alphaBetaWithPVS
-from src import checkBoard
+from Tablut.src.gamelogic import config
+from Tablut.src.gamelogic import makeMove
+from Tablut.src.gamelogic import debug
+from Tablut.src.models import alphaBetaWithPVS
+from Tablut.src.gamelogic import checkBoard
 
 
-#Lobby konfigurieren
+#Lobby konfigurieren:
+
 #Optionen: tictactoe, archimedes, tablut
 GAMETYPE = "tablut"
 

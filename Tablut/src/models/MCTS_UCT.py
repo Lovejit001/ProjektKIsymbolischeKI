@@ -1,7 +1,6 @@
 """
-MCTS 
+MCTS + UCT 
 """
-
 import copy
 import math
 import random
@@ -22,6 +21,18 @@ def switchTurn(onTurn):
     if onTurn == 'White':
         return 'Black'
     return 'White'
+
+
+def ucb_score(parent, child):
+    C = 1
+
+    if child.visit_count == 0:
+        return math.inf
+
+    value = -child.value()
+    explore = C * math.sqrt(math.log(parent.visit_count + 1) / child.visit_count)
+
+    return value + explore
 
 
 def legal_moves(board, onTurn):
@@ -70,20 +81,13 @@ class Node:
         return self.value()
 
     def select_child(self):
-        unvisited = [
-            (move, child)
-            for move, child in self.children.items()
-            if child.visit_count == 0
-        ]
-        if unvisited:
-            return random.choice(unvisited)
-
         best_score = -math.inf
         bestChild = None
         bestMove = None
 
         for move, child in self.children.items():
-            score = -child.value()
+            score = ucb_score(self, child)
+
             if score > best_score or (score == best_score and random.random() < 0.5):
                 best_score = score
                 bestChild = child
@@ -126,7 +130,6 @@ class MCTS:
         return -score
 
     def run(self, state, onTurn, number_simulations=10000):
-
         
         
         init_pieces(state)
@@ -137,7 +140,6 @@ class MCTS:
         root.expand(state, onTurn)
 
         for _ in range(number_simulations):
-
             config.zugRegel = 0
             config.zugCounter= 0
             

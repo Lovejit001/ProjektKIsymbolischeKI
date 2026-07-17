@@ -1,6 +1,6 @@
 import unittest
 
-from src.makeMove import makeMove
+from src.gamelogic.makeMove import updateBoard
 from tests.definitions import movingBoard1, movingBoard2, movingBoard3, movingBoard4,B
 
 class TestMakeMoves(unittest.TestCase):
@@ -18,9 +18,10 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
-        possible_moves = {(0,0):[(7,0)]}
+        move = ((0,0),(7,0))
+        updateBoard(movingBoard1,move)
 
-        self.assertEqual(makeMove(movingBoard1,possible_moves), expected)
+        self.assertEqual(movingBoard1, expected)
         print(f"✓ test_down_move test passed")
 
     def test_up_move(self):
@@ -37,9 +38,10 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
-        possible_moves = {(6,3):[(0,3)]}
+        move = ((6,3),(0,3))
+        updateBoard(movingBoard2,move)
 
-        self.assertEqual(makeMove(movingBoard2,possible_moves), expected)
+        self.assertEqual(movingBoard2, expected)
         print(f"✓ test_up_move test passed")
     
     def test_right_move(self):
@@ -56,9 +58,10 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
         ]
 
-        possible_moves = {(3,0):[(3,4)]}
-
-        self.assertEqual(makeMove(movingBoard3,possible_moves), expected)
+        move = ((3,0),(3,4))
+        updateBoard(movingBoard3,move)
+        
+        self.assertEqual(movingBoard3, expected)
         print(f"✓ test_right_move test passed")
 
 
@@ -76,9 +79,9 @@ class TestMakeMoves(unittest.TestCase):
         [0, 0, 0, 0, 0, 0, 0, 0, 0] 
     ]   
 
-        possible_moves = {(6,3):[(6,0)]}
-
-        self.assertEqual(makeMove(movingBoard4,possible_moves), expected)
+        move = ((6,3),(6,0))
+        updateBoard(movingBoard4,move)
+        self.assertEqual(movingBoard4, expected)
         print(f"✓ test_left_move test passed")
 
         

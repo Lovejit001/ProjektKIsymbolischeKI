@@ -2,11 +2,11 @@ import math
 import time
 
 from tests.definitions import starting_board, alphaBeta_FinalMove
-from Tablut.src import alphaBeta
-from src import makeMove
-from src import config
-from src import evaluateFunction
-from src import debug
+from src.models import alphaBeta
+from src.gamelogic import makeMove
+from src.gamelogic import config
+from src.gamelogic import evaluateFunction
+from src.gamelogic import debug
 
 """
 HIER WIRD DIE BEWERTUNGSFUNKTION 10000 durchlaufen
@@ -27,8 +27,7 @@ def run_speedTest(board, on_turn, iterations: int = 10_000) -> None:
     print(f"\nBoard-Test:")
     debug.print_board(board)
     print(f"Iterations: {iterations}")
-    print(f"Time: {duration * 1000:.2f} ms")
-    print(f"Time: {duration:.6f} s")
+    print(f"Time: {duration * 1000:.2f} ms == {duration:.6f} s")
 
 
 

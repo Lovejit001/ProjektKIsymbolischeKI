@@ -1,10 +1,10 @@
 import unittest
 import copy
-from src import config
-from src import attack
-from src.saveBoardState import undoMove
-from src import makeMove
-from src import debug
+from src.gamelogic import config
+from src.gamelogic import attack
+from src.gamelogic.saveBoardState import undoMove
+from src.gamelogic import makeMove
+from src.gamelogic import debug
 
 
 class TestUndoMove(unittest.TestCase):

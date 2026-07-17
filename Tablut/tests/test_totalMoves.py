@@ -1,6 +1,6 @@
 import unittest
-from src import makeMove
-from src import config
+from src.gamelogic import makeMove
+from src.gamelogic import config
 
 
 
@@ -64,3 +64,7 @@ def test_total_moves_jump_throne(self):
     # Die Figur darf über den leeren Thron hinweg auf ein freies Feld dahinter ziehen[cite: 1]
     self.assertIn((4, 5), moves.get((4, 2), []), "Leerer Thron muss übersprungen werden können.")
     print(f"✓ Vierter Test bestanden")
+
+
+if __name__ == "__main__":
+    unittest.main()

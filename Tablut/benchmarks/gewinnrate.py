@@ -2,15 +2,11 @@
 Hier wird KI gegen KI Spielen.
 KI Nr.1 hat die AlphaBeta pruning und KI 2 dasselbe mit dem Feature von Transposition Table (ermöglicht eine tiefere Suche durchzuführen)
 """
-from src import config
-from src import checkBoard 
-from src import makeMove 
-from src import attack
-from src import debug
-from src import alphaBetaWithTransposition
-from src import alphaBeta
-from src import alphaBetaWithPVS
-from benchmarks import testboards5
+from src.gamelogic import config
+from src.gamelogic import checkBoard 
+from src.gamelogic import makeMove 
+from src.gamelogic import debug
+from benchmarks import testboards_winRate
 import time
 import math
 import copy
@@ -28,26 +24,26 @@ import copy
 
 def get_move(board, onTurn, agent, time_limit, max_depth=4):
     """Ruft die Suchfunktion des angegebenen Agenten auf."""
+    board = copy.deepcopy(board)
     if agent == 'AB':
-        from src import alphaBeta
+        from src.models import alphaBeta
         best_move, _, used_time = alphaBeta.iterative_deepening(
             board, onTurn, time_limit, max_depth
         )
     elif agent == 'AB_TT':
-        from src import alphaBetaWithTransposition
+        from src.models import alphaBetaWithTransposition
         best_move, _, used_time = alphaBetaWithTransposition.iterative_deepening(
             board, onTurn, time_limit, max_depth
         )
     elif agent == 'AB_TT_PVS':
-        from src import alphaBetaWithPVS   
+        from src.models import alphaBetaWithPVS   
         best_move, _, used_time = alphaBetaWithPVS.iterative_deepening(
             board, onTurn, time_limit, max_depth
         )
     elif agent == 'MCTS':
-        from src import Node
-        mcts = Node.MCTS()
+        from src.models import MCTS_UCT_PB
+        mcts = MCTS_UCT_PB.MCTS()
         start_time = time.perf_counter()
-        board = copy.deepcopy(board)
         root = mcts.run(board, onTurn, number_simulations=1000)  # oder 10000
         end_time = time.perf_counter()
         used_time = end_time - start_time
@@ -59,7 +55,14 @@ def get_move(board, onTurn, agent, time_limit, max_depth=4):
     return best_move, used_time
 
 
-def game(board, black_agent, white_agent, time_limit=60, max_depth=4,i=0):
+def game(board, black_agent, white_agent, time_limit=60, max_depth=4, i=0):
+    print("STARTTTTTTT")
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(f"Schwarz : {black_agent} vs Weiß : {white_agent}")
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    
+    debug.print_board
+
     """
     Spielt eine Partie zwischen zwei KI‑Agenten.
     black_agent, white_agent: Strings aus {'AB', 'AB_TT', 'AB_TT_PVS', 'MCTS'}
@@ -96,8 +99,12 @@ def game(board, black_agent, white_agent, time_limit=60, max_depth=4,i=0):
             if timeclock_White <= 0:
                 print(" Weiß hat keine Zeit mehr → Schwarz gewinnt!")
                 return -1
-
+        #print("VORHERRRRR VORHERRRRR VORHERRRRR VORHERRRRR VORHERRRRRv. VORHERRRRRVORHERRRRRVORHERRRRR")
+        #debug.print_board(board)
+        print(f"Der beste Move vom Spieler {config.onTurn}:{agent} --> {bestMove}")
         makeMove.updateBoard(board, bestMove)
+        debug.print_board(board)
+        
 
         # Zugwechsel
         config.onTurn = 'White' if config.onTurn == 'Black' else 'Black'
@@ -106,19 +113,16 @@ def game(board, black_agent, white_agent, time_limit=60, max_depth=4,i=0):
             print("Fehler: Kein Zug ausgeführt!")
             break
     
+    print(f"Endboard {'='*55}")
     debug.print_board(board)
-    # Spiel zu Ende – Ergebnis aus der Brettbewertung
     res = checkBoard.checkBoard2(board)
+    
     if res == 0:
         print("Remis")
     elif res == -1:
         print(f"Schwarz gewinnt {i}")
     elif res == 1:
         print(f"Weiß gewinnt {i}")
-    
-    #debug.print_board(board)
-    #print(f"checkBoard2 ergibt: {res}")
-    #print(f"Aktueller Spieler (onTurn) am Ende: {config.onTurn}")
 
     return res
 
@@ -137,6 +141,7 @@ def play(board, agent1, agent2, time_limit=60, max_depth=4):
     res1 = game(board1, agent1, agent2, time_limit, max_depth,1)
     # Partie 2: agent1 als Weiß, agent2 als Schwarz
     res2 = game(board2, agent2, agent1, time_limit, max_depth,2)
+    print(f"res1={res1} res2={res2}")
     return res1, res2
 
 
@@ -153,40 +158,36 @@ def add_result(res, agent_black, agent_white, scores):
         scores['draw'] += 1
 
 def main():
-    boards = testboards5.all_boards
-    time_limit = 60
-    max_depth = 3
+    boards = testboards_winRate.all_boards
+    time_limit = 60 #Spielzeit pro Spieler
+    max_depth = 3   #maximale Tiefensuche pro Spieler
 
-    # Definiere die Paarungen, die du testen willst
+    # Alle Spielpaare die exisiteren
     pairings = [
-        #('AB', 'AB_TT'),
-        #('AB', 'AB_TT_PVS'),
-        #('AB_TT', 'AB_TT_PVS'),
-        ('AB', 'MCTS')#,
-        #('AB_TT', 'MCTS'),
-        #('AB_TT_PVS', 'MCTS'),
+        ('AB', 'AB_TT'),
+        ('AB', 'AB_TT_PVS'),
+        ('AB_TT', 'AB_TT_PVS'),
+        ('AB', 'MCTS'),
+        ('AB_TT', 'MCTS'),
+        ('AB_TT_PVS', 'MCTS'),
     ]
 
-    i = 0
+    count_game = 0
 
     # Für jede Paarung einen eigenen Score‑Zähler
     all_scores = {}
 
     for agent1, agent2 in pairings:
-        i = 0
-        scores = {agent1: 0, agent2: 0, 'draw': 0}
-        #print("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
-        #print(f"{agent1} vs {agent2}  ")
-        #print("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§")
-        for board in boards:
-            i += 1
-            if i >= 10:
-                break
+        count_game = 0
+        
+        scores = {agent1: 0, agent2: 0, 'draw': 0} 
+        for board in boards:            
+            count_game += 1
 
 
             res1, res2 = play(board, agent1, agent2, time_limit, max_depth)
             add_result(res1, agent1, agent2, scores)
-            add_result(res2, agent2, agent1, scores)  # Achtung: Farben getauscht!
+            add_result(res2, agent2, agent1, scores)  # Achtung: Farben getauscht! Damit jede KI mal als Weiß und als Schwarz spielt
 
         all_scores[(agent1, agent2)] = scores
 
@@ -198,7 +199,8 @@ def main():
         print(f"  {a2} Siege: {scores[a2]} ({scores[a2]/total*100:.1f}%)")
         print(f"  Remis:    {scores['draw']} ({scores['draw']/total*100:.1f}%)")
     
-    print(f"Anzahl gespielter Spiele: {i * 2}")
+    # *2, weil pro Iteration Zwei Spiele gespielt werden mal als Weiß mal als Schwarz
+    print(f"Anzahl gespielter Spiele: {count_game * 2}")
 
 if __name__ == "__main__":
     main()

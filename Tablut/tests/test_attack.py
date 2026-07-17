@@ -1,7 +1,7 @@
 import unittest
 
-import src.config
-from src.attack import *
+import src.gamelogic.config
+from src.gamelogic.attack import *
 from tests.definitions import attackBoard1,attackBoard2,attackBoard3,attackBoard4,attackBoard5,attackBoard6,attackBoard7,attackBoard8,attackBoard9,attackBoard10,attackBoard11,attackBoard12,attackBoard13,attackBoard14,attackBoard15,attackBoard16,attackBoard17,attackBoard18,attackBoard19,attackBoard20,attackBoard21,attackBoard22,attackBoard23,attackBoard24,K,B,W,attackBoard202,attackBoard203,attackBoard204,attackBoard205,attackBoard206,attackBoard207,attackBoard208,attackBoard25,attackBoard26,attackBoard27,attackBoard28
 
 
