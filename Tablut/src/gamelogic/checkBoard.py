@@ -6,7 +6,7 @@ from src.gamelogic import config
 ## - ob nach 50 Züge keine Spielfigur geschlagen wird => Remis
 ## - ob eine 3-fache Stellungswiederholung auftritt => Remis
 
-def checkBoard2(board):
+def checkBoard(board):
 
     # Prüfung ob es noch Spielfiguren auf dem Spielfeld vorhanden sind
     if config.B_pieces == 0 and config.W_pieces == 0:

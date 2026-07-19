@@ -53,8 +53,6 @@ args = parser.parse_args()
 def joinLobby(client):
     #Lobby beitreten/erstellen
     client.send(f"join {args.lobbyname}\n")
-    #command =f"join {args.lobbyname}\n"
-    #client.sendall(command.encode("utf-8"))
     response = client.recv()          
     print(f"Erfolgreich in {args.lobbyname} drin")  
 
@@ -65,84 +63,53 @@ def getGameData(client):
     if res == "config":
         #Sammeln der Spieleinstellungen
         gameType = client.recv()
-        print("1")
         print(gameType)
         timeAcc = client.recv()
-        print("2")
         print(timeAcc)
         response = client.recv()
-        print("3")
         print(response)
         board = client.recv()
-        print("4")
         print(board)        
         verify = client.recv()
-        print("5")
         print(verify)
 
     return gameType,timeAcc,response,board,verify
 
 def createLobby(client):
     print("LOBBY ERSTELLEN:")
-    client.send(f"create {args.lobbyname}\n")
-    #command =f"create {args.lobbyname}\n"
-    #client.sendall(command.encode("utf-8"))
-    #response = client.recv(1024).decode("utf-8").strip()            
+    client.send(f"create {args.lobbyname}\n")       
     response = client.recv()            
 
     print("TABLUT EINSTELLEN:")
     client.send(f"set game.type {GAMETYPE}\n")
-    #command =f"set game.type {GAMETYPE}\n"
-    #client.sendall(command.encode("utf-8"))
-    #response = client.recv(1024).decode("utf-8").strip()
     response = client.recv()
 
     print("SCHEDULER EINSTELLEN:")       
     client.send(f"set scheduler {SCHEDULER}\n")
-    #command =f"set scheduler {SCHEDULER}\n"
-    #client.sendall(command.encode("utf-8"))
-    #response = client.recv(1024).decode("utf-8").strip()
     response = client.recv()
-    #print(response)
 
     print("MIN_PLAYERS EINSTELLEN:")       
     client.send(f"set min_players {MIN_PLYERS}\n")
-    #command =f"set min_players {MIN_PLYERS}\n"
-    #client.sendall(command.encode("utf-8"))
-    #response = client.recv(1024).decode("utf-8").strip()
     response = client.recv()
 
     print("MAX_PLAYERS EINSTELLEN:")       
     client.send(f"set max_players {MAX_PLYERS}\n")
-    #command =f"set max_players {MAX_PLYERS}\n"
-    #client.sendall(command.encode("utf-8"))
+
+
     #response = client.recv(1024).decode("utf-8").strip()
     response = client.recv()
 
 
 def registerLogin(client):
     #registrieren
-    #command = "register\n"
-    #client.sendall(command.encode("utf-8")) 
-    #print(f"gesendet: {command}")
     # Antwort empfangen
     client.send("register\n")
     response = client.recv()
     client.send(f"login {response}\n")
     response = client.recv()             
     
-    #print(f"Empfangen: {response}")   
-    #login
-    #command = f"login {response}\n"
-    #client.sendall(command.encode("utf-8"))       
-    #print(f"gesendet: {command}")  
-    #response = client.recv(1024).decode("utf-8").strip()            
-    #print(f"Empfangen: {response}")
 
 def findLobbies(client):
-    #command =f"ls\n"
-    #client.sendall(command.encode("utf-8"))
-    #print(f"gesendet: {command}")  
     client.send(f"ls\n")
     response = client.recv()            
     return response
@@ -196,9 +163,7 @@ def decode_move(command):
 
 
 def myTurn(board,client,time):
-    print("AAAAAAAAA")
     alphaBetaWithPVS.iterative_deepening(board,config.onTurn,time)
-    #alphaBetaWithTransposition.getBestMove(board,config.onTurn,depth=3)
     print(config.onTurn)
     convert_move=encode_move(config.bestMove)
     command =f"{convert_move}\n"
@@ -210,11 +175,8 @@ def myTurn(board,client,time):
     makeMove.updateBoard(board,config.bestMove)
     debug.print_board(board)
     client.send(f"{convert_move}\n")
-    #client.sendall(command.encode("utf-8"))
-    #TODO NACH JEDEM MOVE ERHÄLT MAN SEINE RESTLICHE ZEIT MIT !
 
     
-
 def enemyTurn(board,response):
     print(f"MOVE VOM GEGNER: {response}")
     getMove = decode_move(response)      
@@ -254,16 +216,12 @@ class Client:
         self._writer.close()
 
 
-
-
 def main():
     LOBBYCREATOR = False
-    # Server-Konfiguration (Standard-Werte anpassen falls nötig)
-    #HOST = "127.0.0.1"  # localhost
     HOST = "bore.pub"
 
-    #PORT = 5000        # Standard-Port (ggf. anpassen)
-    PORT = 44843
+    PORT = 5000        # Standard-Port (ggf. anpassen)
+    #PORT = 44843
     client = None
 
     try:
@@ -274,62 +232,45 @@ def main():
         
         client = Client(sock)
     
-    
         client.send("gspy\n")
         response = client.recv()
-
 
         # Prüfen ob Antwort "ok" ist
         if response == "ok":
             print("✓ Handshake erfolgreich! Server hat 'ok' gesendet.")
-            #TODO HIER SCHEIN NEN BUCK ZU SEIN
             registerLogin(client)  
             currentLobbies = findLobbies(client)
 
             if f"{args.lobbyname}" in currentLobbies:
                 #Lobby beitreten:
                 joinLobby(client)   
-            #Falls Lobby nicht gefunden wird, muss man diese Lobby erstellen
             else:
                 LOBBYCREATOR = True
                 createLobby(client)
-
             if LOBBYCREATOR :
                 #Creator versucht alle 3 sek Spiel zu starten, denn es kann sein das er alleine in Lobby ist, sonst spielbeginnt
                 while True:
                     client.send(f"start\n")
                     response = client.recv()
-                    #command = f"start\n"
-                    #client.sendall(command.encode("utf-8"))
-                    #response = client.recv(1024).decode("utf-8").strip()
-                    #print(response)
                     if response == "queued":                        
                         break
                     time.sleep(3)
-
+            
             else:
                 print("Warte auf Spielstart...")
                 while True:                    
                     #Es wird aus schleife rausgebrochen sobald Lobby ersteller "start drückt", Teilnehmer kriegt die Info queued.
-                    #response = client.recv(1024).decode("utf-8").strip()
                     response = client.recv()
                     if response == "queued":
                         break
                     time.sleep(20)
             print("Spielbeginnt:")   
 
-            #TODO timeAcc,PlayerTimAccount noch anpassen
-            #TODO String FEN übers Terminal anpassbar
-            #response = client.recv(1024).decode("utf-8").strip()
-
             gameType,timeAcc,playerTimeAccount,boardStr,verify = getGameData(client)
 
-            print("A")
             board, onturn = debug.FenToBoard(boardStr.split("'")[1])
-            config.init_pieces(board) #Neu TODO gucken ob pass
-            print("B")
+            config.init_pieces(board)
             debug.print_board(board)
-            print("C")
 
             if gameType.split(" ")[2] != 'tablut':
                 print(f"Falsches Spiel erhalten: {gameType}. Programm wird beendet.")
@@ -369,14 +310,13 @@ def main():
                     print(f"response: {response}")
                     break
                 elif response == "err 'invalid move or not your turn'":
-                    print("ERRRRRRORRRRRRR") #TODO
-                elif response == "err 'time account exceeded'":  #TODO
+                    print(response) 
+                elif response == "err 'time account exceeded'":  
 
                     if config.onTurn == 'Black' :
                         result =1 
                     elif  config.onTurn == 'White' :
-                        result = -1
-                                             
+                        result = -1  
                 elif response.startswith("move "): #Hier macht gegner Move 
                     #Move beim aktuellen Board updaten
                     enemyTurn(board,response)
@@ -386,16 +326,15 @@ def main():
                     myTime = float(response.split(" ")[1])
                     accTime = float(response.split(" ")[1])
                 else:
-                    print(f"HIER NICHT BEACHTET COMMAND : {response}")
+                    print(f"NICHT BEACHTETER COMMAND : {response}")
 
             print("GAME OVER")
             print("End Board: \n")
             debug.print_board(board)
-            result = checkBoard.checkBoard2(board)
+            result = checkBoard.checkBoard(board)
 
-            #TODO letzter Move wird nicht ausgeführt daher DRAW
             if result != 1 and result != -1:
-                result = checkBoard.checkBoard2(board)
+                result = checkBoard.checkBoard(board)
 
                 print("WINNER IS WHITE")
             elif result == -1:

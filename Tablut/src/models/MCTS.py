@@ -8,7 +8,7 @@ import random
 from ..gamelogic import config
 from ..gamelogic import makeMove
 from ..gamelogic import saveBoardState
-from ..gamelogic.checkBoard import checkBoard2
+from ..gamelogic.checkBoard import checkBoard
 from ..gamelogic.config import init_pieces
 from ..gamelogic.evaluateFunction import eval
 
@@ -54,7 +54,7 @@ class Node:
         return self.score_sum / self.visit_count
 
     def expand(self, state, onTurn):
-        if checkBoard2(state) != -2:
+        if checkBoard(state) != -2:
             return
 
         self.state = state
@@ -181,7 +181,7 @@ class MCTS:
         board = copy.deepcopy(state)
         i = 0
 
-        while checkBoard2(board) == -2:
+        while checkBoard(board) == -2:
             if i == 30:
                 saveBoardState.restore_global_state(saved_state)
                 return 0

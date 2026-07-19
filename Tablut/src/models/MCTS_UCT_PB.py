@@ -10,7 +10,7 @@ from ..gamelogic import makeMove
 from ..gamelogic import debug
 from ..gamelogic import config
 from ..gamelogic import saveBoardState
-from ..gamelogic.checkBoard import checkBoard2
+from ..gamelogic.checkBoard import checkBoard
 from ..gamelogic.config import init_pieces
 from ..gamelogic.evaluateFunction import eval
 from tests.definitions import starting_board
@@ -123,9 +123,7 @@ class Node:
     def expand(self,state,onTurn):
         
         # Spiel bereits beendet
-        if checkBoard2(state) != -2:   
-            #    print("SPIEL BEREITS zuende================================================================================================================= ")
-            #debug.print_board(state)
+        if checkBoard(state) != -2:   
             return
         
         self.state = state
@@ -156,11 +154,7 @@ class Node:
         bestMove = None
 
         for move,child in self.children.items():
-            #TODO UCB Logik implementieren !
-            
-            #if child.visit_count == 0 :
-            #    return move, child
-            #score = child.score_sum / child.visit_count #TODO: AUSBAUFÄHIG Das erste Knoten das nie besucht wurde wird als erstes besucht ohne Ausnahme 
+
             score = ucb_score(self,child)
 
             if score > best_score or (score == best_score and random.random() < 0.5):
@@ -179,8 +173,6 @@ class Node:
             if child.visit_count == 0:
                 continue
 
-            # child.value() ist aus Sicht des Spielers im Kindknoten.
-            # Der Elternknoten bewertet denselben Wert mit umgedrehtem Vorzeichen.
             score = -child.value()
             if score > best_score or (score == best_score and random.random() < 0.5):
                 best_score = score
@@ -215,18 +207,12 @@ class MCTS:
         init_pieces(state)
         
         saved_state = saveBoardState.save_global_state()
-        #print("VORHER ")
-        #print(config.B_pieces)
-        #print(config.W_pieces)
-        #print(config.K_pieces)
-        #TODO EINE ART UNDOMOVE muss rein weil sonst tatsächtliches Board modifiziert wird
 
         #root = Node(state, onTurn)
         root = Node(onTurn)  
         #Knoten wird expandiert, d.h alle Kinder Knoten generiert 
         root.expand(state, onTurn)
-        if checkBoard2(root.state) != -2:
-            print(f"{checkBoard2(root.state)} ROOT SPIEL BEREITS zuende=================================================================================================================%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ")
+        if checkBoard(root.state) != -2:
             debug.print_board(root.state)
 
 
@@ -244,60 +230,26 @@ class MCTS:
             while node.expanded():                
                 move, node = node.select_child()                
                 searched_path.append(node)     
-                #if node == None:           
-                #    print(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Node {node} ")
-
-
-            if(len(searched_path)== 1):
-                print(f"SEARCHED PATH {searched_path}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")                
 
             parent = searched_path[-2]
-            #TODO alternitve finden kann ineffizent sein
             new_state = copy.deepcopy(parent.state)             
             makeMove.updateBoard(new_state,move)
-            #HIER MUSS ZUG COUNTER ERHÖHT WERDEN
                         
             init_pieces(new_state)
 
-            #Falls das Spiel nicht nun zu Ende findet eine Simulation statt.
-            #if checkBoard2(new_state) == -2:
             score  = self.simulate(new_state,node.onTurn)
 
 
             node.expand(new_state,node.onTurn)
 
             self.backpropagate(searched_path,score)
-            #print("\nPATH:")
-            #pathed(searched_path)
 
         saveBoardState.restore_global_state(saved_state)
 
-        #print_path_to_best(root)
-
-
-        #print("FINALER MOVE")
-        #print(root.score_sum)
-        #print(root.visit_count)
-        #debug.print_debug(root.state)
-
-
-        #print("NACHHER  ")
-        #print(config.B_pieces)
-        #print(config.W_pieces)
-        #print(config.K_pieces)
-
         move, _, _ = root.best_child()   
-        #print("BEST MOVE:")
-        #print(move)
-        #for move,node in root.children.items():
-            #print(f"{move} -- {node.score_sum}")
 
-        #print("BEST MOVE")
         best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
-        #print(best_move)
 
-
-        
         # Wähle den Zug mit dem höchsten Score, aber nur wenn er oft genug besucht wurde
         best_move, _, best_score = root.best_child()
 
@@ -305,8 +257,6 @@ class MCTS:
         if best_move is None:
             best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
     
-        #print(f"BEST MOVE: {best_move} (Score: {best_score})")
-        #TODO gucken ob passt 
         config.bestMove = best_move
         return root
 
@@ -328,7 +278,7 @@ class MCTS:
         board = copy.deepcopy(state)
         i = 0 
 
-        while(checkBoard2(board) == -2 ):
+        while(checkBoard(board) == -2 ):
             
             #Wenn nach 100 Zügen das Spiel nicht zuende ist wird  wird Unentschieden 0 zurückgegeben
             if i == 30: 
@@ -357,38 +307,9 @@ class MCTS:
 
         #Wenn Spielzuende ist wird nochmal einmal zu viel gemacht daher muss man hier einmal zurücksetzen
         
-        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        #debug.print_board(board)
         # In MCTS ist i die Anzahl bereits gespielter Simulationszuege.
         # evaluateFunction.eval erwartet aber: groesserer depth = frueherer Gewinn.
         score = self.score_for_player(board, -i, onTurn)
-        #print(f"Score IST {score} onTurn: {onTurn} ")
         
         saveBoardState.restore_global_state(saved_state)
         return score
-
-    
-    
-
-movingBoard1 = [
-    [0, 0, 0, 0, 0, 0, B, 0, 0],
-    [B, 0, 0, B, 0, 0, 0, 0, 0],
-    [0, B, 0, 0, 0, 0, 0, 0, 0],
-    [0, B, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, B, 0, 0, 0, 0, K],
-    [0, 0, 0, B, 0, 0, 0, 0, 0],
-    [0, B, B, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0] 
-]
-
-
-#if __name__ == "__main__":
-    #board = movingBoard1
-    #board = starting_board
-    #onTurn = 'White'
-
-    #mcts = MCTS()
-    #root = mcts.run(state=board,onTurn=onTurn)
-    #print("Ende")
-    #print(root.avg_value())

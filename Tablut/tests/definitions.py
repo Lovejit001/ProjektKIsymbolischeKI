@@ -636,9 +636,4 @@ remis3Stellung = [
     [0, W, W, W, W, W, W, W, 0]
 ]
 
-#otherBoardFEN1="9/9/9/9/9/9/3r5/1K7/9 w 0 1"
-#otherBoardFEN2="9/9/7K1/9/3r5/9/9/9/9 s 0 1"
-#otherBoardFEN3="9/4a4/k8/4d4/9/9/4a4/9/9 s 0 1"
-#otherBoardFEN4="9/9/3r1r3/4R4/7K1/9/9/9/9 w 0 1"
-#otherBoardFEN5="4rr3/4rK2r/4r4/5r1R1/r5R2/r6R1/2r5r/6r2/9 w 2 27"
 fenStr = "9/4a4/4d4/a3d3a/aaddkddaa/a3d3a/4d4/4a4/3aaa3 a 0 0"

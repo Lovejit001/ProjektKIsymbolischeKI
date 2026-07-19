@@ -18,9 +18,9 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     config.nodes += 1
 
     if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
-        if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
+        if time.perf_counter() > config.stop_time: # Ist die Zeit überschritten soll hier abgebrochen werden
             raise TimeoutError
-            #return evaluateFunction.eval(board,depth)
+            
 
 
     # Prüfe Transpositionstabelle
@@ -34,7 +34,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             config.bestMove = tt_best_move
         return tt_score
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         # Speichere terminale Positionen
         trans_table.store(board, depth, score, 'exact', None, onTurn)
@@ -102,7 +102,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     if found:
         return tt_score
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         trans_table.store(board, depth, score, 'exact', None, onTurn)
         return score
@@ -110,8 +110,6 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     minVal = math.inf
     best_move = None
 
-    #print(type(all_Moves))
-    #print(f"THE MOVES: {all_Moves}")
 
     zugsortierung.zugsortierung(board,all_Moves)
 
@@ -162,8 +160,6 @@ def getBestMove(board, onTurn, depth):
     # Transpositionstabelle für diese Suche zurücksetzen
     trans_table.clear()
     
-    #print(f"Starte Alpha-Beta-Suche mit Tiefe {depth}")
-    #print(f"Anzahl möglicher Züge: {debug.countMoves(makeMove.total_moves(board, onTurn))}")
     
     if onTurn == "White":
         result = alphaBetaMax(
@@ -188,8 +184,6 @@ def getBestMove(board, onTurn, depth):
     
     # Statistiken ausgeben
     stats = trans_table.get_stats()
-    #print(f"Transposition Table Stats: {stats}")
-    #print(f"Eval-Aufrufe insgesamt: {config.eval_counter}")
     
     return result
 
@@ -245,7 +239,6 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     base_time =  usable_time / estimated_moves_left #sek
 
     remaining_time = base_time * phase_multiplier
-    #print(f"Zeit für Zug {remaining_time}")
 
     best_move = None
     best_depth = 0
@@ -271,48 +264,21 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         try:
             getBestMove(board, onTurn, depth)
         except TimeoutError:
-            #print("Suche wegen Zeit beendet.")
             break
 
         #führt AlphaBeta aus
         # Zeit prüfen NACHDEM wir gesucht haben
         elapsed = time.perf_counter() - start_time
 
-        if elapsed < remaining_time:
-            #print(f"ONTIME: verbrauchte ZEIT: {elapsed}")
+        if elapsed < remaining_time:            
             best_move = config.bestMove
             best_depth = depth
-            #print(f"BEST MOVE: {best_move} mit DEPTH : {best_depth}")
         else:
             break
         
     
     used_time = time.perf_counter() - x 
-    #print( f"GESAMTE ZEIT: {used_time} ") 
     #Idee War wenn Zeit vorbei ist soll man einen random move geben aber macht wenig Sinn weil so dann auch bei 0 Sekunden ein Move gegeben wird
     #if(best_move == None):        
     #    best_move = makeMove.randomMove(board,onTurn)        
     return best_move, best_depth, used_time
-
-
-B = 'B'
-W = 'W'
-K = 'K'
-
-alphaBeta_FinalMove = [
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, W, 0, 0, 0, 0, 0],
-    [K, 0, 0, B, 0, 0, 0, 0, 0],
-    [B, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, B, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, B, 0 ,0 ,0, 0, 0]
-]
-
-onTurn = 'White'
-
-#iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-#print(config.bestMove)
-#print("ENDE TRANSPOSITON")

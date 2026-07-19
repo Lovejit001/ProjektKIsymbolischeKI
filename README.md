@@ -278,12 +278,6 @@ Spieldauer: 45.67s
 
 ---
 
-## 📄 Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert.
-
----
-
 ## 👥 Autoren
 
 - Mohammad Bilal Butt - *Implementierung & KI-Engines & Spiel-Logik & Tests*

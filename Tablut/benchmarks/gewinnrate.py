@@ -76,7 +76,7 @@ def game(board, black_agent, white_agent, time_limit=60, max_depth=4, i=0):
     config.onTurn = 'Black'
     res = -math.inf
 
-    while checkBoard.checkBoard2(board) == -2:
+    while checkBoard.checkBoard(board) == -2:
         oldBoard = [row[:] for row in board]
 
         if config.onTurn == 'Black':
@@ -115,7 +115,7 @@ def game(board, black_agent, white_agent, time_limit=60, max_depth=4, i=0):
     
     print(f"Endboard {'='*55}")
     debug.print_board(board)
-    res = checkBoard.checkBoard2(board)
+    res = checkBoard.checkBoard(board)
     
     if res == 0:
         print("Remis")

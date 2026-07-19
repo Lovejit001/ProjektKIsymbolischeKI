@@ -1,12 +1,12 @@
 import unittest
 from src.gamelogic import config
-from src.gamelogic.checkBoard import checkBoard2, recent_moves, getHash
+from src.gamelogic.checkBoard import checkBoard, recent_moves, getHash
 from tests.definitions import starting_board
 
 """
 Hier werden die Unit Tests für die Funktionen in checkBoard.py definiert.
 Getestet werden:
-- checkBoard2(): Spielstandprüfung (Sieg, Niederlage, Remis, laufendes Spiel)
+- checkBoard(): Spielstandprüfung (Sieg, Niederlage, Remis, laufendes Spiel)
 - recent_moves(): 3-fache Stellungswiederholung
 - getHash(): Hash-Erstellung für Boards
 """
@@ -26,7 +26,7 @@ class TestCheckBoard(unittest.TestCase):
         """Prüft ob -1 zurückgegeben wird wenn der König geschlagen wurde."""
         config.K_pieces = 0
         board = [[0]*9 for _ in range(9)]
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, -1, "König geschlagen -> Schwarz gewinnt (-1)")
         print(f"✓ König geschlagen -> Schwarz gewinnt")
     
@@ -35,7 +35,7 @@ class TestCheckBoard(unittest.TestCase):
         board = [[0]*9 for _ in range(9)]
         # König auf Eckfeld (0,0)
         board[0][0] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 1, "König auf Eckfeld -> Weiß gewinnt (1)")
         print(f"✓ König auf Eckfeld -> Weiß gewinnt")
     
@@ -44,7 +44,7 @@ class TestCheckBoard(unittest.TestCase):
         board = [[0]*9 for _ in range(9)]
         # König auf Eckfeld (0,8)
         board[0][8] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 1, "König auf Eckfeld (0,8) -> Weiß gewinnt (1)")
         print(f"✓ König auf anderem Eckfeld -> Weiß gewinnt")
     
@@ -53,7 +53,7 @@ class TestCheckBoard(unittest.TestCase):
         config.B_pieces = 0
         board = [[0]*9 for _ in range(9)]
         board[4][4] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 1, "Keine schwarzen Figuren -> Weiß gewinnt (1)")
         print(f"✓ Keine schwarzen Figuren -> Weiß gewinnt")
     
@@ -62,7 +62,7 @@ class TestCheckBoard(unittest.TestCase):
         config.W_pieces = 0
         board = [[0]*9 for _ in range(9)]
         board[4][4] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, -1, "Keine weißen Figuren -> Schwarz gewinnt (-1)")
         print(f"✓ Keine weißen Figuren -> Schwarz gewinnt")
     
@@ -71,7 +71,7 @@ class TestCheckBoard(unittest.TestCase):
         config.zugRegel = 50
         board = [[0]*9 for _ in range(9)]
         board[4][4] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 0, "50 Züge ohne Schlag -> Remis (0)")
         print(f"✓ 50 Züge ohne Schlag -> Remis")
     
@@ -81,7 +81,7 @@ class TestCheckBoard(unittest.TestCase):
         config.W_pieces = 0
         config.K_pieces = 0
         board = [[0]*9 for _ in range(9)]
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 0, "Keine Figuren -> Fehler (0)")
         print(f"✓ Keine Figuren -> Fehler")
     
@@ -91,7 +91,7 @@ class TestCheckBoard(unittest.TestCase):
         board = [[0]*9 for _ in range(9)]
         board[4][4] = config.K
         board[4][5] = config.K
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 0, "Mehrere Könige -> Fehler (0)")
         print(f"✓ Mehrere Könige -> Fehler")
     
@@ -105,7 +105,7 @@ class TestCheckBoard(unittest.TestCase):
         board[4][4] = config.K
         board[3][4] = config.W
         board[4][3] = config.B
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, -2, "Spiel läuft weiter (-2)")
         print(f"✓ Spiel läuft weiter")
     
@@ -196,7 +196,7 @@ class TestCheckBoard(unittest.TestCase):
         config.K_pieces = 1
         config.B_pieces = 1
         config.W_pieces = 1
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, 1, "König auf Eckfeld (mit anderen Figuren) -> Weiß gewinnt (1)")
         print(f"✓ König auf Eckfeld mit anderen Figuren -> Weiß gewinnt")
     
@@ -210,7 +210,7 @@ class TestCheckBoard(unittest.TestCase):
         config.B_pieces = 1
         config.W_pieces = 1
         config.zugRegel = 10
-        result = checkBoard2(board)
+        result = checkBoard(board)
         self.assertEqual(result, -2, "König nicht auf Eckfeld -> Spiel läuft weiter (-2)")
         print(f"✓ König nicht auf Eckfeld -> Spiel läuft weiter")
 

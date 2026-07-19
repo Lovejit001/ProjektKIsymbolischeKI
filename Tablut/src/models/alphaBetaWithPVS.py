@@ -35,7 +35,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             config.bestMove = tt_best_move
         return tt_score
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         trans_table.store(board, depth, score, 'exact', None, onTurn)
         return score
@@ -94,7 +94,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 trans_table.store(board, depth, maxVal, 'lower', best_move, onTurn)
                 return maxVal
 
-    # TT-Flag sauber setzen   # <<< PVS CHANGED
+
     if maxVal <= alpha_original:
         flag = 'upper'
     elif maxVal >= beta:
@@ -105,8 +105,6 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     trans_table.store(board, depth, maxVal, flag, best_move, onTurn)
     return maxVal
 
-
-
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     """
     Alpha-Beta mit Transpositionstabelle für MIN-Spieler
@@ -114,7 +112,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     """
 
     config.nodes += 1
-    config.eval_counter += 1  # <-- JEDEN Knoten zählen
+    config.eval_counter += 1  
 
 
     if (config.nodes % 1024 == 0):
@@ -129,7 +127,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     if found:
         return tt_score
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board, depth)
         trans_table.store(board, depth, score, 'exact', None, onTurn)
         return score
@@ -140,7 +138,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
 
     zugsortierung.zugsortierung(board, all_Moves)
 
-    first_move = True   # <<< PVS CHANGED
+    first_move = True   
 
     for startPos, allMoves in all_Moves.items():
         for goalPos in allMoves:
@@ -156,7 +154,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
                 )
                 first_move = False
             else:
-                # Nullfenster-Suche / Scout Search   # <<< PVS CHANGED
+                # Nullfenster-Suche 
                 score = alphaBetaMax(
                     board, beta - 1, beta, depth - 1,
                     makeMove.total_moves(board, switch(onTurn)),
@@ -164,7 +162,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
                 )
 
                 # Falls der Zug beta senkt, aber noch kein Cutoff auslöst:
-                # Re-Search mit vollem Fenster   # <<< PVS CHANGED
+                # Re-Search mit vollem Fenster   
                 if score < beta and score > alpha:
                     score = alphaBetaMax(
                         board, alpha, beta, depth - 1,
@@ -188,7 +186,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
                 trans_table.store(board, depth, minVal, 'upper', best_move, onTurn)
                 return minVal
 
-    # TT-Flag sauber setzen   # <<< PVS CHANGED
+    # TT-Flag sauber setzen   
     if minVal >= beta_original:
         flag = 'lower'
     elif minVal <= alpha:
@@ -199,15 +197,11 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     trans_table.store(board, depth, minVal, flag, best_move, onTurn)
     return minVal
 
-
-
 def switch(onTurn):
     if onTurn == "White":
         return "Black"
     else:
         return "White"
-
-
 
 def getBestMove(board, onTurn, depth):
     """Einstiegspunkt für die Alpha-Beta-Suche"""
@@ -320,26 +314,3 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     used_time = time.perf_counter() - x
     
     return best_move, best_depth, used_time
-
-
-B = 'B'
-W = 'W'
-K = 'K'
-
-alphaBeta_FinalMove = [
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, W, 0, 0, 0, 0, 0],
-    [K, 0, 0, B, 0, 0, 0, 0, 0],
-    [B, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, B, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, B, 0 ,0 ,0, 0, 0]
-]
-
-onTurn = 'White'
-
-#iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-#print(config.bestMove)
-#print("ENDE TRANSPOSITON")

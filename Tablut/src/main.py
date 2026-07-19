@@ -162,7 +162,7 @@ def play_match(black_agent, white_agent):
     
     start_time = time.perf_counter()
     
-    while checkBoard.checkBoard2(board) == -2 and move_count < max_moves:
+    while checkBoard.checkBoard(board) == -2 and move_count < max_moves:
         
         # Bestimme Agent und verbleibende Zeit
         if current_player == "Black":
@@ -231,7 +231,7 @@ def play_match(black_agent, white_agent):
     total_time = time.perf_counter() - start_time
     
     # Ergebnis ermitteln
-    result = checkBoard.checkBoard2(board)
+    result = checkBoard.checkBoard(board)
     if result == -2:
         result = 0  # Abbruch ohne Sieger
     
@@ -239,7 +239,7 @@ def play_match(black_agent, white_agent):
     print_game_result(result, move_count, total_time)
     print("\nENDBOARD:")
     print("RESSSSS")
-    print(checkBoard.checkBoard2(board))
+    print(checkBoard.checkBoard(board))
     debug.print_board(board)
     
     # Zusammenfassung

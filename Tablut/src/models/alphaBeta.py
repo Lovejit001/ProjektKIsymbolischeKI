@@ -17,7 +17,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             raise TimeoutError
             #return evaluateFunction.eval(board,depth)
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board,depth)
         return evaluateFunction.eval(board,depth)
 
@@ -69,7 +69,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
             raise TimeoutError
             #return evaluateFunction.eval(board,depth)
 
-    if depth == 0 or (checkBoard.checkBoard2(board) != -2) or not all_Moves:
+    if depth == 0 or (checkBoard.checkBoard(board) != -2) or not all_Moves:
         score = evaluateFunction.eval(board,depth)
         return evaluateFunction.eval(board,depth)
 
@@ -188,15 +188,12 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     base_time =  usable_time / estimated_moves_left #sek
 
     remaining_time = base_time * phase_multiplier
-    #print(f"Zeit für Zug {remaining_time}")
 
     best_move = None
     best_depth = 0
     start_time = time.perf_counter()
 
     for depth in range(1, max_depth + 1):
-
-
 
         # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time
@@ -208,7 +205,6 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         #config.bestMove = None
         config.eval_counter = 0  # ← Zähler zurücksetzen
 
-        #TODO gucken ob es Fehler gibt
         config.reset_time()
         config.search_start = time.perf_counter()
         config.stop_time = config.search_start + remaining_time
@@ -216,28 +212,19 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         try:
             getBestMove(board, onTurn, depth)
         except TimeoutError:
-            #print("Suche wegen Zeit beendet.")
             break
 
-        #führt AlphaBeta aus
-        # Zeit prüfen NACHDEM wir gesucht haben
         elapsed = time.perf_counter() - start_time
 
         if elapsed < remaining_time:
-            #print(f"ONTIME: verbrauchte ZEIT: {elapsed}")
             best_move = config.bestMove
             best_depth = depth
-            #print(f"BEST MOVE: {best_move} mit DEPTH : {best_depth}")
         else:
             break
         
         
     
-    used_time = time.perf_counter() - x 
-    #print( f"GESAMTE ZEIT: {used_time} ") 
-    #Idee War wenn Zeit vorbei ist soll man einen random move geben aber macht wenig Sinn weil so dann auch bei 0 Sekunden ein Move gegeben wird
-    #if(best_move == None):        
-    #    best_move = makeMove.randomMove(board,onTurn)        
+    used_time = time.perf_counter() - x    
     return best_move, best_depth, used_time
 
 
@@ -257,19 +244,3 @@ alphaBeta_FinalMove = [
     [0, 0, 0, 0, 0, 0, W, 0, 0],
     [0, 0, 0, B, 0 ,0 ,0, 0, 0]
 ]
-
-onTurn = 'White'
-all_Moves=makeMove.randomMove(alphaBeta_FinalMove, onTurn)
-
-
-bestMove, _ , _ =iterative_deepening(alphaBeta_FinalMove,onTurn,120)
-print(bestMove)
-
-#makeMove.updateBoard(alphaBeta_FinalMove, ((3,2),(3,0)) )
-#debug.print_board(alphaBeta_FinalMove)
-
-#print("HEYYY")
-#print(config.bestMove)
-#alphaBetaMin(alphaBeta_FinalMove, -math.inf, math.inf, 2, makeMove.total_moves(alphaBeta_FinalMove, "Black"), "Black", True)
-#print(config.bestMove)
-#print("HEYYY")
