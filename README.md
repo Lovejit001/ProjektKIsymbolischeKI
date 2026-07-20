@@ -258,10 +258,6 @@ Spieldauer: 45.67s
 
 ## 🤝 Beitrag / Entwicklung
 
-### Code-Stil
-- PEP 8 konform
-- Docstrings für alle Funktionen
-
 ### Neue Engine hinzufügen
 1. Erstelle eine neue Datei in `src/models/`
 2. Implementiere `iterative_deepening(board, onTurn, time_limit, max_depth)`
@@ -288,14 +284,5 @@ Spieldauer: 45.67s
 ## 🐛 Fehler melden
 
 Bei Fragen oder Problemen bitte ein Issue auf GitHub erstellen.
-
----
-
-## 📞 Kontakt
-
-- Email: [deine-email@example.com]
-- GitHub: [https://github.com/dein-profil]
-
----
 
 **Viel Spaß beim Spielen und Experimentieren!** 🎲
