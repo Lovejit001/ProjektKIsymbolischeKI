@@ -9,11 +9,11 @@ import sys
 import time
 import argparse
 import math
-from Tablut.src.gamelogic import config
-from Tablut.src.gamelogic import makeMove
-from Tablut.src.gamelogic import debug
-from Tablut.src.models import alphaBetaWithPVS
-from Tablut.src.gamelogic import checkBoard
+from src.gamelogic import config
+from src.gamelogic import makeMove
+from src.gamelogic import debug
+from src.models import alphaBetaWithPVS
+from src.gamelogic import checkBoard
 
 
 #Lobby konfigurieren:

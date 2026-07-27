@@ -1,9 +1,9 @@
 import copy
 import time
 
-from Tablut.src.gamelogic import config
-from Tablut.src.gamelogic import checkBoard, debug
-from Tablut.src.models.MCTS_UCT_PB import MCTS
+from src.gamelogic import config
+from src.gamelogic import checkBoard, debug
+from src.models.MCTS_UCT_PB import MCTS
 from tests.definitions import starting_board, alphaBeta_FinalMove
 
 
