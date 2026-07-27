@@ -279,9 +279,9 @@ if __name__ == "__main__":
     # Sieger hervorheben
     print("\n" + "=" * 70)
     if result["winner"] == "White":
-        print(f"🏆 GEWINNER: Weiß mit {WHITE_ENGINE}")
+        print(f"GEWINNER: Weiß mit {WHITE_ENGINE}")
     elif result["winner"] == "Black":
-        print(f"🏆 GEWINNER: Schwarz mit {BLACK_ENGINE}")
+        print(f"GEWINNER: Schwarz mit {BLACK_ENGINE}")
     else:
-        print("🤝 REMIS!")
+        print("REMIS!")
     print("=" * 70)
