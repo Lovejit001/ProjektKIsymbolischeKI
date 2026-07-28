@@ -128,6 +128,6 @@ Anpassbare Parameter in den Benchmark-Skripten:
 
 ## Benchmark Ergebnisse
 
-![Gewinnwahrscheinlichkeit der KI (Zeileneintrag) gegen der anderen KI (Spalteneintrag)](winRate.jpg)
+![Gewinnwahrscheinlichkeit der KI (Zeileneintrag) gegen der anderen KI (Spalteneintrag)](winRate.png)
 
-![Laufzeitvergleich der KI-Algorithmen](speedtest.jpg)
+![Laufzeitvergleich der KI-Algorithmen](speedtest.png)
