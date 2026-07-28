@@ -37,51 +37,62 @@ IGNORE_MODULES = [
 def run_coverage():
     """Führt Coverage neu aus und generiert XML"""
     print("Fuehre Coverage-Analyse neu durch...")
-    
-    # Alte Coverage-Daten löschen
-    for f in [".coverage", "coverage.xml", "coverage_data.json"]:
+
+    os.makedirs("tests", exist_ok=True)
+
+    coverage_data_file = os.path.join("tests", ".coverage")
+    coverage_xml_file = os.path.join("tests", "coverage.xml")
+    coverage_json_file = os.path.join("tests", "coverage_data.json")
+
+    for f in [coverage_data_file, coverage_xml_file, coverage_json_file]:
         if os.path.exists(f):
             os.remove(f)
             print(f"  Geloescht: {f}")
-    
-    # Alle Test-Dateien die existieren (test_config hinzugefügt)
+
     test_files = [
         "tests.test_attack",
         "tests.test_checkboard",
-        "tests.test_config",      # NEU: test_config hinzugefügt
+        "tests.test_config",
         "tests.test_debug",
         "tests.test_makeMove",
         "tests.test_moves",
         "tests.test_positions",
         "tests.test_totalMoves",
     ]
-    
-    # Coverage mit allen Tests ausführen
+
     cmd = [
         sys.executable, "-m", "coverage", "run",
         "--source=src/gamelogic,tests",
         "-m", "unittest",
         *test_files
     ]
-    
+
+    env = os.environ.copy()
+    env["COVERAGE_FILE"] = coverage_data_file
+
     print(f"  Fuehre aus: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+
     if result.returncode != 0:
         print("  Tests fehlgeschlagen:")
         print(result.stdout)
         if result.stderr:
             print(result.stderr)
-    
+        return False
+
     print("  Tests ausgefuehrt")
-    
-    # XML generieren
-    subprocess.run([
-        sys.executable, "-m", "coverage", "xml",
-        "-o", "coverage.xml"
-    ], capture_output=True, check=True)
-    
-    print("  XML generiert")
+
+    subprocess.run(
+        [
+            sys.executable, "-m", "coverage", "xml",
+            "-o", coverage_xml_file,
+        ],
+        capture_output=True,
+        check=True,
+        env=env
+    )
+
+    print(f"  XML generiert: {coverage_xml_file}")
     return True
 
 def get_coverage_data():
