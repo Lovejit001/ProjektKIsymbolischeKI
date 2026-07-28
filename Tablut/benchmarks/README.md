@@ -125,3 +125,9 @@ Anpassbare Parameter in den Benchmark-Skripten:
 - `max_depth`: Maximale Suchtiefe
 - `number_simulations`: Anzahl MCTS-Simulationen
 - `iterations`: Anzahl Wiederholungen für Geschwindigkeitstests
+
+## Benchmark Ergebnisse
+
+![Gewinnwahrscheinlichkeit der KI (Zeileneintrag) gegen der anderen KI (Spalteneintrag)](winRate.jpg)
+
+![Laufzeitvergleich der KI-Algorithmen](speedtest.jpg)
