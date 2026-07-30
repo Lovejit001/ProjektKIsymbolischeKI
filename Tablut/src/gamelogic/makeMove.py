@@ -52,17 +52,12 @@ def makeMove(board,all_possible_moves):
         Aktualisiertes Board nach dem Zug und allen Angriffen.
     """
     
-    # Wenn keine Züge gemacht werden können
+    # Wenn keine Züge gemacht werden können, wird altes Board zurückgegeben
     if all_possible_moves == {}:
         return board
-
-    #alphaBeta.alphaBetaMax(board=board,alpha=(-math.inf),beta=math.inf,depth=1,all_Moves=all_possible_moves,onTurn=config.onTurn,root=True)
-
     
     #aktualisiert Board und prüft ob eine Figur geschlagen wurde 
     board = updateBoard(board,config.bestMove)
-    # Prüfen, ob nach dem Zug Figuren geschlagen werden
-    # config.bestMove[1] gibt die Position an wohin eine Figur bewegt wurde
 
 
     return board
@@ -77,7 +72,6 @@ def randomMove(board,onTurn):
         return (startPos, goalPos)
     
     else: 
-        print(f"in FILE makeMoke Zeile 80 Bin ich: Fehler liegt daran KEINE MOVES MÖGLICH FÜR SPIELER: {onTurn} ")
         return ((),())
 
 
@@ -101,9 +95,6 @@ def updateBoard(board,bestMove):
     config.zugCounter += 1
     config.zugRegel += 1
 
-    #print("Neuer Board nach dem Zug:")
-    #print_board(board)
-
     # vor oder nach dem Angriff? Das muss geklärt werden.
     newBoardHash = getHash(board)
     config.boardHash.append(newBoardHash)
@@ -112,7 +103,6 @@ def updateBoard(board,bestMove):
         config.boardHash.pop(0)
 
     move_track = attack(board,goalPos)
-
 
     return [figure, bestMove, move_track]
 
@@ -282,10 +272,7 @@ def validMove(board,Pos,StartPos):
         return False
         
     # Nur der König darf Eckfelder/Zielfelder betreten
-    if ((row,col) in config.Goal):
-        #result = board[start_row][start_col] == config.K
-        #print(f"validMove Ecke {Pos}: Figur={board[start_row][start_col]}, erlaubt={result}")
-        
+    if ((row,col) in config.Goal):        
         return board[start_row][start_col] == config.K
     
     return True

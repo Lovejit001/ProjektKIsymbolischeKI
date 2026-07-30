@@ -92,7 +92,6 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
         if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
             raise TimeoutError
-            #return evaluateFunction.eval(board,depth)
     
     # Prüfe Transpositionstabelle
     found, tt_score, tt_flag, tt_best_move = trans_table.lookup(
@@ -249,7 +248,7 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
         # Zeit prüfen BEVOR wir suchen
         elapsed = time.perf_counter() - start_time
         if elapsed >= remaining_time:
-            #print(f"Abbruch: verbrauchte ZEIT: {elapsed}")
+
             break
 
         config.init_pieces(board)
@@ -274,11 +273,8 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
             best_move = config.bestMove
             best_depth = depth
         else:
-            break
-        
+            break        
     
     used_time = time.perf_counter() - x 
-    #Idee War wenn Zeit vorbei ist soll man einen random move geben aber macht wenig Sinn weil so dann auch bei 0 Sekunden ein Move gegeben wird
-    #if(best_move == None):        
-    #    best_move = makeMove.randomMove(board,onTurn)        
+ 
     return best_move, best_depth, used_time

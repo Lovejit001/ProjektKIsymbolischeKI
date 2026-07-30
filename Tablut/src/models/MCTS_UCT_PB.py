@@ -303,12 +303,6 @@ class MCTS:
             currentPlayer  = switchTurn(currentPlayer )
             i += 1 
 
-            #debug.print_board(board)
-
-        #Wenn Spielzuende ist wird nochmal einmal zu viel gemacht daher muss man hier einmal zurücksetzen
-        
-        # In MCTS ist i die Anzahl bereits gespielter Simulationszuege.
-        # evaluateFunction.eval erwartet aber: groesserer depth = frueherer Gewinn.
         score = self.score_for_player(board, -i, onTurn)
         
         saveBoardState.restore_global_state(saved_state)

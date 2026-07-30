@@ -43,16 +43,13 @@ def check_figure(player, figure):
     Returns:
         True, wenn die Figur dem Spieler gehört, sonst False.
     """
-
-    #global W_pieces, B_pieces
-
     if player == "White":
         if figure in ('W', 'K'):
-            #W_pieces += 1
+        
             return True
         return False
     else:
         if figure == 'B':
-            #B_pieces += 1
+
             return True
         return False

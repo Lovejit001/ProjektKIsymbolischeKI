@@ -13,13 +13,11 @@ import copy
 
 def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     """
-    Alpha-Beta mit Transpositionstabelle für MAX-Spieler
-    + Principal Variation Search (PVS)
+    Alpha-Beta mit Zugsortierung, Transpositionstabelle und Principal Variation Search (PVS)
     """
 
     config.nodes += 1
-    config.eval_counter += 1  # <-- JEDEN Knoten zählen
-
+    config.eval_counter += 1  
 
     if (config.nodes % 1024 == 0):
         if time.perf_counter() > config.stop_time:
@@ -62,7 +60,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 )
                 first_move = False
             else:
-                # Nullfenster-Suche / Scout Search   # <<< PVS CHANGED
+                # Nullfenster-Suche / Scout Search   
                 score = alphaBetaMin(
                     board, alpha, alpha + 1, depth - 1,
                     makeMove.total_moves(board, switch(onTurn)),
@@ -70,7 +68,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
                 )
 
                 # Falls der Zug alpha verbessert, aber noch kein Cutoff auslöst:
-                # Re-Search mit vollem Fenster   # <<< PVS CHANGED
+                # Re-Search mit vollem Fenster   
                 if score > alpha and score < beta:
                     score = alphaBetaMin(
                         board, alpha, beta, depth - 1,
@@ -132,7 +130,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
         trans_table.store(board, depth, score, 'exact', None, onTurn)
         return score
 
-    beta_original = beta   # <<< PVS CHANGED
+    beta_original = beta 
     minVal = math.inf
     best_move = None
 
@@ -146,7 +144,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
 
-            if first_move:   # <<< PVS CHANGED
+            if first_move:   
                 score = alphaBetaMax(
                     board, alpha, beta, depth - 1,
                     makeMove.total_moves(board, switch(onTurn)),

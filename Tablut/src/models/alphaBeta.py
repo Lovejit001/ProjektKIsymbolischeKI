@@ -13,7 +13,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     config.nodes += 1
 
     if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
-        if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
+        if time.perf_counter() > config.stop_time: # Ist die Zeit überschritten soll hier abgebrochen werden
             raise TimeoutError
             #return evaluateFunction.eval(board,depth)
 
@@ -26,10 +26,8 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
     #zugsortierung.zugsortierung(board, all_Moves)
 
     for startPos, allMoves in all_Moves.items():
-        #print(f"{all_Moves}")
 
         for goalPos in allMoves:
-
             
             saved_state = saveBoardState.save_global_state()
             changed_List = makeMove.updateBoard(board, (startPos, goalPos))
@@ -57,7 +55,7 @@ def alphaBetaMax(board, alpha, beta, depth, all_Moves, onTurn, root):
             #if score >= beta:
             #    return maxVal  # Beta-Cutoff        
 
-    return maxVal  # ← NACH der Schleife
+    return maxVal  
 
 
 def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
@@ -65,7 +63,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
     config.nodes += 1
 
     if (config.nodes % 1024 == 0): #Idee von der Stockfish Implementierung 
-        if time.perf_counter() > config.stop_time: # Ist die ZUeit überschritten soll hier abgebrochen werden
+        if time.perf_counter() > config.stop_time: # Ist die Zeit überschritten soll hier abgebrochen werden
             raise TimeoutError
             #return evaluateFunction.eval(board,depth)
 
@@ -105,7 +103,7 @@ def alphaBetaMin(board, alpha, beta, depth, all_Moves, onTurn, root):
             #    return minVal  # Alpha-Cutoff
             
 
-    return minVal  # ← NACH der Schleife
+    return minVal  
 
 
 def switch(onTurn):
@@ -227,20 +225,3 @@ def iterative_deepening(board, onTurn, remaining_total_time, max_depth=4):
     used_time = time.perf_counter() - x    
     return best_move, best_depth, used_time
 
-
-
-B = 'B'
-W = 'W'
-K = 'K'
-
-alphaBeta_FinalMove = [
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, W, 0, 0, 0, 0, 0],
-    [K, 0, 0, B, 0, 0, 0, 0, 0],
-    [B, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, B, 0, B, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, W, 0, 0],
-    [0, 0, 0, B, 0 ,0 ,0, 0, 0]
-]
