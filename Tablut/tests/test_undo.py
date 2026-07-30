@@ -57,18 +57,7 @@ class TestUndoMove(unittest.TestCase):
 
         changed_list = makeMove.updateBoard(board, ((4,4), (4,5)))   # Weiß schlägt Schwarz
 
-        print("VOHRER")
-        debug.print_board(board_before)
-        
-        print("Nacher")
-        debug.print_board(board)
-
-        
-        print("NACH UNDO")
         undoMove(board, changed_list)
-        debug.print_board(board)
-
-
         self.assertEqual(board, board_before)
 
     # ── Schwarz zieht, kein Kill ────────────────────────────────
@@ -94,16 +83,8 @@ class TestUndoMove(unittest.TestCase):
         board_before = copy.deepcopy(board)
 
         changed_list = makeMove.updateBoard(board, ((5,4), (6,4)))   # Schwarz schlägt Weiß
-        print("VOHRER")
-        debug.print_board(board_before)
-        
-        print("Nacher")
-        debug.print_board(board)
-
-        
-        print("NACH UNDO")
+    
         undoMove(board, changed_list)
-        debug.print_board(board)
 
         self.assertEqual(board, board_before)
 
@@ -119,16 +100,8 @@ class TestUndoMove(unittest.TestCase):
         
 
         changed_list = makeMove.updateBoard(board, ((5,4), (6,4)))   # Schwarz schlägt Weiß
-        print("VOHRER")
-        debug.print_board(board_before)
-        
-        print("Nacher")
-        debug.print_board(board)
 
-
-        print("NACH UNDO")
         undoMove(board, changed_list)
-        debug.print_board(board)
 
         self.assertEqual(board, board_before)
 
